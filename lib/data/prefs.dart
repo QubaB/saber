@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -11,8 +11,8 @@ import 'package:nextcloud/provisioning_api.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 import 'package:saber/components/canvas/_canvas_background_painter.dart';
 import 'package:saber/components/navbar/responsive_navbar.dart';
-import 'package:saber/data/editor/pencil_sound.dart';
 import 'package:saber/components/toolbar/toolbar_button.dart';
+import 'package:saber/data/editor/pencil_sound.dart';
 import 'package:saber/data/flavor_config.dart';
 import 'package:saber/data/nextcloud/nextcloud_client_extension.dart';
 import 'package:saber/data/tools/_tool.dart';
