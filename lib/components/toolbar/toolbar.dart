@@ -29,7 +29,7 @@ import 'package:saber/data/tools/select.dart';
 import 'package:saber/i18n/strings.g.dart';
 
 class Toolbar extends StatefulWidget {
-  const Toolbar({
+const Toolbar({
     super.key,
     required this.readOnly,
     required this.setTool,
@@ -50,6 +50,7 @@ class Toolbar extends StatefulWidget {
     required this.exportAsSba,
     required this.exportAsPdf,
     required this.exportAsPng,
+    required this.toolbarSize,
   });
 
   final bool readOnly;
@@ -80,13 +81,10 @@ class Toolbar extends StatefulWidget {
   final Future Function(BuildContext)? exportAsPdf;
   final Future Function(BuildContext)? exportAsPng;
 
+  final ToolbarSize toolbarSize; // size of toolbar button
+
   @override
   State<Toolbar> createState() => _ToolbarState();
-
-  static const EdgeInsets _buttonPaddingHorizontal =
-      EdgeInsets.symmetric(horizontal: 6);
-  static const EdgeInsets _buttonPaddingVertical =
-      EdgeInsets.symmetric(vertical: 6);
 }
 
 class _ToolbarState extends State<Toolbar> {
@@ -172,8 +170,8 @@ class _ToolbarState extends State<Toolbar> {
             Prefs.editorToolbarAlignment.value == AxisDirection.right;
 
     final buttonPadding = isToolbarVertical
-        ? Toolbar._buttonPaddingVertical
-        : Toolbar._buttonPaddingHorizontal;
+        ? EdgeInsets.symmetric(vertical:  widget.toolbarSize.padding)
+        : EdgeInsets.symmetric(horizontal: widget.toolbarSize.padding);
 
     final currentColor = switch (widget.currentTool) {
       Pen pen => pen.color,
@@ -224,14 +222,17 @@ class _ToolbarState extends State<Toolbar> {
               ToolOptions.pen => PenModal(
                   getTool: () => Pen.currentPen,
                   setTool: widget.setTool,
+                  toolbarSize: widget.toolbarSize,
                 ),
               ToolOptions.highlighter => PenModal(
                   getTool: () => Highlighter.currentHighlighter,
                   setTool: widget.setTool,
+                  toolbarSize: widget.toolbarSize,
                 ),
               ToolOptions.pencil => PenModal(
                   getTool: () => Pencil.currentPencil,
                   setTool: widget.setTool,
+                  toolbarSize: widget.toolbarSize,
                 ),
               ToolOptions.select => SelectionBar(
                   duplicateSelection: widget.duplicateSelection,
@@ -258,6 +259,7 @@ class _ToolbarState extends State<Toolbar> {
           setColor: widget.setColor,
           currentColor: currentColor,
           invert: invert,
+          toolbarSize: widget.toolbarSize,
         ),
       ),
       ValueListenableBuilder(
@@ -299,6 +301,7 @@ class _ToolbarState extends State<Toolbar> {
                         buttonOptions: QuillSimpleToolbarButtonOptions(
                           base: QuillToolbarBaseButtonOptions(
                             iconTheme: iconTheme,
+                            iconSize: widget.toolbarSize.buttonSize, // set toolbar button size
                           ),
                         ),
                         // scrollable on Android and iOS
@@ -315,12 +318,12 @@ class _ToolbarState extends State<Toolbar> {
             );
           }),
       Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8),
+        child: Padding(// distance between toolbars
+          padding: EdgeInsets.all(widget.toolbarSize.padding),
           child: Wrap(
             direction: isToolbarVertical ? Axis.vertical : Axis.horizontal,
             alignment: WrapAlignment.center,
-            runSpacing: 8,
+            runSpacing: widget.toolbarSize.padding, // gap between lines
             children: [
               ToolbarIconButton(
                 tooltip: Pen.currentPen.name,
@@ -339,7 +342,7 @@ class _ToolbarState extends State<Toolbar> {
                   }
                 },
                 padding: buttonPadding,
-                child: FaIcon(Pen.currentPen.icon, size: 16),
+                child: FaIcon(Pen.currentPen.icon),
               ),
               ToolbarIconButton(
                 tooltip: t.editor.pens.pencil,
@@ -358,7 +361,7 @@ class _ToolbarState extends State<Toolbar> {
                   }
                 },
                 padding: buttonPadding,
-                child: const FaIcon(Pencil.pencilIcon, size: 16),
+                child: const FaIcon(Pencil.pencilIcon),
               ),
               ToolbarIconButton(
                 tooltip: t.editor.pens.highlighter,
@@ -377,7 +380,7 @@ class _ToolbarState extends State<Toolbar> {
                   }
                 },
                 padding: buttonPadding,
-                child: const FaIcon(Highlighter.highlighterIcon, size: 16),
+                child: const FaIcon(Highlighter.highlighterIcon),
               ),
               ValueListenableBuilder(
                 valueListenable: showColorOptions,
@@ -446,7 +449,7 @@ class _ToolbarState extends State<Toolbar> {
                 enabled: !widget.readOnly,
                 onPressed: toggleEraser,
                 padding: buttonPadding,
-                child: const FaIcon(FontAwesomeIcons.eraser, size: 16),
+                child: const FaIcon(FontAwesomeIcons.eraser),
               ),
               ToolbarIconButton(
                 tooltip: t.editor.toolbar.photo,

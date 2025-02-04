@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:saber/components/theming/row_col.dart';
+import 'package:saber/components/toolbar/toolbar_button.dart';
 import 'package:saber/data/tools/pen.dart';
 import 'package:saber/i18n/strings.g.dart';
 
@@ -9,10 +10,12 @@ class SizePicker extends StatefulWidget {
     super.key,
     required this.axis,
     required this.pen,
+    required this.toolbarSize,
   });
 
   final Axis axis;
   final Pen pen;
+  final ToolbarSize toolbarSize;
 
   @override
   State<SizePicker> createState() => _SizePickerState();
@@ -44,20 +47,21 @@ class _SizePickerState extends State<SizePicker> {
               t.editor.penOptions.size,
               style: TextStyle(
                 color: colorScheme.onSurface.withOpacity(0.8),
-                fontSize: 10,
+                fontSize: widget.toolbarSize.sizePickerFontSize,
                 height: 1,
               ),
             ),
             Text(_prettyNum(widget.pen.options.size)),
           ],
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: widget.toolbarSize.padding),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: widget.toolbarSize.padding),
           child: _SizeSlider(
             pen: widget.pen,
             axis: widget.axis,
             setState: setState,
+            toolbarSize: widget.toolbarSize,
           ),
         ),
       ],
@@ -72,10 +76,12 @@ class _SizeSlider extends StatelessWidget {
     required this.pen,
     required this.axis,
     required this.setState,
+    required this.toolbarSize,
   });
 
   final Pen pen;
   final Axis axis;
+  final ToolbarSize toolbarSize;
   final void Function(void Function()) setState;
 
   /// [percent] is a value between 0 and 1
@@ -85,6 +91,9 @@ class _SizeSlider extends StatelessWidget {
   void onDrag(double percent) {
     percent = clampDouble(percent, 0, 1);
     final stepsFromMin = (percent * pen.sizeStepsBetweenMinAndMax).round();
+//C  void onDrag(double localDx) {
+//C    final relX = clampDouble(localDx / toolbarSize.sizePickerSize.width, 0, 1);
+//C    final stepsFromMin = (relX * pen.sizeStepsBetweenMinAndMax).round();
     final newSize = pen.sizeMin + stepsFromMin * pen.sizeStep;
     if (newSize == pen.options.size) return;
     setState(() {
@@ -115,7 +124,8 @@ class _SizeSlider extends StatelessWidget {
       child: RotatedBox(
         quarterTurns: axis == Axis.horizontal ? 0 : 1,
         child: CustomPaint(
-          size: const Size(SizePicker.largeLength, SizePicker.smallLength),
+//C          size: const Size(SizePicker.largeLength, SizePicker.smallLength),
+          size: toolbarSize.sizePickerSize,
           painter: _SizeSliderPainter(
             axis: axis,
             minSize: pen.sizeMin,

@@ -1716,6 +1716,7 @@ class EditorState extends State<Editor> {
           exportAsSba: exportAsSba,
           exportAsPdf: exportAsPdf,
           exportAsPng: null,
+          toolbarSize: Prefs.editorToolbarSize.value,
         ),
       ),
     );
