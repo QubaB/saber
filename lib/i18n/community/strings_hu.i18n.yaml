@@ -144,6 +144,7 @@ settings:
     select(OUTDATED): Válassza ki
     mustBeEmpty(OUTDATED): A kiválasztott könyvtárnak üresnek kell lennie
     mustBeDoneSyncing(OUTDATED): "A könyvtár módosítása előtt győződjön meg arról, hogy a szinkronizálás befejeződött"
+  openDataDir(OUTDATED): Nyissa meg a Saber mappát
   resyncEverything(OUTDATED): Resync mindent
 login:
   title: Bejelentkezés
@@ -190,7 +191,7 @@ profile:
   quickLinks:
     serverHomepage(OUTDATED): Szerver honlapja
     deleteAccount(OUTDATED): Fiók törlése
-  quotaUsage(OUTDATED): Ön a(z) $total-ból ($percent) $used
+  quotaUsage(OUTDATED): "Ön a(z) $total-ból ($percent%) $used"
   connectedTo(OUTDATED): Csatlakozva valamihez
   faqTitle(OUTDATED): Gyakran Ismételt Kérdések
   title(OUTDATED): A profilom
@@ -289,8 +290,6 @@ editor:
     lineHeight: Vonalmagasság
     backgroundPattern: Háttérminta
     import: Importálás
-    watchServer(OUTDATED): Figyelje a frissítéseket a szerveren
-    watchServerReadOnly(OUTDATED): A szerver figyelése közben a szerkesztés le van tiltva
     boxFits:
       fill: Nyújtás
       cover: Átfed
@@ -305,6 +304,8 @@ editor:
       staffs(OUTDATED): Vezetők
       cornell(OUTDATED): Cornell
       tablature(OUTDATED): Tablatúra
+    watchServer(OUTDATED): Figyelje a frissítéseket a szerveren
+    watchServerReadOnly(OUTDATED): A szerver figyelése közben a szerkesztés le van tiltva
     lineHeightDescription(OUTDATED): A beírt jegyzetek szövegméretét is szabályozza
     backgroundImageFit(OUTDATED): Háttérkép
     clearPage(OUTDATED): $page/$totalPages oldal törlése

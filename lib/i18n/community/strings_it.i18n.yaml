@@ -95,8 +95,8 @@ settings:
     autosaveDelay: Ritardo di salvataggio automatico
     shapeRecognitionDelay: Ritardo nel riconoscimento della forma
     autoStraightenLines: Raddrizzamento automatico delle linee
-    customDataDir: Directory di dati personalizzata
     pencilSoundSetting: Effetto sonoro della matita
+    customDataDir(OUTDATED): Directory di dati personalizzata
   prefDescriptions:
     hyperlegibleFont: Atkinson Hyperlegible aumenta la leggibilità per i lettori ipovedenti
     disableAds: "Gli annunci aiutano a supportare lo sviluppo di Saber, ma puoi disattivarli se lo desideri"
@@ -143,8 +143,9 @@ settings:
   customDataDir:
     cancel: Annulla
     select: Seleziona
-    mustBeEmpty: La directory selezionata deve essere vuota
-    mustBeDoneSyncing: Assicurati che la sincronizzazione sia completa prima di cambiare la directory
+    mustBeEmpty(OUTDATED): La directory selezionata deve essere vuota
+    mustBeDoneSyncing(OUTDATED): Assicurati che la sincronizzazione sia completa prima di cambiare la directory
+  openDataDir(OUTDATED): Apri cartella Saber
 login:
   title: Login
   form:
@@ -190,7 +191,7 @@ login:
 profile:
   title: Il mio profilo
   logout: Log out
-  quotaUsage: Stai $used di $total ($percent)
+  quotaUsage: "Stai $used di $total ($percent%)"
   connectedTo: Collegato a
   quickLinks:
     serverHomepage: Homepage del server

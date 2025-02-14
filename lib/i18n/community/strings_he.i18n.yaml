@@ -144,6 +144,7 @@ settings:
     select(OUTDATED): בחר
     mustBeEmpty(OUTDATED): הספרייה שנבחרה חייבת להיות ריקה
     mustBeDoneSyncing(OUTDATED): ודא שהסנכרון הושלם לפני שינוי הספרייה
+  openDataDir(OUTDATED): פתח את תיקיית Saber
   resyncEverything(OUTDATED): סנכרן הכל מחדש
 login:
   title: התחבר
@@ -209,7 +210,7 @@ profile:
         הקש על הלחצן "@:profile.quickLinks.deleteAccount" למעלה, והיכנס במידת הצורך.
          אם אתה משתמש בשרת Saber הרשמי, החשבון שלך יימחק לאחר תקופת חסד של שבוע. ניתן ליצור איתי קשר בכתובת adilhanney@disroot.org במהלך תקופה זו כדי לבטל את המחיקה.
          אם אתה משתמש בשרת של צד שלישי, ייתכן שלא תהיה אפשרות למחוק את חשבונך: תצטרך לעיין במדיניות הפרטיות של השרת לקבלת מידע נוסף.
-  quotaUsage(OUTDATED): אתה משתמש ב-$used של $total ($percent)
+  quotaUsage(OUTDATED): "אתה משתמש ב-$used של $total ($percent%)"
   connectedTo(OUTDATED): מחובר ל
   faqTitle(OUTDATED): שאלות נפוצות
 appInfo:
@@ -295,8 +296,6 @@ editor:
     backgroundImageFit: התאמת תמונת רקע
     backgroundPattern: תבנית רקע
     import: יבוא
-    watchServer(OUTDATED): שימו לב לעדכונים בשרת
-    watchServerReadOnly(OUTDATED): העריכה מושבתת בזמן צפייה בשרת
     boxFits:
       fill: מתיחה
       cover: כיסוי
@@ -311,6 +310,8 @@ editor:
       staffs(OUTDATED): צוותים
       tablature(OUTDATED): כרטיסייה
       cornell(OUTDATED): קורנל
+    watchServer(OUTDATED): שימו לב לעדכונים בשרת
+    watchServerReadOnly(OUTDATED): העריכה מושבתת בזמן צפייה בשרת
     lineHeightDescription(OUTDATED): שולט גם בגודל הטקסט עבור הערות מוקלדות
   newerFileFormat:
     readOnlyMode: מצב צפייה בלבד

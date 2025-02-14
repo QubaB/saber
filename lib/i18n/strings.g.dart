@@ -219,6 +219,7 @@ class _StringsSettingsEn {
 	];
 	late final _StringsSettingsResetEn reset = _StringsSettingsResetEn._(_root);
 	String get resyncEverything => 'Resync everything';
+	String get openDataDir => 'Open Saber folder';
 	late final _StringsSettingsCustomDataDirEn customDataDir = _StringsSettingsCustomDataDirEn._(_root);
 }
 
@@ -255,7 +256,7 @@ class _StringsProfileEn {
 	// Translations
 	String get title => 'My profile';
 	String get logout => 'Log out';
-	String quotaUsage({required Object used, required Object total, required Object percent}) => 'You\'re using ${used} of ${total} (${percent})';
+	String quotaUsage({required Object used, required Object total, required Object percent}) => 'You\'re using ${used} of ${total} (${percent}%)';
 	String get connectedTo => 'Connected to';
 	late final _StringsProfileQuickLinksEn quickLinks = _StringsProfileQuickLinksEn._(_root);
 	String get faqTitle => 'Frequently asked questions';
@@ -490,7 +491,7 @@ class _StringsSettingsPrefLabelsEn {
 	String get autosaveDelay => 'Auto-save delay';
 	String get shapeRecognitionDelay => 'Shape recognition delay';
 	String get autoStraightenLines => 'Auto straighten lines';
-	String get customDataDir => 'Custom data directory';
+	String get customDataDir => 'Custom Saber folder';
 	String get pencilSoundSetting => 'Pencil sound effect';
 }
 
@@ -586,8 +587,8 @@ class _StringsSettingsCustomDataDirEn {
 	// Translations
 	String get cancel => 'Cancel';
 	String get select => 'Select';
-	String get mustBeEmpty => 'Selected directory must be empty';
-	String get mustBeDoneSyncing => 'Make sure syncing is complete before changing the directory';
+	String get mustBeEmpty => 'Selected folder must be empty';
+	String get mustBeDoneSyncing => 'Make sure syncing is complete before changing the folder';
 }
 
 // Path: login.form
@@ -1074,6 +1075,7 @@ class _StringsSettingsAr extends _StringsSettingsEn {
 	];
 	@override late final _StringsSettingsResetAr reset = _StringsSettingsResetAr._(_root);
 	@override late final _StringsSettingsCustomDataDirAr customDataDir = _StringsSettingsCustomDataDirAr._(_root);
+	@override String get openDataDir => 'افتح مجلد Saber';
 	@override String get resyncEverything => 'إعادة ترتيب كل شيء';
 }
 
@@ -1115,7 +1117,7 @@ class _StringsProfileAr extends _StringsProfileEn {
 		_StringsProfile$faq$0i2$Ar._(_root),
 		_StringsProfile$faq$0i3$Ar._(_root),
 	];
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'أنت تستخدم ${used} من ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'أنت تستخدم ${used} من ${total} (${percent}%)';
 	@override String get connectedTo => 'متصلا';
 	@override String get faqTitle => 'أسئلة مكررة';
 }
@@ -1668,10 +1670,10 @@ class _StringsEditorMenuAr extends _StringsEditorMenuEn {
 	@override String get lineHeight => 'ارتفاع خط';
 	@override String get backgroundPattern => 'نمط الخلفية';
 	@override String get import => 'يستورد';
-	@override String get watchServer => 'ترقب التحديثات على الخادم';
-	@override String get watchServerReadOnly => 'تم تعطيل التحرير أثناء مشاهدة الخادم';
 	@override late final _StringsEditorMenuBoxFitsAr boxFits = _StringsEditorMenuBoxFitsAr._(_root);
 	@override late final _StringsEditorMenuBgPatternsAr bgPatterns = _StringsEditorMenuBgPatternsAr._(_root);
+	@override String get watchServer => 'ترقب التحديثات على الخادم';
+	@override String get watchServerReadOnly => 'تم تعطيل التحرير أثناء مشاهدة الخادم';
 	@override String get lineHeightDescription => 'يتحكم أيضًا في حجم النص للملاحظات المكتوبة';
 	@override String get backgroundImageFit => 'الصورة الخلفية';
 }
@@ -1901,6 +1903,7 @@ class _StringsSettingsCs extends _StringsSettingsEn {
 	];
 	@override late final _StringsSettingsResetCs reset = _StringsSettingsResetCs._(_root);
 	@override String get resyncEverything => 'Znovu synchronizovat všechny poznámky';
+	@override String get openDataDir => 'Otevřít složku aplikace Saber';
 	@override late final _StringsSettingsCustomDataDirCs customDataDir = _StringsSettingsCustomDataDirCs._(_root);
 }
 
@@ -1911,7 +1914,7 @@ class _StringsLoginCs extends _StringsLoginEn {
 	@override final _StringsCs _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Přihlásit se';
+	@override String get title => 'Přihlášení';
 	@override late final _StringsLoginFormCs form = _StringsLoginFormCs._(_root);
 	@override TextSpan signup({required InlineSpanBuilder linkToSignup}) => TextSpan(children: [
 		const TextSpan(text: 'Ještě nemáte účet? '),
@@ -1937,7 +1940,7 @@ class _StringsProfileCs extends _StringsProfileEn {
 	// Translations
 	@override String get title => 'Můj profil';
 	@override String get logout => 'Odhlásit se';
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Využíváte ${used} z ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Využíváte ${used} z ${total} (${percent} %)';
 	@override String get connectedTo => 'Připojeno k';
 	@override late final _StringsProfileQuickLinksCs quickLinks = _StringsProfileQuickLinksCs._(_root);
 	@override String get faqTitle => 'Často kladené otázky';
@@ -2170,7 +2173,7 @@ class _StringsSettingsPrefLabelsCs extends _StringsSettingsPrefLabelsEn {
 	@override String get autosaveDelay => 'Zpoždění automatického ukládání';
 	@override String get shapeRecognitionDelay => 'Zpoždění rozpoznávání tvarů';
 	@override String get autoStraightenLines => 'Automaticky narovnávat čáry';
-	@override String get customDataDir => 'Vlastní datový adresář';
+	@override String get customDataDir => 'Vlastní umístění složky aplikace Saber';
 	@override String get pencilSoundSetting => 'Zvukový efekt psaní tužkou';
 }
 
@@ -2253,8 +2256,8 @@ class _StringsSettingsCustomDataDirCs extends _StringsSettingsCustomDataDirEn {
 	// Translations
 	@override String get cancel => 'Zrušit';
 	@override String get select => 'Zvolit';
-	@override String get mustBeEmpty => 'Zvolený adresář musí být prázdný';
-	@override String get mustBeDoneSyncing => 'Než změníte datový adresář, ujistěte se, že byla dokončena synchronizace';
+	@override String get mustBeEmpty => 'Zvolená složka musí být prázdná';
+	@override String get mustBeDoneSyncing => 'Než změníte složku, ujistěte se, že byla dokončena synchronizace';
 }
 
 // Path: login.form
@@ -2308,7 +2311,7 @@ class _StringsLoginEncLoginStepCs extends _StringsLoginEncLoginStepEn {
 	@override final _StringsCs _root; // ignore: unused_field
 
 	// Translations
-	@override String get enterEncPassword => 'Zadejte prosím heslo pro šifrování, abyste chránili svá data:';
+	@override String get enterEncPassword => 'Pro ochranu svých dat prosím zadejte heslo pro šifrování:';
 	@override String get newToSaber => 'Poprvé v aplikaci Saber? Stačí zadat nové heslo pro šifrování.';
 	@override String get encPassword => 'Heslo pro šifrování';
 	@override String get encFaqTitle => 'Často kladené otázky';
@@ -2362,7 +2365,7 @@ class _StringsProfile$faq$0i2$Cs extends _StringsProfile$faq$0i2$En {
 
 	// Translations
 	@override String get q => 'Jak změním své heslo pro šifrování?';
-	@override String get a => '1. Odhlašte se z aplikace Saber. Před odhlášením se ujistěte, že byla dokončena synchronizace a nepřijdete o žádná data (průběh synchronizace uvidíte na domovské obrazovce).\n2. Přejděte na webovou stránku vašeho serveru a smažte složku \'Saber\'. Tím ze serveru odstraníte všechny poznámky.\n3. Opětovně se přihlašte do aplikace Saber. Při přihlašování můžete zvolit nové heslo pro šifrování.\n4. Nezapomeňte se z aplikace Saber odhlásit a opětovně se do ní přihlásit na ostatních zařízeních.';
+	@override String get a => '1. Odhlašte se z aplikace Saber. Před odhlášením se ujistěte, že byla dokončena synchronizace a nepřijdete o žádná data (průběh synchronizace uvidíte na domovské obrazovce).\n2. Přejděte na webovou stránku vašeho serveru a smažte složku „Saber“. Tím ze serveru odstraníte všechny poznámky.\n3. Opětovně se přihlašte do aplikace Saber. Při přihlašování můžete zvolit nové heslo pro šifrování.\n4. Nezapomeňte se z aplikace Saber odhlásit a opětovně se do ní přihlásit na ostatních zařízeních.';
 }
 
 // Path: profile.faq.3
@@ -2373,7 +2376,7 @@ class _StringsProfile$faq$0i3$Cs extends _StringsProfile$faq$0i3$En {
 
 	// Translations
 	@override String get q => 'Jak odstraním svůj účet?';
-	@override String get a => 'Klepněte na tlačítko "${_root.profile.quickLinks.deleteAccount}" umístěné výše a přihlašte se, pokud to bude vyžadováno.\nPokud používáte výchozí server od aplikace Saber, bude váš účet odstraněn po uplynutí týdenní ochranné lhůty. Během této lhůty mě můžete kontaktovat pro odvolání zrušení účtu na adilhanney@disroot.org.\nPokud používáte server třetí strany, nemusí nabízet možnost odstranění účtu: pro více informací se bude třeba obrátit na zásady ochrany osobních údajů daného serveru.';
+	@override String get a => 'Klepněte na tlačítko „${_root.profile.quickLinks.deleteAccount}“ umístěné výše a přihlašte se, pokud to bude vyžadováno.\nPokud používáte oficiální server od aplikace Saber, bude váš účet odstraněn po uplynutí týdenní ochranné lhůty. Během této lhůty mě můžete kontaktovat pro odvolání zrušení účtu na adilhanney@disroot.org.\nPokud používáte server třetí strany, nemusí nabízet možnost odstranění účtu: pro více informací se bude třeba obrátit na zásady ochrany osobních údajů daného serveru.';
 }
 
 // Path: editor.toolbar
@@ -2587,7 +2590,7 @@ class _StringsLoginEncLoginStep$encFaq$0i0$Cs extends _StringsLoginEncLoginStep$
 
 	// Translations
 	@override String get q => 'Co je to heslo pro šifrování? Proč používat dvě hesla?';
-	@override String get a => 'Heslo k Nextcloud účtu se používá k přístupu do cloudu. Heslo pro šifrování „zamaskuje“ vaše data dokonce ještě než dorazí na cloud.\nI když by někdo získat přístup k vašemu Nextcloud účtu, vaše poznámky zůstanou v bezpečí a zašifrované oddělným heslem. To vám přináší druhou úroveň bezpečnosti ochrany vašich dat.\nNikdo k vašim poznámkám nemůže přistoupit bez hesla pro šifrování, což ale také znamená, že pokud své heslo pro šifrování zapomenete, ztratíte přístup ke svým datům.';
+	@override String get a => 'Heslo k Nextcloud účtu se používá pro přístup do cloudu. Heslo pro šifrování „zamaskuje“ vaše data dokonce ještě, než dorazí na cloud.\nI kdyby někdo získal přístup k vašemu Nextcloud účtu, vaše poznámky zůstanou v bezpečí, zašifrované oddělným heslem. To vám přináší druhou úroveň bezpečnosti ochrany vašich dat.\nNikdo k vašim poznámkám nemůže přistoupit bez hesla pro šifrování, což ale také znamená, že pokud své heslo pro šifrování zapomenete, ztratíte přístup ke svým datům.';
 }
 
 // Path: login.encLoginStep.encFaq.1
@@ -2731,6 +2734,7 @@ class _StringsSettingsDe extends _StringsSettingsEn {
 	@override late final _StringsSettingsResetDe reset = _StringsSettingsResetDe._(_root);
 	@override String get resyncEverything => 'Alles neu Synchronisieren';
 	@override late final _StringsSettingsCustomDataDirDe customDataDir = _StringsSettingsCustomDataDirDe._(_root);
+	@override String get openDataDir => 'Saber-Ordner öffnen';
 }
 
 // Path: login
@@ -2766,7 +2770,7 @@ class _StringsProfileDe extends _StringsProfileEn {
 	// Translations
 	@override String get title => 'Mein Profil';
 	@override String get logout => 'Abmelden';
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Du verwendest ${used} von ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Du verwendest ${used} von ${total} (${percent}%)';
 	@override String get connectedTo => 'Verbunden mit';
 	@override late final _StringsProfileQuickLinksDe quickLinks = _StringsProfileQuickLinksDe._(_root);
 	@override String get faqTitle => 'Häufig gestellte Fragen';
@@ -2989,7 +2993,7 @@ class _StringsSettingsPrefLabelsDe extends _StringsSettingsPrefLabelsEn {
 	@override String get preferGreyscale => 'Graustufen bevorzugen';
 	@override String get maxImageSize => 'Maximale Bildgröße';
 	@override String get autoClearWhiteboardOnExit => 'Lösche das Whiteboard nach Verlassen der Anwendung';
-	@override String get disableEraserAfterUse => 'Radierer automatisch dekativieren';
+	@override String get disableEraserAfterUse => 'Radierer automatisch deaktivieren';
 	@override String get hideFingerDrawingToggle => 'Umschalter des Finger-Zeichnens ausblenden';
 	@override String get editorPromptRename => 'Beim Erstellen von Notizen einen Namen erfragen';
 	@override String get hideHomeBackgrounds => 'Hintergrund auf dem Startbildschirm verbergen';
@@ -2999,8 +3003,8 @@ class _StringsSettingsPrefLabelsDe extends _StringsSettingsPrefLabelsEn {
 	@override String get autosaveDelay => 'Verzögerung des automatischen Speicherns';
 	@override String get shapeRecognitionDelay => 'Verzögerung der Formerkennung';
 	@override String get autoStraightenLines => 'Linien automatisch begradigen';
-	@override String get customDataDir => 'Benutzerdefiniertes Verzeichnis';
 	@override String get pencilSoundSetting => 'Bleistiftgeräusch';
+	@override String get customDataDir => 'Benutzerdefiniertes Verzeichnis';
 }
 
 // Path: settings.prefDescriptions
@@ -3012,7 +3016,7 @@ class _StringsSettingsPrefDescriptionsDe extends _StringsSettingsPrefDescription
 	// Translations
 	@override String get hyperlegibleFont => 'Atkinson Hyperlegible verbessert die Lesbarkeit für Menschen mit eingeschränkter Sicht';
 	@override String get disableAds => 'Die Entwicklung von Saber wird duch Werbung finanziert. Die Werbung kann auf Wunsch deaktiviert werden.';
-	@override String get allowInsecureConnections => '(Nicht empfohlen) Saber erlauben sich mit selbstsignierten/unsicheren Zertifikaten zu verbinden';
+	@override String get allowInsecureConnections => '(Nicht empfohlen) Saber erlauben, sich mit selbstsignierten/unsicheren Zertifikaten zu verbinden';
 	@override String get preferGreyscale => 'Für E-Ink-Bildschirme';
 	@override String get autoClearWhiteboardOnExit => 'Es wird dennoch mit deinen anderen Geräten synchronisiert';
 	@override String get disableEraserAfterUse => 'Nach dem Nutzen des Radierers automatisch zum Stift zurückwechseln';
@@ -3559,6 +3563,7 @@ class _StringsSettingsEs extends _StringsSettingsEn {
 	];
 	@override late final _StringsSettingsResetEs reset = _StringsSettingsResetEs._(_root);
 	@override late final _StringsSettingsCustomDataDirEs customDataDir = _StringsSettingsCustomDataDirEs._(_root);
+	@override String get openDataDir => 'Abrir carpeta Saber';
 	@override String get resyncEverything => 'Resync todo';
 }
 
@@ -3599,7 +3604,7 @@ class _StringsProfileEs extends _StringsProfileEn {
 		_StringsProfile$faq$0i2$Es._(_root),
 		_StringsProfile$faq$0i3$Es._(_root),
 	];
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Estás usando ${used} de ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Estás usando ${used} de ${total} (${percent}%)';
 	@override String get connectedTo => 'Conectado a';
 	@override String get faqTitle => 'Preguntas frecuentes';
 }
@@ -4153,10 +4158,10 @@ class _StringsEditorMenuEs extends _StringsEditorMenuEn {
 	@override String get backgroundImageFit => 'Ajuste de la imagen de fondo';
 	@override String get backgroundPattern => 'Patrón de fondo';
 	@override String get import => 'Importar';
-	@override String get watchServer => 'Esté atento a las actualizaciones en el servidor.';
-	@override String get watchServerReadOnly => 'La edición está deshabilitada mientras se mira el servidor.';
 	@override late final _StringsEditorMenuBoxFitsEs boxFits = _StringsEditorMenuBoxFitsEs._(_root);
 	@override late final _StringsEditorMenuBgPatternsEs bgPatterns = _StringsEditorMenuBgPatternsEs._(_root);
+	@override String get watchServer => 'Esté atento a las actualizaciones en el servidor.';
+	@override String get watchServerReadOnly => 'La edición está deshabilitada mientras se mira el servidor.';
 	@override String get lineHeightDescription => 'También controla el tamaño del texto de las notas escritas.';
 }
 
@@ -4385,6 +4390,7 @@ class _StringsSettingsFa extends _StringsSettingsEn {
 	];
 	@override late final _StringsSettingsResetFa reset = _StringsSettingsResetFa._(_root);
 	@override late final _StringsSettingsCustomDataDirFa customDataDir = _StringsSettingsCustomDataDirFa._(_root);
+	@override String get openDataDir => 'پوشه Saber را باز کنید';
 	@override String get resyncEverything => 'همه چیز را دوباره همگام سازی کنید';
 }
 
@@ -4426,7 +4432,7 @@ class _StringsProfileFa extends _StringsProfileEn {
 		_StringsProfile$faq$0i2$Fa._(_root),
 		_StringsProfile$faq$0i3$Fa._(_root),
 	];
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'شما از ${used} از ${total} (${percent}) استفاده می‌کنید';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'شما از ${used} از ${total} (${percent}%) استفاده می‌کنید';
 	@override String get connectedTo => 'مرتبط با';
 	@override String get faqTitle => 'سوالات متداول';
 }
@@ -4980,10 +4986,10 @@ class _StringsEditorMenuFa extends _StringsEditorMenuEn {
 	@override String get backgroundImageFit => 'مناسب تصویر پس زمینه';
 	@override String get backgroundPattern => 'الگوی پس زمینه';
 	@override String get import => 'واردکردن';
-	@override String get watchServer => 'مراقب به روز رسانی ها در سرور باشید';
-	@override String get watchServerReadOnly => 'هنگام تماشای سرور، ویرایش غیرفعال است';
 	@override late final _StringsEditorMenuBoxFitsFa boxFits = _StringsEditorMenuBoxFitsFa._(_root);
 	@override late final _StringsEditorMenuBgPatternsFa bgPatterns = _StringsEditorMenuBgPatternsFa._(_root);
+	@override String get watchServer => 'مراقب به روز رسانی ها در سرور باشید';
+	@override String get watchServerReadOnly => 'هنگام تماشای سرور، ویرایش غیرفعال است';
 	@override String get lineHeightDescription => 'همچنین اندازه متن را برای یادداشت های تایپ شده کنترل می کند';
 }
 
@@ -5213,6 +5219,7 @@ class _StringsSettingsFr extends _StringsSettingsEn {
 	@override late final _StringsSettingsResetFr reset = _StringsSettingsResetFr._(_root);
 	@override String get resyncEverything => 'Tout re-syncroniser';
 	@override late final _StringsSettingsCustomDataDirFr customDataDir = _StringsSettingsCustomDataDirFr._(_root);
+	@override String get openDataDir => 'Ouvrir le dossier Saber';
 }
 
 // Path: login
@@ -5253,7 +5260,7 @@ class _StringsProfileFr extends _StringsProfileEn {
 		_StringsProfile$faq$0i2$Fr._(_root),
 		_StringsProfile$faq$0i3$Fr._(_root),
 	];
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Vous utilisez ${used} sur ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Vous utilisez ${used} sur ${total} (${percent}%)';
 	@override String get connectedTo => 'Connecté à';
 	@override String get faqTitle => 'Questions fréquemment posées';
 }
@@ -5807,10 +5814,10 @@ class _StringsEditorMenuFr extends _StringsEditorMenuEn {
 	@override String get backgroundImageFit => 'Adaptation de l\'image de fond';
 	@override String get backgroundPattern => 'Texture de fond';
 	@override String get import => 'Importer';
-	@override String get watchServer => 'Surveillez les mises à jour sur le serveur';
-	@override String get watchServerReadOnly => 'L\'édition est désactivée lorsque vous regardez le serveur';
 	@override late final _StringsEditorMenuBoxFitsFr boxFits = _StringsEditorMenuBoxFitsFr._(_root);
 	@override late final _StringsEditorMenuBgPatternsFr bgPatterns = _StringsEditorMenuBgPatternsFr._(_root);
+	@override String get watchServer => 'Surveillez les mises à jour sur le serveur';
+	@override String get watchServerReadOnly => 'L\'édition est désactivée lorsque vous regardez le serveur';
 	@override String get lineHeightDescription => 'Contrôle également la taille du texte pour les notes saisies';
 }
 
@@ -6039,6 +6046,7 @@ class _StringsSettingsHe extends _StringsSettingsEn {
 	];
 	@override late final _StringsSettingsResetHe reset = _StringsSettingsResetHe._(_root);
 	@override late final _StringsSettingsCustomDataDirHe customDataDir = _StringsSettingsCustomDataDirHe._(_root);
+	@override String get openDataDir => 'פתח את תיקיית Saber';
 	@override String get resyncEverything => 'סנכרן הכל מחדש';
 }
 
@@ -6080,7 +6088,7 @@ class _StringsProfileHe extends _StringsProfileEn {
 		_StringsProfile$faq$0i2$He._(_root),
 		_StringsProfile$faq$0i3$He._(_root),
 	];
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'אתה משתמש ב-${used} של ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'אתה משתמש ב-${used} של ${total} (${percent}%)';
 	@override String get connectedTo => 'מחובר ל';
 	@override String get faqTitle => 'שאלות נפוצות';
 }
@@ -6634,10 +6642,10 @@ class _StringsEditorMenuHe extends _StringsEditorMenuEn {
 	@override String get backgroundImageFit => 'התאמת תמונת רקע';
 	@override String get backgroundPattern => 'תבנית רקע';
 	@override String get import => 'יבוא';
-	@override String get watchServer => 'שימו לב לעדכונים בשרת';
-	@override String get watchServerReadOnly => 'העריכה מושבתת בזמן צפייה בשרת';
 	@override late final _StringsEditorMenuBoxFitsHe boxFits = _StringsEditorMenuBoxFitsHe._(_root);
 	@override late final _StringsEditorMenuBgPatternsHe bgPatterns = _StringsEditorMenuBgPatternsHe._(_root);
+	@override String get watchServer => 'שימו לב לעדכונים בשרת';
+	@override String get watchServerReadOnly => 'העריכה מושבתת בזמן צפייה בשרת';
 	@override String get lineHeightDescription => 'שולט גם בגודל הטקסט עבור הערות מוקלדות';
 }
 
@@ -6866,6 +6874,7 @@ class _StringsSettingsHu extends _StringsSettingsEn {
 	];
 	@override late final _StringsSettingsResetHu reset = _StringsSettingsResetHu._(_root);
 	@override late final _StringsSettingsCustomDataDirHu customDataDir = _StringsSettingsCustomDataDirHu._(_root);
+	@override String get openDataDir => 'Nyissa meg a Saber mappát';
 	@override String get resyncEverything => 'Resync mindent';
 }
 
@@ -6899,7 +6908,7 @@ class _StringsProfileHu extends _StringsProfileEn {
 
 	// Translations
 	@override late final _StringsProfileQuickLinksHu quickLinks = _StringsProfileQuickLinksHu._(_root);
-	@override String quotaUsage({required Object total, required Object percent, required Object used}) => 'Ön a(z) ${total}-ból (${percent}) ${used}';
+	@override String quotaUsage({required Object total, required Object percent, required Object used}) => 'Ön a(z) ${total}-ból (${percent}%) ${used}';
 	@override String get connectedTo => 'Csatlakozva valamihez';
 	@override String get faqTitle => 'Gyakran Ismételt Kérdések';
 	@override String get title => 'A profilom';
@@ -7456,10 +7465,10 @@ class _StringsEditorMenuHu extends _StringsEditorMenuEn {
 	@override String get lineHeight => 'Vonalmagasság';
 	@override String get backgroundPattern => 'Háttérminta';
 	@override String get import => 'Importálás';
-	@override String get watchServer => 'Figyelje a frissítéseket a szerveren';
-	@override String get watchServerReadOnly => 'A szerver figyelése közben a szerkesztés le van tiltva';
 	@override late final _StringsEditorMenuBoxFitsHu boxFits = _StringsEditorMenuBoxFitsHu._(_root);
 	@override late final _StringsEditorMenuBgPatternsHu bgPatterns = _StringsEditorMenuBgPatternsHu._(_root);
+	@override String get watchServer => 'Figyelje a frissítéseket a szerveren';
+	@override String get watchServerReadOnly => 'A szerver figyelése közben a szerkesztés le van tiltva';
 	@override String get lineHeightDescription => 'A beírt jegyzetek szövegméretét is szabályozza';
 	@override String get backgroundImageFit => 'Háttérkép';
 	@override String clearPage({required Object page, required Object totalPages}) => '${page}/${totalPages} oldal törlése';
@@ -7694,6 +7703,7 @@ class _StringsSettingsIt extends _StringsSettingsEn {
 	@override late final _StringsSettingsResetIt reset = _StringsSettingsResetIt._(_root);
 	@override String get resyncEverything => 'Risincronizza tutto';
 	@override late final _StringsSettingsCustomDataDirIt customDataDir = _StringsSettingsCustomDataDirIt._(_root);
+	@override String get openDataDir => 'Apri cartella Saber';
 }
 
 // Path: login
@@ -7729,7 +7739,7 @@ class _StringsProfileIt extends _StringsProfileEn {
 	// Translations
 	@override String get title => 'Il mio profilo';
 	@override String get logout => 'Log out';
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Stai ${used} di ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Stai ${used} di ${total} (${percent}%)';
 	@override String get connectedTo => 'Collegato a';
 	@override late final _StringsProfileQuickLinksIt quickLinks = _StringsProfileQuickLinksIt._(_root);
 	@override String get faqTitle => 'Domande frequenti';
@@ -7962,8 +7972,8 @@ class _StringsSettingsPrefLabelsIt extends _StringsSettingsPrefLabelsEn {
 	@override String get autosaveDelay => 'Ritardo di salvataggio automatico';
 	@override String get shapeRecognitionDelay => 'Ritardo nel riconoscimento della forma';
 	@override String get autoStraightenLines => 'Raddrizzamento automatico delle linee';
-	@override String get customDataDir => 'Directory di dati personalizzata';
 	@override String get pencilSoundSetting => 'Effetto sonoro della matita';
+	@override String get customDataDir => 'Directory di dati personalizzata';
 }
 
 // Path: settings.prefDescriptions
@@ -8522,6 +8532,7 @@ class _StringsSettingsJa extends _StringsSettingsEn {
 	];
 	@override late final _StringsSettingsResetJa reset = _StringsSettingsResetJa._(_root);
 	@override late final _StringsSettingsCustomDataDirJa customDataDir = _StringsSettingsCustomDataDirJa._(_root);
+	@override String get openDataDir => 'セイバーフォルダを開く';
 	@override String get resyncEverything => 'すべてを再同期する';
 }
 
@@ -8563,7 +8574,7 @@ class _StringsProfileJa extends _StringsProfileEn {
 		_StringsProfile$faq$0i2$Ja._(_root),
 		_StringsProfile$faq$0i3$Ja._(_root),
 	];
-	@override String quotaUsage({required Object total, required Object percent, required Object used}) => '${total} (${percent}) のうち ${used} を使用しています';
+	@override String quotaUsage({required Object total, required Object percent, required Object used}) => '${total} (${percent}%) のうち ${used} を使用しています';
 	@override String get connectedTo => 'に接続されています';
 	@override String get faqTitle => 'よくある質問';
 }
@@ -9116,10 +9127,10 @@ class _StringsEditorMenuJa extends _StringsEditorMenuEn {
 	@override String get lineHeight => '行の高さ';
 	@override String get backgroundPattern => '背景パターン';
 	@override String get import => 'インポート';
-	@override String get watchServer => 'サーバー上の更新を監視する';
-	@override String get watchServerReadOnly => 'サーバー監視中は編集できません';
 	@override late final _StringsEditorMenuBoxFitsJa boxFits = _StringsEditorMenuBoxFitsJa._(_root);
 	@override late final _StringsEditorMenuBgPatternsJa bgPatterns = _StringsEditorMenuBgPatternsJa._(_root);
+	@override String get watchServer => 'サーバー上の更新を監視する';
+	@override String get watchServerReadOnly => 'サーバー監視中は編集できません';
 	@override String get lineHeightDescription => '入力されたメモのテキスト サイズも制御します';
 	@override String get backgroundImageFit => '背景画像';
 }
@@ -9349,6 +9360,7 @@ class _StringsSettingsPtBr extends _StringsSettingsEn {
 	];
 	@override late final _StringsSettingsResetPtBr reset = _StringsSettingsResetPtBr._(_root);
 	@override late final _StringsSettingsCustomDataDirPtBr customDataDir = _StringsSettingsCustomDataDirPtBr._(_root);
+	@override String get openDataDir => 'Abra a pasta Saber';
 	@override String get resyncEverything => 'Resync tudo';
 }
 
@@ -9390,7 +9402,7 @@ class _StringsProfilePtBr extends _StringsProfileEn {
 		_StringsProfile$faq$0i2$PtBr._(_root),
 		_StringsProfile$faq$0i3$PtBr._(_root),
 	];
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Você está usando ${used} de ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Você está usando ${used} de ${total} (${percent}%)';
 	@override String get connectedTo => 'Conectado a';
 	@override String get faqTitle => 'Perguntas frequentes';
 }
@@ -9944,10 +9956,10 @@ class _StringsEditorMenuPtBr extends _StringsEditorMenuEn {
 	@override String get backgroundImageFit => 'Ajustar a imagem de plano de fundo';
 	@override String get backgroundPattern => 'Padrão de plano de fundo';
 	@override String get import => 'Importar';
-	@override String get watchServer => 'Fique atento às atualizações no servidor';
-	@override String get watchServerReadOnly => 'A edição está desativada enquanto observa o servidor';
 	@override late final _StringsEditorMenuBoxFitsPtBr boxFits = _StringsEditorMenuBoxFitsPtBr._(_root);
 	@override late final _StringsEditorMenuBgPatternsPtBr bgPatterns = _StringsEditorMenuBgPatternsPtBr._(_root);
+	@override String get watchServer => 'Fique atento às atualizações no servidor';
+	@override String get watchServerReadOnly => 'A edição está desativada enquanto observa o servidor';
 	@override String get lineHeightDescription => 'Também controla o tamanho do texto para notas digitadas';
 }
 
@@ -10177,6 +10189,7 @@ class _StringsSettingsRu extends _StringsSettingsEn {
 	@override late final _StringsSettingsResetRu reset = _StringsSettingsResetRu._(_root);
 	@override String get resyncEverything => 'Повторная синхронизация всего';
 	@override late final _StringsSettingsCustomDataDirRu customDataDir = _StringsSettingsCustomDataDirRu._(_root);
+	@override String get openDataDir => 'Открыть папку Saber';
 }
 
 // Path: login
@@ -10212,7 +10225,7 @@ class _StringsProfileRu extends _StringsProfileEn {
 	// Translations
 	@override String get title => 'Мой профиль';
 	@override String get logout => 'Выйти';
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Вы используете ${used} из ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => 'Вы используете ${used} из ${total} (${percent}%)';
 	@override String get connectedTo => 'Подключен к';
 	@override late final _StringsProfileQuickLinksRu quickLinks = _StringsProfileQuickLinksRu._(_root);
 	@override String get faqTitle => 'Часто задаваемые вопросы';
@@ -10445,8 +10458,8 @@ class _StringsSettingsPrefLabelsRu extends _StringsSettingsPrefLabelsEn {
 	@override String get autosaveDelay => 'Задержка автосохранения';
 	@override String get shapeRecognitionDelay => 'Задержка распознавания формы';
 	@override String get autoStraightenLines => 'Автоматическое выпрямление линий';
-	@override String get customDataDir => 'Свой каталог для данных';
 	@override String get pencilSoundSetting => 'Звуковой эффект карандаша';
+	@override String get customDataDir => 'Свой каталог для данных';
 }
 
 // Path: settings.prefDescriptions
@@ -11006,6 +11019,7 @@ class _StringsSettingsTr extends _StringsSettingsEn {
 	@override late final _StringsSettingsResetTr reset = _StringsSettingsResetTr._(_root);
 	@override String get resyncEverything => 'Her şeyi yeniden senkronize et';
 	@override late final _StringsSettingsCustomDataDirTr customDataDir = _StringsSettingsCustomDataDirTr._(_root);
+	@override String get openDataDir => 'Saber klasörünü aç';
 }
 
 // Path: login
@@ -11046,7 +11060,7 @@ class _StringsProfileTr extends _StringsProfileEn {
 		_StringsProfile$faq$0i2$Tr._(_root),
 		_StringsProfile$faq$0i3$Tr._(_root),
 	];
-	@override String quotaUsage({required Object total, required Object percent, required Object used}) => '${total} (${percent}) değerinden ${used} miktarını kullanıyorsunuz';
+	@override String quotaUsage({required Object total, required Object percent, required Object used}) => '${total} (${percent}%) değerinden ${used} miktarını kullanıyorsunuz';
 	@override String get connectedTo => 'Bağlı';
 	@override String get faqTitle => 'Sıkça Sorulan Sorular';
 }
@@ -11600,10 +11614,10 @@ class _StringsEditorMenuTr extends _StringsEditorMenuEn {
 	@override String get backgroundImageFit => 'Arkaplan görüntüsünü sığdır';
 	@override String get backgroundPattern => 'Arkaplan deseni';
 	@override String get import => 'İçe aktar';
-	@override String get watchServer => 'Sunucudaki güncellemeleri izleyin';
-	@override String get watchServerReadOnly => 'Sunucuyu izlerken düzenleme devre dışı bırakıldı';
 	@override late final _StringsEditorMenuBoxFitsTr boxFits = _StringsEditorMenuBoxFitsTr._(_root);
 	@override late final _StringsEditorMenuBgPatternsTr bgPatterns = _StringsEditorMenuBgPatternsTr._(_root);
+	@override String get watchServer => 'Sunucudaki güncellemeleri izleyin';
+	@override String get watchServerReadOnly => 'Sunucuyu izlerken düzenleme devre dışı bırakıldı';
 	@override String get lineHeightDescription => 'Ayrıca yazılan notların metin boyutunu da kontrol eder';
 }
 
@@ -11833,6 +11847,7 @@ class _StringsSettingsZhHansCn extends _StringsSettingsEn {
 	@override late final _StringsSettingsResetZhHansCn reset = _StringsSettingsResetZhHansCn._(_root);
 	@override String get resyncEverything => '重新同步所有';
 	@override late final _StringsSettingsCustomDataDirZhHansCn customDataDir = _StringsSettingsCustomDataDirZhHansCn._(_root);
+	@override String get openDataDir => '打开 Saber 文件夹';
 }
 
 // Path: login
@@ -11873,7 +11888,7 @@ class _StringsProfileZhHansCn extends _StringsProfileEn {
 		_StringsProfile$faq$0i2$ZhHansCn._(_root),
 		_StringsProfile$faq$0i3$ZhHansCn._(_root),
 	];
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => '您正在使用 ${used} 占 ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => '您正在使用 ${used} 占 ${total} (${percent}%)';
 	@override String get connectedTo => '连接到';
 	@override String get faqTitle => '经常问的问题';
 }
@@ -12428,10 +12443,10 @@ class _StringsEditorMenuZhHansCn extends _StringsEditorMenuEn {
 	@override String get backgroundImageFit => '背景图像拟合';
 	@override String get backgroundPattern => '背景图案';
 	@override String get import => '导入';
-	@override String get watchServer => '留意服务器上的更新';
-	@override String get watchServerReadOnly => '观看服务器时禁用编辑';
 	@override late final _StringsEditorMenuBoxFitsZhHansCn boxFits = _StringsEditorMenuBoxFitsZhHansCn._(_root);
 	@override late final _StringsEditorMenuBgPatternsZhHansCn bgPatterns = _StringsEditorMenuBgPatternsZhHansCn._(_root);
+	@override String get watchServer => '留意服务器上的更新';
+	@override String get watchServerReadOnly => '观看服务器时禁用编辑';
 }
 
 // Path: editor.newerFileFormat
@@ -12660,6 +12675,7 @@ class _StringsSettingsZhHantTw extends _StringsSettingsEn {
 	@override late final _StringsSettingsResetZhHantTw reset = _StringsSettingsResetZhHantTw._(_root);
 	@override String get resyncEverything => '全部重新同步';
 	@override late final _StringsSettingsCustomDataDirZhHantTw customDataDir = _StringsSettingsCustomDataDirZhHantTw._(_root);
+	@override String get openDataDir => '開啟Saber資料夾';
 }
 
 // Path: login
@@ -12695,7 +12711,7 @@ class _StringsProfileZhHantTw extends _StringsProfileEn {
 	// Translations
 	@override String get title => '我的個人資料';
 	@override String get logout => '登出';
-	@override String quotaUsage({required Object used, required Object total, required Object percent}) => '您已使用 ${used}，共 ${total} (${percent})';
+	@override String quotaUsage({required Object used, required Object total, required Object percent}) => '您已使用 ${used}，共 ${total} (${percent}%)';
 	@override String get connectedTo => '連線到';
 	@override late final _StringsProfileQuickLinksZhHantTw quickLinks = _StringsProfileQuickLinksZhHantTw._(_root);
 	@override String get faqTitle => '常見問題';
@@ -12928,8 +12944,8 @@ class _StringsSettingsPrefLabelsZhHantTw extends _StringsSettingsPrefLabelsEn {
 	@override String get autosaveDelay => '自動儲存延遲';
 	@override String get shapeRecognitionDelay => '形狀識別延遲';
 	@override String get autoStraightenLines => '自動拉直線條';
-	@override String get customDataDir => '自訂資料目錄';
 	@override String get pencilSoundSetting => '筆的音效';
+	@override String get customDataDir => '自訂資料目錄';
 }
 
 // Path: settings.prefDescriptions

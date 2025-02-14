@@ -144,6 +144,7 @@ settings:
     select(OUTDATED): 選択する
     mustBeEmpty(OUTDATED): 選択したディレクトリは空である必要があります
     mustBeDoneSyncing(OUTDATED): ディレクトリを変更する前に同期が完了していることを確認してください
+  openDataDir(OUTDATED): セイバーフォルダを開く
   resyncEverything(OUTDATED): すべてを再同期する
 login:
   title: ログイン
@@ -205,7 +206,7 @@ profile:
         4. 他のデバイスでもログアウトしてログインし直すことをお忘れなく。
     - q: アカウントを削除するにはどうすればよいですか？
       a: "上部の\"@:profile.quickLinks.deleteAccount\"ボタンをタップし、必要であればログインしてください。Saber公式サーバーを利用している場合、1週間の猶予期間の後にアカウントが削除されます。この期間中であれば、adilhanney@disroot.orgまでご連絡いただければ、削除を取り消すことが可能です。サードパーティのサーバーをご利用の場合、アカウントを削除するオプションがない場合があります。詳細については、ご利用のサーバープライバシーポリシーをご確認ください。"
-  quotaUsage(OUTDATED): $total ($percent) のうち $used を使用しています
+  quotaUsage(OUTDATED): "$total ($percent%) のうち $used を使用しています"
   connectedTo(OUTDATED): に接続されています
   faqTitle(OUTDATED): よくある質問
 appInfo:
@@ -290,8 +291,6 @@ editor:
     lineHeight: 行の高さ
     backgroundPattern: 背景パターン
     import: インポート
-    watchServer(OUTDATED): サーバー上の更新を監視する
-    watchServerReadOnly(OUTDATED): サーバー監視中は編集できません
     boxFits:
       fill: 貼る
       cover: カバー
@@ -306,6 +305,8 @@ editor:
       staffs: スタッフ
       cornell: 角
       tablature(OUTDATED): タベルチュア
+    watchServer(OUTDATED): サーバー上の更新を監視する
+    watchServerReadOnly(OUTDATED): サーバー監視中は編集できません
     lineHeightDescription(OUTDATED): 入力されたメモのテキスト サイズも制御します
     backgroundImageFit(OUTDATED): 背景画像
   newerFileFormat:

@@ -16,11 +16,10 @@ class Stroke {
   static final log = Logger('Stroke');
 
   @visibleForTesting
+  @protected
   final List<PointVector> points = [];
 
-  /// Note that [isEmpty] is also true if there is only one point,
-  /// since it was just initially added in [onDrawStart].
-  bool get isEmpty => points.length <= 1;
+  bool get isEmpty => points.isEmpty;
   int get length => points.length;
 
   int pageIndex;
@@ -222,7 +221,7 @@ class Stroke {
       points,
       options: options,
       rememberSimulatedPressure: rememberSimulatedPressure,
-    ).toList(growable: false);
+    );
 
     if (rememberSimulatedPressure) {
       // Ensure we don't simulate pressure again
@@ -248,6 +247,10 @@ class Stroke {
       return Path()..addPolygon(polygon, true);
     }
 
+    return smoothPathFromPolygon(polygon);
+  }
+
+  static Path smoothPathFromPolygon(List<Offset> polygon) {
     final path = Path();
     path.moveTo(polygon.first.dx, polygon.first.dy);
     for (int i = 1; i < polygon.length - 1; i++) {

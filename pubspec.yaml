@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 0.23.3+23030
+version: 0.24.4+24040
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -68,7 +68,7 @@ dependencies:
   keybinder: ^1.0.1
 
   pdf: ^3.8.4
-  share_plus: ^9.0.0
+  share_plus: ^10.0.0
   file_picker: ^8.0.0+1
 
   regexed_validator: ^2.0.0+1
@@ -90,7 +90,7 @@ dependencies:
 
   animations: ^2.0.7
 
-  flutter_quill: ^9.2.2
+  flutter_quill: ^10.0.2
 
   window_manager: ^0.3.0
 
@@ -104,7 +104,7 @@ dependencies:
   onyxsdk_pen:
     path: packages/onyxsdk_pen
 
-  flex_seed_scheme: ^2.0.0
+  flex_seed_scheme: ^3.0.0
 
   screenshot: ^3.0.0
 
@@ -146,6 +146,10 @@ dependencies:
 
   simulator: ^0.3.0
 
+  abstract_sync: ^1.2.0
+
+  args: ^2.5.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -166,8 +170,6 @@ dev_dependencies:
   auto_screenshot: ^0.0.2
 
   yaml: ^3.1.2
-
-  args: ^2.5.0
 
 dependency_overrides:
   # https://github.com/alexei-sintotski/json2yaml/pull/30
