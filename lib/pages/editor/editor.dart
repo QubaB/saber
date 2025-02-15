@@ -435,6 +435,7 @@ class EditorState extends State<Editor> {
               image.dstRect.right - item.offset!.right,
               image.dstRect.bottom - item.offset!.bottom,
             );
+            image.dstFullRect=image.getDstFullRect();  // must update also full rect
             if (item.pageIndex != item.pageIndexStart) {
               moveImageToPage(image, item.pageIndex, item.pageIndexStart!);
             }
@@ -661,6 +662,7 @@ class EditorState extends State<Editor> {
         }
         for (EditorImage image in select.selectResult.images) {
           image.dstRect = image.dstRect.shift(offset);
+          image.dstFullRect=image.getDstFullRect();  // due to cropping update also this
         }
         select.selectResult.path = select.selectResult.path.shift(offset);
 
