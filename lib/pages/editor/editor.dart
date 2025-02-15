@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:camera/camera.dart';
 import 'package:collapsible/collapsible.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart' as flutter_quill;
 import 'package:keybinder/keybinder.dart';
 import 'package:logging/logging.dart';
+import 'package:path/path.dart' as path;
 import 'package:printing/printing.dart';
 import 'package:saber/components/canvas/_asset_cache.dart';
 import 'package:saber/components/canvas/_stroke.dart';
@@ -26,6 +28,7 @@ import 'package:saber/components/theming/adaptive_icon.dart';
 import 'package:saber/components/theming/dynamic_material_app.dart';
 import 'package:saber/components/toolbar/color_bar.dart';
 import 'package:saber/components/toolbar/editor_bottom_sheet.dart';
+import 'package:saber/components/toolbar/editor_camera.dart';
 import 'package:saber/components/toolbar/editor_page_manager.dart';
 import 'package:saber/components/toolbar/toolbar.dart';
 import 'package:saber/data/editor/_color_change.dart';
@@ -410,6 +413,9 @@ class EditorState extends State<Editor> {
               -item.offset!.left,
               -item.offset!.top,
             ));
+            if (item.pageIndex != item.pageIndexStart) {
+              moveStrokeToPage(stroke, item.pageIndex, item.pageIndexStart!);
+            }
           }
           Select select = Select.currentSelect;
           if (select.doneSelecting) {
@@ -417,6 +423,10 @@ class EditorState extends State<Editor> {
               -item.offset!.left,
               -item.offset!.top,
             ));
+            if (item.pageIndex != item.pageIndexStart) {
+              // move selection area to the original page
+              select.selectResult.pageIndex = item.pageIndexStart!;
+            }
           }
           for (EditorImage image in item.images) {
             image.dstRect = Rect.fromLTRB(
@@ -425,6 +435,9 @@ class EditorState extends State<Editor> {
               image.dstRect.right - item.offset!.right,
               image.dstRect.bottom - item.offset!.bottom,
             );
+            if (item.pageIndex != item.pageIndexStart) {
+              moveImageToPage(image, item.pageIndex, item.pageIndexStart!);
+            }
           }
 
         case EditorHistoryItemType.quillChange:
@@ -463,12 +476,16 @@ class EditorState extends State<Editor> {
         undo(item.copyWith(type: EditorHistoryItemType.deletePage));
       case EditorHistoryItemType.move:
         undo(item.copyWith(
-            offset: Rect.fromLTRB(
-          -item.offset!.left,
-          -item.offset!.top,
-          -item.offset!.right,
-          -item.offset!.bottom,
-        )));
+          // swap pageIndex and pageIndexStart
+          pageIndex: item.pageIndexStart,
+          pageIndexStart: item.pageIndex,
+          offset: Rect.fromLTRB(
+            -item.offset!.left,
+            -item.offset!.top,
+            -item.offset!.right,
+            -item.offset!.bottom,
+          ),
+        ));
       case EditorHistoryItemType.quillChange:
         undo(item.copyWith(type: EditorHistoryItemType.quillUndoneChange));
       case EditorHistoryItemType.quillUndoneChange: // this will never happen
@@ -540,6 +557,10 @@ class EditorState extends State<Editor> {
     }
   }
 
+  /// When the selection is dragged this far past the top/bottom of the page,
+  /// the selection will be moved to the previous/next page.
+  static const changePageThreshold = 50.0;
+
   void onDrawStart(ScaleStartDetails details) {
     final page = coreInfo.pages[dragPageIndex!];
     final position = page.renderBox!.globalToLocal(details.focalPoint);
@@ -591,9 +612,13 @@ class EditorState extends State<Editor> {
   }
 
   void onDrawUpdate(ScaleUpdateDetails details) {
+    if (dragPageIndex==null){
+      // cursor is somewhere between pages, do not respond until its page will be recognized
+      return;
+    }
     final page = coreInfo.pages[dragPageIndex!];
-    final position = page.renderBox!.globalToLocal(details.focalPoint);
-    final offset = position - previousPosition;
+    Offset position = page.renderBox!.globalToLocal(details.focalPoint);
+    Offset offset = position - previousPosition;
 
     if (PencilSound.isPlaying) PencilSound.update(offset.distance);
 
@@ -610,6 +635,27 @@ class EditorState extends State<Editor> {
     } else if (currentTool is Select) {
       Select select = currentTool as Select;
       if (select.doneSelecting) {
+        int pageOffset = 0; // between -1 and 1
+        if (position.dy > page.size.height + changePageThreshold) {
+          // Selection is dragged past the bottom of the original page
+          if (coreInfo.pages.length > select.selectResult.pageIndex + 1) {
+            offset = Offset(
+              offset.dx,
+              offset.dy - (page.size.height + changePageThreshold),
+            );
+            pageOffset = 1;
+          }
+        } else if (position.dy < -changePageThreshold) {
+          // Selection is dragged past the top of the original page
+          if (select.selectResult.pageIndex > 0) {
+            offset = Offset(
+              offset.dx,
+              offset.dy + (page.size.height + changePageThreshold),
+            );
+            pageOffset = -1;
+          }
+        }
+
         for (Stroke stroke in select.selectResult.strokes) {
           stroke.shift(offset);
         }
@@ -617,6 +663,34 @@ class EditorState extends State<Editor> {
           image.dstRect = image.dstRect.shift(offset);
         }
         select.selectResult.path = select.selectResult.path.shift(offset);
+
+        if (pageOffset != 0) {
+          offset = position - previousPosition; // and put real offset back
+          // before page redraw we need to move selected entities to another page
+          // this page will be redrawn later
+          //log.info('Moving selected item to new page and deleting them from original page');
+          selectionOffsetPage(
+              pageOffset); // move entities to new page and remove them from current one
+
+          // now handle new page, cursor position and another things
+          // change index of drag page
+          dragPageIndex = onWhichPageIsFocalPoint(
+              details.focalPoint); // update page and create paint rectangle
+          if (dragPageIndex == null) {
+            return; // page does not exist
+          }
+          final pageNew = coreInfo.pages[dragPageIndex!];
+          // recalculate position according new drag page
+          position = pageNew.renderBox!.globalToLocal(details.focalPoint);
+          //log.info('New page rect $rectTop to $rectBottom. Position on new page is $cursorPosition');
+          // recalculate the offset as if the selection were always moving to one page. Important for undo/redo
+          offset = Offset(
+              offset.dx,
+              offset.dy -
+                  pageOffset * (page.size.height + changePageThreshold));
+          //  setState(() {}); // force update of builder so movement of selection to another page is taken into account
+          pageNew.redrawStrokes(); // and finally redraw new page
+        }
       } else {
         select.onDragUpdate(position);
       }
@@ -625,11 +699,91 @@ class EditorState extends State<Editor> {
       (currentTool as LaserPointer).onDragUpdate(position);
       page.redrawStrokes();
     }
+
     previousPosition = position;
-    moveOffset += offset;
+    moveOffset += offset; // this value is keeped due to Undo/redo
+  }
+
+  bool moveStrokeToPage(Stroke stroke, int pageIndexOrig, int pageIndexDest) {
+    // move stroke from page pageIndexOrig to pageIndexDest
+    //     setState must be called before use to track changes
+    if (pageIndexOrig == pageIndexDest ||
+        pageIndexOrig == -1 ||
+        pageIndexDest == -1) {
+      return false; // no page change
+    }
+    if (pageIndexOrig < 0 || pageIndexOrig > coreInfo.pages.length - 1) {
+      return false;
+    }
+    if (pageIndexDest < 0 || pageIndexDest > coreInfo.pages.length - 1) {
+      return false;
+    }
+    final pageOrig = coreInfo.pages[pageIndexOrig];
+    final pageDest = coreInfo.pages[pageIndexDest];
+    // remove from original page
+    pageOrig.strokes.remove(stroke);
+    // add to new page
+    pageDest.strokes.add(stroke);
+    return true;
+  }
+
+  bool moveImageToPage(
+      EditorImage image, int pageIndexOrig, int pageIndexDest) {
+    // move image from page pageIndexOrig to pageIndexDest
+    //     setState must be called before use to track changes
+    if (pageIndexOrig == pageIndexDest ||
+        pageIndexOrig == -1 ||
+        pageIndexDest == -1) {
+      return false; // no page change
+    }
+    if (pageIndexOrig < 0 || pageIndexOrig > coreInfo.pages.length - 1) {
+      return false;
+    }
+    if (pageIndexDest < 0 || pageIndexDest > coreInfo.pages.length - 1) {
+      return false;
+    }
+    final pageOrig = coreInfo.pages[pageIndexOrig];
+    final pageDest = coreInfo.pages[pageIndexDest];
+    // remove from original page
+    pageOrig.images.remove(image);
+    // add to new page
+    pageDest.images.add(image);
+    return true;
+  }
+
+  void selectionOffsetPage(int pageOffset) {
+    // selected items should be moved to another page
+    Select select = currentTool as Select;
+    // test if pages exist
+    final int oldPage = select.selectResult.pageIndex;
+    final int newPage = select.selectResult.pageIndex + pageOffset;
+    if (oldPage < 0 || oldPage > coreInfo.pages.length - 1) {
+      return;
+    }
+    if (newPage < 0 || newPage > coreInfo.pages.length - 1) {
+      return;
+    }
+    final strokes = select.selectResult.strokes;
+    final images = select.selectResult.images;
+
+    setState(() {
+      // remove from original page
+      for (Stroke stroke in strokes) {
+        moveStrokeToPage(stroke, oldPage, newPage);
+      }
+      for (EditorImage image in images) {
+        moveImageToPage(image, oldPage, newPage);
+      }
+      // move selection to new page
+      select.selectResult.pageIndex += pageOffset;
+    });
   }
 
   void onDrawEnd(ScaleEndDetails details) {
+    if (dragPageIndex==null){
+      // page cannot be determined from cursor position
+      return;
+    }
     final page = coreInfo.pages[dragPageIndex!];
     bool shouldSave = true;
     if (PencilSound.isPlaying) PencilSound.pause();
@@ -674,7 +828,10 @@ class EditorState extends State<Editor> {
         if (select.doneSelecting) {
           history.recordChange(EditorHistoryItem(
             type: EditorHistoryItemType.move,
-            pageIndex: dragPageIndex!,
+            pageIndexStart: select.selectResult
+                .pageIndexStart, // use page index of page where entities were aat start of movement
+            pageIndex: select.selectResult
+                .pageIndex, // use page index of page where entities are now
             strokes: select.selectResult.strokes,
             images: select.selectResult.images,
             offset: Rect.fromLTRB(
@@ -684,6 +841,7 @@ class EditorState extends State<Editor> {
               moveOffset.dy,
             ),
           ));
+          select.selectResult.pageIndexStart=select.selectResult.pageIndex; // set starting page index to current page
         } else {
           shouldSave = false;
           select.onDragEnd(page.strokes, page.images);
@@ -751,6 +909,7 @@ class EditorState extends State<Editor> {
     history.recordChange(EditorHistoryItem(
       type: EditorHistoryItemType.move,
       pageIndex: image.pageIndex,
+      pageIndexStart: image.pageIndex,
       strokes: [],
       images: [image],
       offset: offset,
@@ -1118,6 +1277,95 @@ class EditorState extends State<Editor> {
 
     return images.length;
   }
+
+
+
+// functions taking photos
+
+  /// function called when photo is taken by camera
+  void parsePhotoName(
+      String photoName  // name of photo created by camera
+      ) async{
+    // use the Select tool so that the user can move the new image
+    currentTool = Select.currentSelect;
+
+
+    final jpgFile = File(photoName);
+    final Uint8List jpgBytes;
+    try {
+      jpgBytes = await jpgFile.readAsBytes();
+    } catch (e) {
+      log.severe('Failed to read file when importing $photoName: $e', e);
+      return;
+    }
+    List<EditorImage> images = [
+          PngEditorImage(
+            id: coreInfo.nextImageId++,
+            extension: path.extension(photoName),
+            imageProvider: MemoryImage(jpgBytes),
+            pageIndex: currentPageIndex,
+            pageSize: coreInfo.pages[currentPageIndex].size,
+            onMoveImage: onMoveImage,
+            onDeleteImage: onDeleteImage,
+            onMiscChange: autosaveAfterDelay,
+            onLoad: () => setState(() {}),
+            assetCache: coreInfo.assetCache,
+          ),
+    ];
+
+    history.recordChange(EditorHistoryItem(
+      type: EditorHistoryItemType.draw,
+      pageIndex: currentPageIndex,
+      strokes: [],
+      images: images,
+    ));
+    createPage(currentPageIndex);
+    coreInfo.pages[currentPageIndex].images.addAll(images);
+    autosaveAfterDelay();
+//    return images.length;
+  }
+
+  void _takePhoto() async {
+    ///  take photo by camera
+    if (coreInfo.readOnly) return;
+
+    WidgetsFlutterBinding.ensureInitialized();
+    // Obtain a list of the available cameras on the device.
+
+    try {
+      final cameras = await availableCameras();
+      // Get a specific camera from the list of available cameras.
+      final CameraDescription camera= cameras.first;
+
+      // show camera dialog and wait until it ends
+      await showDialog(
+          context: context,
+          builder: (context) { return AlertDialog(
+            title: Text(t.editor.camera.takePhoto),
+            content: takePhoto(context,
+              camera,
+              ),
+          );
+          }
+      );
+      return;
+    } catch (e) {
+      // If an error occurs, log the error to the console.
+      log.warning(e.toString());
+      return; // no image taken
+    }
+  }
+
+  /// widget calling camera
+  Widget takePhoto(BuildContext context,
+      CameraDescription camera,
+      ){
+    return TakePictureScreen(
+      camera: camera,
+      onFileNameChanged: parsePhotoName,
+    );
+  }
+
 
   Future<List<_PhotoInfo>> _pickPhotosWithFilePicker() async {
     final FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -1584,10 +1832,12 @@ class EditorState extends State<Editor> {
             });
           },
           pickPhoto: _pickPhotos,
+          takePhoto: _takePhoto,
           paste: paste,
           exportAsSba: exportAsSba,
           exportAsPdf: exportAsPdf,
           exportAsPng: null,
+          toolbarSize: Prefs.editorToolbarSize.value,
         ),
       ),
     );
@@ -1746,6 +1996,7 @@ class EditorState extends State<Editor> {
     ));
   }
 
+
   Widget bottomSheet(BuildContext context) {
     final Brightness brightness = Theme.of(context).brightness;
     final bool invert =
@@ -1867,6 +2118,7 @@ class EditorState extends State<Editor> {
       coreInfo: coreInfo,
     );
   }
+
 
   Widget pageManager(BuildContext context) {
     return EditorPageManager(

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:saber/components/theming/row_col.dart';
 import 'package:saber/components/toolbar/size_picker.dart';
+import 'package:saber/components/toolbar/toolbar_button.dart';
 import 'package:saber/data/extensions/axis_extensions.dart';
 import 'package:saber/data/prefs.dart';
 import 'package:saber/data/tools/_tool.dart';
@@ -17,10 +18,13 @@ class PenModal extends StatefulWidget {
     super.key,
     required this.getTool,
     required this.setTool,
+    required this.toolbarSize,
   });
 
   final Tool Function() getTool;
   final void Function(Pen) setTool;
+
+  final ToolbarSize toolbarSize;
 
   @override
   State<PenModal> createState() => _PenModalState();
@@ -45,6 +49,7 @@ class _PenModalState extends State<PenModal> {
         SizePicker(
           axis: axis,
           pen: currentPen,
+          toolbarSize: widget.toolbarSize,
         ),
         if (currentPen is! Highlighter && currentPen is! Pencil) ...[
           const SizedBox.square(dimension: 8),
@@ -67,8 +72,8 @@ class _PenModalState extends State<PenModal> {
             tooltip: t.editor.pens.fountainPen,
             icon: SvgPicture.asset(
               'assets/images/scribble_fountain.svg',
-              width: 32,
-              height: 32 / 508 * 374,
+              width: widget.toolbarSize.penModalSize,
+              height: widget.toolbarSize.penModalSize / 508 * 374,
               theme: SvgTheme(
                 currentColor: Pen.currentPen.icon == Pen.fountainPenIcon
                     ? Theme.of(context).colorScheme.secondary
@@ -96,8 +101,8 @@ class _PenModalState extends State<PenModal> {
             tooltip: t.editor.pens.ballpointPen,
             icon: SvgPicture.asset(
               'assets/images/scribble_ballpoint.svg',
-              width: 32,
-              height: 32 / 508 * 374,
+              width: widget.toolbarSize.penModalSize,
+              height: widget.toolbarSize.penModalSize / 508 * 374,
               theme: SvgTheme(
                 currentColor: Pen.currentPen.icon == Pen.ballpointPenIcon
                     ? Theme.of(context).colorScheme.secondary
@@ -110,6 +115,7 @@ class _PenModalState extends State<PenModal> {
             onPressed: () => setState(() {
               widget.setTool(ShapePen());
             }),
+            iconSize: widget.toolbarSize.penModalSize,
             style: TextButton.styleFrom(
               foregroundColor: Pen.currentPen.icon == ShapePen.shapePenIcon
                   ? Theme.of(context).colorScheme.secondary

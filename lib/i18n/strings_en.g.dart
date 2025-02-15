@@ -91,6 +91,7 @@ class TranslationsSettingsEn {
 	late final TranslationsSettingsPrefDescriptionsEn prefDescriptions = TranslationsSettingsPrefDescriptionsEn.internal(_root);
 	late final TranslationsSettingsThemeModesEn themeModes = TranslationsSettingsThemeModesEn.internal(_root);
 	late final TranslationsSettingsLayoutSizesEn layoutSizes = TranslationsSettingsLayoutSizesEn.internal(_root);
+	late final TranslationsSettingsEditorToolbarSizesEn editorToolbarSizes = TranslationsSettingsEditorToolbarSizesEn.internal(_root);
 	late final TranslationsSettingsAccentColorPickerEn accentColorPicker = TranslationsSettingsAccentColorPickerEn.internal(_root);
 	String get systemLanguage => 'Default';
 	List<String> get axisDirections => [
@@ -202,6 +203,7 @@ class TranslationsEditorEn {
 	late final TranslationsEditorToolbarEn toolbar = TranslationsEditorToolbarEn.internal(_root);
 	late final TranslationsEditorPensEn pens = TranslationsEditorPensEn.internal(_root);
 	late final TranslationsEditorPenOptionsEn penOptions = TranslationsEditorPenOptionsEn.internal(_root);
+	late final _StringsEditorCameraEn camera = _StringsEditorCameraEn._(_root);
 	late final TranslationsEditorColorsEn colors = TranslationsEditorColorsEn.internal(_root);
 	late final TranslationsEditorImageOptionsEn imageOptions = TranslationsEditorImageOptionsEn.internal(_root);
 	late final TranslationsEditorSelectionBarEn selectionBar = TranslationsEditorSelectionBarEn.internal(_root);
@@ -368,6 +370,7 @@ class TranslationsSettingsPrefLabelsEn {
 	String get shouldAlwaysAlertForUpdates => 'Faster updates';
 	String get allowInsecureConnections => 'Allow insecure connections';
 	String get editorToolbarAlignment => 'Toolbar position';
+	String get editorToolbarSize => 'Toolbar button size';
 	String get editorToolbarShowInFullscreen => 'Show the toolbar in fullscreen mode';
 	String get editorAutoInvert => 'Invert notes in dark mode';
 	String get preferGreyscale => 'Prefer greyscale colors';
@@ -435,6 +438,18 @@ class TranslationsSettingsLayoutSizesEn {
 	String get auto => 'Auto';
 	String get phone => 'Phone';
 	String get tablet => 'Tablet';
+}
+
+// Path: settings.layoutSizes
+class TranslationsSettingsEditorToolbarSizesEn {
+	TranslationsSettingsEditorToolbarSizesEn.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get small => 'Small';
+	String get normal => 'Normal';
+	String get big => 'Big';
 }
 
 // Path: settings.accentColorPicker
@@ -601,6 +616,7 @@ class TranslationsEditorToolbarEn {
 	String get select => 'Select';
 	String get toggleEraser => 'Toggle eraser (Ctrl E)';
 	String get photo => 'Images';
+	String get camera => 'Take photo';
 	String get text => 'Text';
 	String get toggleFingerDrawing => 'Toggle finger drawing (Ctrl F)';
 	String get undo => 'Undo';
@@ -633,6 +649,16 @@ class TranslationsEditorPenOptionsEn {
 
 	// Translations
 	String get size => 'Size';
+}
+
+// Path: editor.camera
+class _StringsEditorCameraEn {
+	_StringsEditorCameraEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	String get takePhoto => 'Take photo';
 }
 
 // Path: editor.colors

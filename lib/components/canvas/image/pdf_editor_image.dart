@@ -126,10 +126,13 @@ class PdfEditorImage extends EditorImage {
           : naturalSize;
       dstRect = dstRect.topLeft & dstSize;
     }
-
     _pdfDocument.value ??= pdfFile != null
         ? await PdfDocument.openFile(pdfFile!.path)
         : await PdfDocument.openData(pdfBytes!);
+
+    // QB check if it works
+    // each image should have set dstFullRect.
+    dstFullRect=getDstFullRect(); // calculate full image rect
   }
 
   @override
