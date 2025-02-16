@@ -86,7 +86,7 @@ class _BrowsePageState extends State<BrowsePage> {
       folders.add("${path ?? ""}/$directoryPath");
     }
     SortNotes.sortNotes(files, forced: true);
-    SortNotes.sortNotes(folders, forced: true);
+    SortNotes.sortNotesFolders(folders, forced: true);
 
     if (mounted) setState(() {});
   }
@@ -156,7 +156,7 @@ class _BrowsePageState extends State<BrowsePage> {
                       if (SortNotes.isNeeded)
                         {
                           SortNotes.sortNotes(files, forced: true),
-                          SortNotes.sortNotes(folders, forced: true),
+                          SortNotes.sortNotesFolders(folders, forced: true),
                           setState(() {}),
                         }
                     },
