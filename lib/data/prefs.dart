@@ -100,6 +100,7 @@ abstract class Prefs {
   static late final PlainPref<bool> autoClearWhiteboardOnExit;
 
   static late final PlainPref<bool> disableEraserAfterUse;
+  static late final PlainPref<bool> eraserOnStylusButtonPressAndRelease;
   static late final PlainPref<bool> hideFingerDrawingToggle;
 
   static late final PlainPref<List<String>> recentColorsChronological;
@@ -209,6 +210,7 @@ abstract class Prefs {
     autoClearWhiteboardOnExit = PlainPref('autoClearWhiteboardOnExit', false);
 
     disableEraserAfterUse = PlainPref('disableEraserAfterUse', false);
+    eraserOnStylusButtonPressAndRelease = PlainPref('eraserOnStylusButtonPressAndRelease', false);
     hideFingerDrawingToggle = PlainPref('hideFingerDrawingToggle', false);
 
     recentColorsChronological = PlainPref('recentColorsChronological', []);
