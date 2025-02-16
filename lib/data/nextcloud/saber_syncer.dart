@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:logging/logging.dart';
 import 'package:nextcloud/nextcloud.dart';
 import 'package:nextcloud/webdav.dart';
+import 'package:saber/components/nextcloud/log_messages.dart';
 import 'package:saber/data/file_manager/file_manager.dart';
 import 'package:saber/data/nextcloud/errors.dart';
 import 'package:saber/data/nextcloud/nextcloud_client_extension.dart';
@@ -21,6 +22,9 @@ final syncer = Syncer<SaberSyncInterface, SaberSyncFile, File, WebDavFile>(
 class SaberSyncInterface
     extends AbstractSyncInterface<SaberSyncFile, File, WebDavFile> {
   const SaberSyncInterface();
+
+  // class used to keep nextcloud upload/download log in Preferences page
+  static final NextcloudLogMessages nextcloudSyncMessages=NextcloudLogMessages();
 
   static final log = Logger('SaberSyncInterface');
 
