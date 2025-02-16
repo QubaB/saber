@@ -535,6 +535,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 options: const [
                   ToggleButtonsOption(5000, Text('5s')),
                   ToggleButtonsOption(10000, Text('10s')),
+                  ToggleButtonsOption(60000, Text('60s')),
                   ToggleButtonsOption(-1, Icon(Icons.close)),
                 ],
               ),
