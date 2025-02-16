@@ -226,6 +226,7 @@ class TranslationsHomeTabsEn {
 	// Translations
 	String get home => 'Home';
 	String get browse => 'Browse';
+	String get search => 'Search';
 	String get whiteboard => 'Whiteboard';
 	String get settings => 'Settings';
 }
@@ -239,6 +240,7 @@ class TranslationsHomeTitlesEn {
 	// Translations
 	String get home => 'Recent notes';
 	String get browse => 'Browse';
+	String get search => 'Search for Notes';
 	String get whiteboard => 'Whiteboard';
 	String get settings => 'Settings';
 }
