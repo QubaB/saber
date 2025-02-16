@@ -33,6 +33,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  diacritic: ^0.1.5
+
   cupertino_icons: ^1.0.5
   material_symbols_icons: ^4.2758.0
 

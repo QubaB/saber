@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:saber/data/file_manager/file_manager.dart';
 import 'package:saber/data/prefs.dart';
@@ -57,7 +58,9 @@ class SortNotes {
   }
 
   static void _sortNotesAlpha(List<String> filePaths, bool isIncreasing) {
-    filePaths.sort((a, b) => a.split('/').last.compareTo(b.split('/').last));
+    filePaths.sort((a, b) => removeDiacritics(a.split('/').last)
+        .compareTo(removeDiacritics(b.split('/').last)));
+
     if (!isIncreasing) _reverse(filePaths);
   }
 
