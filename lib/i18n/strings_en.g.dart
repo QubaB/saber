@@ -385,6 +385,7 @@ class TranslationsSettingsPrefLabelsEn {
 	String get shouldCheckForUpdates => 'Check for Saber updates';
 	String get shouldAlwaysAlertForUpdates => 'Faster updates';
 	String get allowInsecureConnections => 'Allow insecure connections';
+	String get ncDoNotEncryptFiles => 'Do not encrypt files on NextCloud';
 	String get editorToolbarAlignment => 'Toolbar position';
 	String get editorToolbarSize => 'Toolbar button size';
 	String get editorToolbarShowInFullscreen => 'Show the toolbar in fullscreen mode';
@@ -417,6 +418,7 @@ class TranslationsSettingsPrefDescriptionsEn {
 	// Translations
 	String get hyperlegibleFont => 'Increases legibility for users with low vision';
 	String get allowInsecureConnections => '(Not recommended) Allow Saber to connect to servers with self-signed/untrusted certificates';
+	String get ncDoNotEncryptFiles => '(Not recommended) Do not encrypt files uploaded to NextCloud';
 	String get preferGreyscale => 'For e-ink displays';
 	String get autoClearWhiteboardOnExit => 'Clears the whiteboard after you exit the app';
 	String get disableEraserAfterUse => 'Automatically switches back to the pen after using the eraser';

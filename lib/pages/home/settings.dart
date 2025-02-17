@@ -608,6 +608,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
               ],
               SettingsSwitch(
+                title: t.settings.prefLabels.ncDoNotEncryptFiles,
+                subtitle: t.settings.prefDescriptions.ncDoNotEncryptFiles,
+                icon: Icons.private_connectivity,
+                pref: Prefs.ncDoNotEncryptFiles,
+              ),
+              SettingsSwitch(
                 title: t.settings.prefLabels.allowInsecureConnections,
                 subtitle: t.settings.prefDescriptions.allowInsecureConnections,
                 icon: Icons.private_connectivity,

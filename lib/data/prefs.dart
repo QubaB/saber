@@ -157,6 +157,7 @@ abstract class Prefs {
 
   static late final PlainPref<bool> shouldCheckForUpdates;
   static late final PlainPref<bool> shouldAlwaysAlertForUpdates;
+  static late final PlainPref<bool> ncDoNotEncryptFiles;
 
   static late final PlainPref<String> locale;
 
@@ -285,6 +286,9 @@ abstract class Prefs {
     shouldCheckForUpdates = PlainPref('shouldCheckForUpdates',
         FlavorConfig.shouldCheckForUpdatesByDefault && !Platform.isLinux);
     shouldAlwaysAlertForUpdates = PlainPref('shouldAlwaysAlertForUpdates',
+        (kDebugMode || FlavorConfig.dirty) ? true : false,
+        deprecatedKeys: const ['updatesToIgnore']);
+    ncDoNotEncryptFiles = PlainPref('ncDoNotEncryptFiles',
         (kDebugMode || FlavorConfig.dirty) ? true : false,
         deprecatedKeys: const ['updatesToIgnore']);
 
