@@ -140,9 +140,17 @@ class SaberSyncInterface
         localFile.path.substring(FileManager.documentsDirectory.length);
     assert(relativePath.startsWith('/'));
     final encryptedName = await encryptPath(client, relativePath);
+    final String eExtension;
+    if (!Prefs.ncDoNotEncryptFiles.value) {
+      eExtension = encExtension; // encrypted extensions
+    }
+    else {
+      // not encrypted extensions
+      eExtension=encExtensionNotEncrypted;
+    }
     final remotePath = '${FileManager.appRootDirectoryPrefix}/'
         '$encryptedName'
-        '$encExtension';
+        '$eExtension';
 
     final remoteFile = await getWebDavFile(remotePath);
     nextcloudSyncMessages.add(
@@ -440,10 +448,18 @@ class SaberSyncInterface
     if (_ignoredFiles.any(path.endsWith)) return null;
 
     final String encryptedName;
-    if (path.endsWith(encExtension)) {
+    final String eExtension;
+    if (!Prefs.ncDoNotEncryptFiles.value) {
+      eExtension = encExtension; // encrypted extensions
+    }
+    else {
+      // not encrypted extensions
+      eExtension=encExtensionNotEncrypted;
+    }
+    if (path.endsWith(eExtension)) {
       // File name without extension
       encryptedName = path.substring(
-          path.lastIndexOf('/') + 1, path.length - encExtension.length);
+          path.lastIndexOf('/') + 1, path.length - eExtension.length);
     } else if (path.endsWith(NextcloudClientExtension.configFileUri.path)) {
       // Config file is a special case, it's not encrypted
       return '/${NextcloudClientExtension.configFileName}';
@@ -582,6 +598,9 @@ class SaberSyncInterface
 
   /// the file extension of an encrypted base64 note
   static const String encExtension = '.sbe';
+
+  /// the file extension of an non encrypted
+  static const String encExtensionNotEncrypted = '.nsb';
 
   /// List of files to ignore on the server.
   /// Prefixed with a slash so we can use [filePath.endsWith]
