@@ -79,6 +79,9 @@ class SaberSyncInterface
         syncFile = await getSyncFileFromRemoteFile(remoteFile);
       } catch (e) {
         log.warning('Failed to get sync file from remote file: $e', e);
+        nextcloudSyncMessages.add(
+            NextcloudLogMessageType.info,"","",'Failed to get sync file from remote file: $e'
+        );
         continue;
       }
 
@@ -142,7 +145,9 @@ class SaberSyncInterface
         '$encExtension';
 
     final remoteFile = await getWebDavFile(remotePath);
-
+    nextcloudSyncMessages.add(
+        NextcloudLogMessageType.successUpload,relativePath,remotePath,""
+    );
     return SaberSyncFile(
       remoteFile: remoteFile,
       remotePath: remotePath,
@@ -157,6 +162,9 @@ class SaberSyncInterface
       throw Exception('Decryption failed for ${remoteFile.path.path}');
     final localFile = FileManager.getFile(relativeLocalPath);
 
+    nextcloudSyncMessages.add(
+        NextcloudLogMessageType.successDownload,relativeLocalPath,"",""
+    );
     return SaberSyncFile(remoteFile: remoteFile, localFile: localFile);
   }
 

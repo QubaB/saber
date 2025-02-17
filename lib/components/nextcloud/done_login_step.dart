@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:saber/components/misc/faq.dart';
+import 'package:saber/components/nextcloud/log_messages.dart';
 import 'package:saber/data/extensions/string_extensions.dart';
 import 'package:saber/data/nextcloud/nextcloud_client_extension.dart';
 import 'package:saber/data/nextcloud/readable_bytes.dart';
@@ -42,6 +43,8 @@ class _DoneLoginStepState extends State<DoneLoginStep> {
     final quota = Prefs.lastStorageQuota.value;
     final server =
         Prefs.url.value.ifNotEmpty ?? t.login.ncLoginStep.saberNcServer;
+    final NextcloudLogMessages nextcloudSyncMessages=NextcloudLogMessages();
+
     return ListView(
       padding: EdgeInsets.symmetric(
         horizontal: screenWidth > width ? (screenWidth - width) / 2 : 16,
@@ -117,6 +120,11 @@ class _DoneLoginStepState extends State<DoneLoginStep> {
               ),
             ),
           ],
+        ),
+        const SizedBox(height: 16),
+        //Text(t.profile.quickLinks.synchronizationLog),
+        Text("Nextcloud"),
+        NextcloudMessages( // nextcloud synchronization log
         ),
         const SizedBox(height: 32),
         Text(t.profile.faqTitle, style: textTheme.headlineSmall),
