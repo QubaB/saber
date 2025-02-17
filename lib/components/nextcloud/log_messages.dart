@@ -44,7 +44,7 @@ class _NextcloudMessagesState extends State<NextcloudMessages> {
     return TextField(
       style:TextStyle(fontSize:10),
       controller: _txt,
-      maxLines: 10,
+      maxLines: 11,
       decoration: InputDecoration(
         border: OutlineInputBorder(),
       ),
@@ -88,7 +88,7 @@ class NextcloudLogMessages {
       case NextcloudLogMessageType.info:
         text = textError;
     }
-    while (Prefs.nextcloudLogMessages.value.length>20) {
+    while (Prefs.nextcloudLogMessages.value.length>10) {
       // more than 10 messages, remove the first one
       Prefs.nextcloudLogMessages.value.remove(Prefs.nextcloudLogMessages.value.elementAt(0));
     }
