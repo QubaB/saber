@@ -19,6 +19,7 @@ final syncer = Syncer<SaberSyncInterface, SaberSyncFile, File, WebDavFile>(
   const SaberSyncInterface(),
 );
 
+
 class SaberSyncInterface
     extends AbstractSyncInterface<SaberSyncFile, File, WebDavFile> {
   const SaberSyncInterface();
@@ -26,7 +27,10 @@ class SaberSyncInterface
   // class used to keep nextcloud upload/download log in Preferences page
   static final NextcloudLogMessages nextcloudSyncMessages=NextcloudLogMessages();
 
+
   static final log = Logger('SaberSyncInterface');
+
+
 
   @override
   bool areRemoteFilesEqual(WebDavFile a, WebDavFile b) => a.path == b.path;
@@ -154,7 +158,7 @@ class SaberSyncInterface
 
     final remoteFile = await getWebDavFile(remotePath);
     nextcloudSyncMessages.add(
-        NextcloudLogMessageType.successUpload,relativePath,remotePath,""
+        NextcloudLogMessageType.queuedUpload,relativePath,remotePath,""
     );
     return SaberSyncFile(
       remoteFile: remoteFile,
@@ -171,7 +175,7 @@ class SaberSyncInterface
     final localFile = FileManager.getFile(relativeLocalPath);
 
     nextcloudSyncMessages.add(
-        NextcloudLogMessageType.successDownload,relativeLocalPath,"",""
+        NextcloudLogMessageType.queuedDownload,relativeLocalPath,"",""
     );
     return SaberSyncFile(remoteFile: remoteFile, localFile: localFile);
   }
@@ -198,7 +202,15 @@ class SaberSyncInterface
     if (client == null)
       throw Exception('Tried to download file without being logged in');
 
-    return await client.webdav.get(PathUri.parse(file.remotePath));
+    final response=await client.webdav.get(PathUri.parse(file.remotePath));
+    if (response.length != 0){
+      nextcloudSyncMessages.add(NextcloudLogMessageType.successDownload,file.relativeLocalPath,"","");
+    }
+    else {
+      nextcloudSyncMessages.add(NextcloudLogMessageType.errorDownload,file.relativeLocalPath,"","");
+    }
+
+    return response;
   }
 
   @override
@@ -317,11 +329,18 @@ class SaberSyncInterface
     if (client == null)
       throw Exception('Tried to upload file without being logged in');
 
-    await client.webdav.put(
+    final response=await client.webdav.put(
       encryptedBytes,
       PathUri.parse(file.remotePath),
       lastModified: lastModified,
     );
+    if (response.statusCode >= 200 && response.statusCode <=299){
+      nextcloudSyncMessages.add(NextcloudLogMessageType.successUpload,file.relativeLocalPath,"","");
+    }
+    else {
+      nextcloudSyncMessages.add(NextcloudLogMessageType.errorUpload,file.relativeLocalPath,"","");
+    }
+
   }
 
   static NextcloudClient? _client;
@@ -398,12 +417,12 @@ class SaberSyncInterface
 
   static String encodeFilePath(String filePath) {
     // Convert file path to a filename-safe format
-    return filePath.replaceAll('\\', '||').replaceAll('/', '|!');
+    return filePath.replaceAll('\\', '¦¦').replaceAll('/', '¦!');
   }
 
   static String restoreFilePath(String encodedPath) {
     // Convert back to the original file path
-    return encodedPath.replaceAll('||', '\\').replaceAll('|!', '/');
+    return encodedPath.replaceAll('¦¦', '\\').replaceAll('¦!', '/');
   }
 
   static Future<String> encryptPath(
