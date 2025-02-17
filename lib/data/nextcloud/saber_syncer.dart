@@ -60,6 +60,9 @@ class SaberSyncInterface
       switch (bestFile) {
         case BestFile.local:
           syncFiles.add(syncFile); //ADD local file for synchronization
+          nextcloudSyncMessages.add(
+              NextcloudLogMessageType.queuedUpload,syncFile.relativeLocalPath,syncFile.remotePath,""
+          );
         case BestFile.remote:
           // Remote file is newer, do nothing
           break;
@@ -107,6 +110,10 @@ class SaberSyncInterface
           if (remotelyDeleted && locallyDeleted) break;
 
           changedFiles.add(syncFile);
+          nextcloudSyncMessages.add(
+              NextcloudLogMessageType.queuedDownload,syncFile.relativeLocalPath,syncFile.remotePath,""
+          );
+
       }
     }
 
@@ -157,9 +164,6 @@ class SaberSyncInterface
         '$eExtension';
 
     final remoteFile = await getWebDavFile(remotePath);
-    nextcloudSyncMessages.add(
-        NextcloudLogMessageType.queuedUpload,relativePath,remotePath,""
-    );
     return SaberSyncFile(
       remoteFile: remoteFile,
       remotePath: remotePath,
@@ -174,9 +178,6 @@ class SaberSyncInterface
       throw Exception('Decryption failed for ${remoteFile.path.path}');
     final localFile = FileManager.getFile(relativeLocalPath);
 
-    nextcloudSyncMessages.add(
-        NextcloudLogMessageType.queuedDownload,relativeLocalPath,"",""
-    );
     return SaberSyncFile(remoteFile: remoteFile, localFile: localFile);
   }
 
