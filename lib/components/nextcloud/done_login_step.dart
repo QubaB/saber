@@ -43,7 +43,6 @@ class _DoneLoginStepState extends State<DoneLoginStep> {
     final quota = Prefs.lastStorageQuota.value;
     final server =
         Prefs.url.value.ifNotEmpty ?? t.login.ncLoginStep.saberNcServer;
-    final NextcloudLogMessages nextcloudSyncMessages=NextcloudLogMessages();
 
     return ListView(
       padding: EdgeInsets.symmetric(
