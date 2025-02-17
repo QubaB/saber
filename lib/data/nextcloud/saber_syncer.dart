@@ -51,7 +51,7 @@ class SaberSyncInterface
       );
       switch (bestFile) {
         case BestFile.local:
-          syncFiles.add(syncFile);
+          syncFiles.add(syncFile); //ADD local file for synchronization
         case BestFile.remote:
           // Remote file is newer, do nothing
           break;
@@ -204,27 +204,35 @@ class SaberSyncInterface
     if (client == null)
       throw Exception('Tried to decrypt file without being logged in');
 
-    final encrypter = client.encrypter;
-    final iv = IV.fromBase64(Prefs.iv.value);
+    if (!Prefs.ncDoNotEncryptFiles.value) {
+      final encrypter = client.encrypter;
+      final iv = IV.fromBase64(Prefs.iv.value);
 
-    final decryptedData = await workerManager.execute(
-      file.localFile.path.endsWith(Editor.extensionOldJson)
-          ? () async {
-              final encrypted = utf8.decode(encryptedBytes.cast<int>());
-              final decrypted = encrypter.decrypt64(encrypted, iv: iv);
-              return utf8.encode(decrypted);
-            }
-          : () async {
-              final encrypted = Encrypted(encryptedBytes);
-              final decrypted = encrypter.decryptBytes(encrypted, iv: iv);
-              return Uint8List.fromList(decrypted);
-            },
-      priority: WorkPriority.highRegular,
-    );
-    assert(decryptedData.isNotEmpty,
-        'Decrypted data is empty but encryptedBytes.length is ${encryptedBytes.length}');
-    await FileManager.writeFile(file.relativeLocalPath, decryptedData,
-        alsoUpload: false);
+      final decryptedData = await workerManager.execute(
+        file.localFile.path.endsWith(Editor.extensionOldJson)
+            ? () async {
+          final encrypted = utf8.decode(encryptedBytes.cast<int>());
+          final decrypted = encrypter.decrypt64(encrypted, iv: iv);
+          return utf8.encode(decrypted);
+        }
+            : () async {
+          final encrypted = Encrypted(encryptedBytes);
+          final decrypted = encrypter.decryptBytes(encrypted, iv: iv);
+          return Uint8List.fromList(decrypted);
+        },
+        priority: WorkPriority.highRegular,
+      );
+      assert(decryptedData.isNotEmpty,
+      'Decrypted data is empty but encryptedBytes.length is ${encryptedBytes
+          .length}');
+      await FileManager.writeFile(file.relativeLocalPath, decryptedData,
+          alsoUpload: false);
+    }
+    else {
+      // Nextcloud files are not encrypted, directly save it
+      await FileManager.writeFile(file.relativeLocalPath, encryptedBytes,
+          alsoUpload: false);
+    }
   }
 
   @override
@@ -241,25 +249,32 @@ class SaberSyncInterface
     if (client == null)
       throw Exception('Tried to encrypt file without being logged in');
 
-    final encrypter = client.encrypter;
-    final iv = IV.fromBase64(Prefs.iv.value);
+    if (!Prefs.ncDoNotEncryptFiles.value) {
+      // encrypt nextcloud files
+      final encrypter = client.encrypter;
+      final iv = IV.fromBase64(Prefs.iv.value);
 
-    final encryptedData = await workerManager.execute(
-      file.localFile.path.endsWith(Editor.extensionOldJson)
-          ? () async {
-              final decrypted = utf8.decode(decryptedBytes);
-              final encrypted = encrypter.encrypt(decrypted, iv: iv);
-              return utf8.encode(encrypted.base64);
-            }
-          : () async {
-              final decrypted = decryptedBytes;
-              final encrypted = encrypter.encryptBytes(decrypted, iv: iv);
-              return encrypted.bytes;
-            },
-      priority: WorkPriority.highRegular,
-    );
+      final encryptedData = await workerManager.execute(
+        file.localFile.path.endsWith(Editor.extensionOldJson)
+            ? () async {
+          final decrypted = utf8.decode(decryptedBytes);
+          final encrypted = encrypter.encrypt(decrypted, iv: iv);
+          return utf8.encode(encrypted.base64);
+        }
+            : () async {
+          final decrypted = decryptedBytes;
+          final encrypted = encrypter.encryptBytes(decrypted, iv: iv);
+          return encrypted.bytes;
+        },
+        priority: WorkPriority.highRegular,
+      );
 
-    return encryptedData;
+      return encryptedData;
+    }
+    else{
+      // do no use encryption of nextcloud
+      return decryptedBytes;
+    }
   }
 
   @override
@@ -361,22 +376,44 @@ class SaberSyncInterface
     }
   }
 
+  static String encodeFilePath(String filePath) {
+    // Convert file path to a filename-safe format
+    return filePath.replaceAll('\\', '||').replaceAll('/', '|!');
+  }
+
+  static String restoreFilePath(String encodedPath) {
+    // Convert back to the original file path
+    return encodedPath.replaceAll('||', '\\').replaceAll('|!', '/');
+  }
+
   static Future<String> encryptPath(
     NextcloudClient? client,
     String path,
   ) async {
-    if (_encryptMap.containsKey(path)) return _encryptMap[path]!;
+    // encrypt file path
+    if (_encryptMap.containsKey(path)) return _encryptMap[path]!; // file name is already cached, so use it
 
     if (client == null)
       throw Exception('Tried to encrypt path without being logged in');
 
-    final encrypter = client.encrypter;
-    final iv = IV.fromBase64(Prefs.iv.value);
+    final encrypted;
+    if (!Prefs.ncDoNotEncryptFiles.value) {
+      // original code, encrypt files
+      final encrypter = client.encrypter;
+      final iv = IV.fromBase64(Prefs.iv.value);
 
-    final encrypted = await workerManager.execute(
-      () => encrypter.encrypt(path, iv: iv).base16,
-      priority: WorkPriority.veryHigh,
-    );
+      encrypted = await workerManager.execute(
+            () =>
+        encrypter
+            .encrypt(path, iv: iv)
+            .base16,
+        priority: WorkPriority.veryHigh,
+      );
+    }
+    else {
+      // do not encrypt files
+      encrypted = encodeFilePath(path);
+    }
 
     _encryptMap[path] = encrypted;
     _decryptMap[encrypted] = path;
@@ -404,22 +441,30 @@ class SaberSyncInterface
     }
 
     if (_decryptMap.containsKey(encryptedName))
-      return _decryptMap[encryptedName]!;
+      return _decryptMap[encryptedName]!;     // already in encrypted files map.
 
     if (client == null)
       throw Exception('Tried to decrypt path without being logged in');
 
-    final encrypter = client.encrypter;
-    final iv = IV.fromBase64(Prefs.iv.value);
+    var decrypted;
+    if (!Prefs.ncDoNotEncryptFiles.value) {
+      // original code, encrypt files
+      final encrypter = client.encrypter;
+      final iv = IV.fromBase64(Prefs.iv.value);
 
-    var decrypted = await workerManager.execute(
-      () => encrypter.decrypt16(encryptedName, iv: iv),
-      priority: WorkPriority.veryHigh,
-    );
+      decrypted = await workerManager.execute(
+            () => encrypter.decrypt16(encryptedName, iv: iv),
+        priority: WorkPriority.veryHigh,
+      );
 
-    // Mitigates a bug where files got imported starting with `null/` instead of `/`.
-    if (decrypted.startsWith('null/')) {
-      decrypted = decrypted.substring('null/'.length - 1);
+      // Mitigates a bug where files got imported starting with `null/` instead of `/`.
+      if (decrypted.startsWith('null/')) {
+        decrypted = decrypted.substring('null/'.length - 1);
+      }
+    }
+    else {
+      // not encrypting file names, only decode it back
+      decrypted=restoreFilePath(encryptedName);
     }
 
     _encryptMap[decrypted] = encryptedName;
@@ -571,9 +616,11 @@ extension NullableIterable<T> on Iterable<T> {
 
 extension SaberSyncerComponent on SyncerComponent {
   Future<bool> enqueueRel(String relativeFilePath) async {
+    // Enqueue synchronization of local file relative path
     if (!Prefs.loggedIn) return false;
 
     final syncFile = await SaberSyncFile.relative(relativeFilePath);
+    //QB sync to queue syncFile.relativeLocalPath
     return enqueue(syncFile: syncFile);
   }
 }
