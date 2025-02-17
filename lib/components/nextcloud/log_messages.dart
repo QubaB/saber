@@ -54,6 +54,8 @@ class _NextcloudMessagesState extends State<NextcloudMessages> {
 /// types of messages in nextcloud synchronization logs
 enum NextcloudLogMessageType {
   info,
+  queuedUpload,
+  queuedDownload,
   successUpload,
   successDownload,
   errorDownload,
@@ -71,12 +73,16 @@ class NextcloudLogMessages {
     final String formattedDate = DateFormat('yyyy-MM-dd kk:mm').format(now);
 
     switch (type) {
+      case NextcloudLogMessageType.queuedDownload:
+        text = "↓: Q " + localFile;
       case NextcloudLogMessageType.successDownload:
         text = "↓: ✓ " + localFile;
       case NextcloudLogMessageType.errorDownload:
         text = "↓: ❌ " + localFile + " from " + remoteFile+" Error:"+textError;
       case NextcloudLogMessageType.successUpload:
         text = "↑: ✓ " + localFile;
+      case NextcloudLogMessageType.queuedUpload:
+        text = "↑: Q " + localFile;
       case NextcloudLogMessageType.errorUpload:
         text = "↑: ❌ " + localFile + " to " + remoteFile+" Error:"+textError;
       case NextcloudLogMessageType.info:
