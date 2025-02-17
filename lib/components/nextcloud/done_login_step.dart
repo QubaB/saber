@@ -122,7 +122,7 @@ class _DoneLoginStepState extends State<DoneLoginStep> {
         ),
         const SizedBox(height: 16),
         //Text(t.profile.quickLinks.synchronizationLog),
-        Text("Nextcloud"),
+        Text(t.profile.nextcloudLog, style: textTheme.bodySmall),
         NextcloudMessages( // nextcloud synchronization log
         ),
         const SizedBox(height: 32),

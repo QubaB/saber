@@ -157,6 +157,8 @@ class TranslationsProfileEn {
 	String quotaUsage({required Object used, required Object total, required Object percent}) => 'You\'re using ${used} of ${total} (${percent}%)';
 	String get connectedTo => 'Connected to';
 	late final TranslationsProfileQuickLinksEn quickLinks = TranslationsProfileQuickLinksEn.internal(_root);
+	String get nextcloudLog => 'Nextcloud synchronize log';
+
 	String get faqTitle => 'Frequently asked questions';
 	List<dynamic> get faq => [
 		TranslationsProfile$faq$0i0$En.internal(_root),
