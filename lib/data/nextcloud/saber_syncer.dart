@@ -147,8 +147,14 @@ class SaberSyncInterface
 
   @override
   Future<SaberSyncFile> getSyncFileFromLocalFile(File localFile) async {
-    final relativePath =
+    String relativePath =
         localFile.path.substring(FileManager.documentsDirectory.length);
+    String separator=Platform.pathSeparator;
+    if (separator != "/") {
+      // I am on windows - replace \ with /
+      relativePath=relativePath.replaceAll("\\","/");
+    }
+
     assert(relativePath.startsWith('/'));
     final encryptedName = await encryptPath(client, relativePath);
     final String eExtension;
@@ -264,7 +270,7 @@ class SaberSyncInterface
     else {
       // Nextcloud files are not encrypted, directly save it
       await FileManager.writeFile(file.relativeLocalPath, encryptedBytes,
-          alsoUpload: false);
+          alsoUpload: false, lastModified: file.remoteFile?.lastModified);
     }
   }
 
@@ -418,12 +424,27 @@ class SaberSyncInterface
 
   static String encodeFilePath(String filePath) {
     // Convert file path to a filename-safe format
+    String separator=Platform.pathSeparator;
+    if (separator != "/") {
+      // I am on windows - replace \ with /
+      filePath=filePath.replaceAll("\\","/");
+    }
+    filePath=filePath.replaceAll("//","/");  // replace double // with only /
+    filePath=filePath.replaceAll("/\\","/");  // replace double /\ with only /
+
     return filePath.replaceAll('\\', '¦¦').replaceAll('/', '¦!');
   }
 
   static String restoreFilePath(String encodedPath) {
     // Convert back to the original file path
-    return encodedPath.replaceAll('¦¦', '\\').replaceAll('¦!', '/');
+    String filePath=encodedPath.replaceAll('¦¦', '/').replaceAll('¦!', '/');
+
+//    String separator=Platform.pathSeparator;
+//    if (separator != "/") {
+//      // I am on windows - replace /  with \\
+//      filePath=filePath.replaceAll("/","\\");
+//    }
+    return filePath;
   }
 
   static Future<String> encryptPath(

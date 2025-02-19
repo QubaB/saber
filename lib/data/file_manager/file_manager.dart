@@ -177,7 +177,7 @@ class FileManager {
 
   /// Writes [toWrite] to [filePath].
   static Future<void> writeFile(String filePath, List<int> toWrite,
-      {bool awaitWrite = false, bool alsoUpload = true}) async {
+      {bool awaitWrite = false, bool alsoUpload = true, DateTime? lastModified}) async {
     filePath = _sanitisePath(filePath);
     log.fine('Writing to $filePath');
 
@@ -187,7 +187,6 @@ class FileManager {
     await _createFileDirectory(filePath);
     Future writeFuture = Future.wait([
       file.writeAsBytes(toWrite),
-
       // if we're using a new format, also delete the old file
       if (filePath.endsWith(Editor.extension))
         getFile(
@@ -200,6 +199,11 @@ class FileManager {
     ]);
 
     void afterWrite() {
+      if (lastModified != null){
+        // want to set timestamp of last modification. Used when downloading remote file, to put the same time stamp
+        // to avoid synchronization of newly created file back to remote.
+        file.setLastModified(lastModified);
+      }
       broadcastFileWrite(FileOperationType.write, filePath);
       if (alsoUpload) syncer.uploader.enqueueRel(filePath);
       if (filePath.endsWith(Editor.extension)) {
