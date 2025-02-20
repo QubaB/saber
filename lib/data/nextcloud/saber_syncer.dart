@@ -268,7 +268,7 @@ class SaberSyncInterface
       'Decrypted data is empty but encryptedBytes.length is ${encryptedBytes
           .length}');
       await FileManager.writeFile(file.relativeLocalPath, decryptedData,
-          alsoUpload: false);
+          alsoUpload: false, lastModified: file.remoteFile?.lastModified);
     }
     else {
       // Nextcloud files are not encrypted, directly save it
