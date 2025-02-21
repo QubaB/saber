@@ -165,8 +165,9 @@ class EditorState extends State<Editor> {
     Prefs.lastTool.value = tool.toolId;
   }
 
-  ValueNotifier<SavingState> savingState = ValueNotifier(SavingState.saved);
-  Timer? _delayedSaveTimer;
+  final savingState = ValueNotifier(SavingState.savedWithThumbnail);
+  @visibleForTesting
+  Timer? delayedSaveTimer;
   Timer? _watchServerTimer;
 
   // used to prevent accidentally drawing when pinch zooming
@@ -254,7 +255,8 @@ class EditorState extends State<Editor> {
       clearAllPages();
 
       // save cleared whiteboard
-      await saveToFile();
+      // without thumbnail as whiteboard thumbnail is never used
+      await saveToFile(createThumbnail: false);
       Whiteboard.needsToAutoClearWhiteboard = false;
     } else {
       setState(() {});
@@ -1047,9 +1049,9 @@ class EditorState extends State<Editor> {
     late final void Function() callback;
 
     void startTimer() {
-      _delayedSaveTimer?.cancel();
+      delayedSaveTimer?.cancel();
       if (Prefs.autosaveDelay.value < 0) return;
-      _delayedSaveTimer =
+      delayedSaveTimer =
           Timer(Duration(milliseconds: Prefs.autosaveDelay.value), callback);
     }
 
@@ -1059,19 +1061,25 @@ class EditorState extends State<Editor> {
         startTimer();
         return;
       }
-      saveToFile();
+      saveToFile(createThumbnail: false);
     };
 
     savingState.value = SavingState.waitingToSave;
     startTimer();
   }
 
-  Future<void> saveToFile() async {
+  Future<void> saveToFile({required bool createThumbnail}) async {
+    // createThumbnail=false is used when called from autosave - to avoid lagging during thumbnail creation
     if (coreInfo.readOnly) return;
 
     switch (savingState.value) {
-      case SavingState.saved:
+      case SavingState.savedWithThumbnail:
         // avoid saving if nothing has changed
+        return;
+      case SavingState.savedWithoutThumbnail:
+        // note is saved, but thumbnail need to be created
+        createThumbnailPreview();
+        savingState.value = SavingState.savedWithThumbnail;
         return;
       case SavingState.saving:
         // avoid saving if already saving
@@ -1079,7 +1087,7 @@ class EditorState extends State<Editor> {
         return;
       case SavingState.waitingToSave:
         // continue
-        _delayedSaveTimer?.cancel();
+        delayedSaveTimer?.cancel();
         savingState.value = SavingState.saving;
     }
 
@@ -1110,13 +1118,25 @@ class EditorState extends State<Editor> {
           numAssets: assets.length,
         ),
       ]);
-      savingState.value = SavingState.saved;
+      if (createThumbnail) {
+        savingState.value = SavingState.savedWithThumbnail;
+      } else {
+        savingState.value = SavingState.savedWithoutThumbnail;
+      }
     } catch (e) {
       log.severe('Failed to save file: $e', e);
       savingState.value = SavingState.waitingToSave;
       if (kDebugMode) rethrow;
       return;
     }
+
+    if (createThumbnail) await createThumbnailPreview();
+  }
+
+  /// create thumbnail of note
+  Future<void> createThumbnailPreview() async {
+    if (coreInfo.readOnly) return;
+    final filePath = coreInfo.filePath + Editor.extension;
 
     if (!mounted) return;
     final screenshotter = ScreenshotController();
@@ -1126,31 +1146,35 @@ class EditorState extends State<Editor> {
     );
     final thumbnailSize = Size(720, 720 * previewHeight / page.size.width);
     final thumbnail = await screenshotter.captureFromWidget(
-      Theme(
-        data: ThemeData(
-          brightness: Brightness.light,
-          colorScheme: const ColorScheme.light(
-            primary: EditorExporter.primaryColor,
-            secondary: EditorExporter.secondaryColor,
-          ),
+      MediaQuery(
+        data: MediaQueryData(
+          size: thumbnailSize,
+          devicePixelRatio: 1,
         ),
-        child: Localizations.override(
-          context: context,
-          child: SizedBox(
+        child: MaterialApp(
+          theme: ThemeData(
+            brightness: Brightness.light,
+            colorScheme: const ColorScheme.light(
+              primary: EditorExporter.primaryColor,
+              secondary: EditorExporter.secondaryColor,
+            ),
+          ),
+          home: SizedBox(
             width: thumbnailSize.width,
             height: thumbnailSize.height,
             child: FittedBox(
-              child: pagePreviewBuilder(
-                context,
-                pageIndex: 0,
-                previewHeight: previewHeight,
+              child: Builder(
+                builder: (context) => pagePreviewBuilder(
+                  context,
+                  pageIndex: 0,
+                  previewHeight: previewHeight,
+                ),
               ),
             ),
           ),
         ),
       ),
       pixelRatio: 1,
-      context: context,
       targetSize: thumbnailSize,
     );
     await FileManager.writeFile(
@@ -1630,6 +1654,15 @@ class EditorState extends State<Editor> {
     ));
   }
 
+  late MediaQueryData _mediaQuery = const MediaQueryData();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _mediaQuery = MediaQuery.of(context);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -1909,17 +1942,18 @@ class EditorState extends State<Editor> {
       builder: (context, savingState, child) {
         // don't allow user to go back until saving is done
         return PopScope(
-          canPop: savingState == SavingState.saved,
+          canPop: savingState == SavingState.savedWithThumbnail,
           onPopInvokedWithResult: (didPop, _) {
             switch (savingState) {
               case SavingState.waitingToSave:
                 assert(!didPop);
-                saveToFile(); // trigger save now
+                saveToFile(createThumbnail: true); // trigger save now
                 snackBarNeedsToSaveBeforeExiting();
               case SavingState.saving:
                 assert(!didPop);
                 snackBarNeedsToSaveBeforeExiting();
-              case SavingState.saved:
+              case SavingState.savedWithoutThumbnail:
+              case SavingState.savedWithThumbnail:
                 break;
             }
           },
@@ -1948,7 +1982,7 @@ class EditorState extends State<Editor> {
                       ),
                 leading: SaveIndicator(
                   savingState: savingState,
-                  triggerSave: saveToFile,
+                  triggerSave: () => saveToFile(createThumbnail: true),
                 ),
                 actions: [
                   IconButton(
@@ -1963,7 +1997,7 @@ class EditorState extends State<Editor> {
                       CanvasGestureDetector.scrollToPage(
                         pageIndex: currentPageIndex + 1,
                         pages: coreInfo.pages,
-                        screenWidth: MediaQuery.sizeOf(context).width,
+                        screenWidth: _mediaQuery.size.width,
                         transformationController: _transformationController,
                       );
                     }),
@@ -2298,11 +2332,9 @@ class EditorState extends State<Editor> {
   int get currentPageIndex {
     if (!mounted) return _lastCurrentPageIndex;
 
-    final screenWidth = MediaQuery.sizeOf(context).width;
-
     return _lastCurrentPageIndex = getPageIndexFromScrollPosition(
       scrollY: -scrollY,
-      screenWidth: screenWidth,
+      screenWidth: _mediaQuery.size.width,
       pages: coreInfo.pages,
     );
   }
@@ -2329,21 +2361,22 @@ class EditorState extends State<Editor> {
   }
 
   @override
-  void dispose() {
+  void dispose() async {
+    delayedSaveTimer?.cancel();
+    _lastSeenPointerCountTimer?.cancel();
+
     (() async {
       if (_renameTimer?.isActive ?? false) {
         _renameTimer!.cancel();
         await _renameFileNow();
         filenameTextEditingController.dispose();
       }
-      await saveToFile();
+      await saveToFile(createThumbnail: true);
     })();
 
     DynamicMaterialApp.removeFullscreenListener(_setState);
 
-    _delayedSaveTimer?.cancel();
     _watchServerTimer?.cancel();
-    _lastSeenPointerCountTimer?.cancel();
 
     _removeKeybindings();
 
