@@ -83,6 +83,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
 
             if (!context.mounted) return;
             widget.onFileNameChanged(image.path); // call callback with image path
+            Navigator.pop(context); // Close the camera screen
           } catch (e) {
             // If an error occurs, log the error to the console.
             widget.log.warning('Error taking photo ${e.toString()}');
