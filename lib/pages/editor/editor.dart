@@ -1375,7 +1375,9 @@ class EditorState extends State<Editor> {
       images: images,
     ));
     createPage(currentPageIndex);
-    coreInfo.pages[currentPageIndex].images.addAll(images);
+    setState(() {
+      coreInfo.pages[currentPageIndex].images.addAll(images);
+    });
     autosaveAfterDelay();
 //    return images.length;
   }
@@ -1417,7 +1419,7 @@ class EditorState extends State<Editor> {
       ){
     return TakePictureScreen(
       camera: camera,
-      onFileNameChanged: parsePhotoName,
+      onFileNameChanged:     parsePhotoName,
     );
   }
 
