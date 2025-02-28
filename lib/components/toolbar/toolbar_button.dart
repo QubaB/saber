@@ -3,7 +3,7 @@ import 'package:saber/data/prefs.dart';
 
 /// toolbar buttons sizes
 enum ToolbarSize{
-  small(buttonSize: 12, padding: 2, colorOptionDiameter: 18, penModalSize: 22, sizePickerFontSize: 8, sizePickerSize: Size(150,18)),
+  small(buttonSize: 15, padding: 2, colorOptionDiameter: 22, penModalSize: 22, sizePickerFontSize: 8, sizePickerSize: Size(150,18)),
   normal(buttonSize: 18, padding: 6, colorOptionDiameter: 28, penModalSize: 32, sizePickerFontSize: 10, sizePickerSize: Size(150,28)),
   big(buttonSize: 22, padding: 8, colorOptionDiameter: 30, penModalSize: 40, sizePickerFontSize: 14, sizePickerSize: Size(150,30));
 
