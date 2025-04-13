@@ -207,7 +207,7 @@ class _TranslationsEditorCs extends TranslationsEditorEn {
 	@override late final _TranslationsEditorQuillCs quill = _TranslationsEditorQuillCs._(_root);
 	@override late final _TranslationsEditorHudCs hud = _TranslationsEditorHudCs._(_root);
 	@override String get pages => 'Stránky';
-	@override String get untitled => 'Nepojmenovaná poznámka';
+	@override String get untitled => '';
 	@override String get needsToSaveBeforeExiting => 'Ukládání změn... Po skončení této operace můžete editor bezpečně opustit';
 }
 
