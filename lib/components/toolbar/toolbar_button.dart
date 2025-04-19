@@ -56,17 +56,23 @@ class ToolbarIconButton extends StatelessWidget {
         shape: const CircleBorder(),
       ),
       padding: padding,
-      child: IconButton(
-        color:
-            (selected && enabled) ? colorScheme.onPrimary : colorScheme.primary,
-        disabledColor: colorScheme.onSurface.withValues(alpha: 0.4),
-        onPressed: (enabled) ? onPressed : null,
-        tooltip: tooltip,
-        iconSize: Prefs.editorToolbarSize.value.buttonSize,
-        splashRadius: Prefs.editorToolbarSize.value.buttonSize,
-        visualDensity: VisualDensity.compact,
-        icon: child,
-      ),
+      child:
+        Tooltip(
+          message: tooltip ?? '',
+          waitDuration: Duration(milliseconds: 1500),
+          showDuration: Duration(seconds: 2),         // How long the tooltip stays visible (not work on Android and Web using mouse and stylus)
+          child: IconButton(
+            color: (selected && enabled)
+                ? colorScheme.onPrimary
+                : colorScheme.primary,
+            disabledColor: colorScheme.onSurface.withValues(alpha: 0.4),
+            onPressed: (enabled) ? onPressed : null,
+            iconSize: Prefs.editorToolbarSize.value.buttonSize,
+            splashRadius: Prefs.editorToolbarSize.value.buttonSize,
+            visualDensity: VisualDensity.compact,
+            icon: child,
+          ),
+          ),
     );
   }
 }

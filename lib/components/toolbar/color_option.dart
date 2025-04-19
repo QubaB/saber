@@ -26,6 +26,8 @@ class ColorOption extends StatelessWidget {
     var colorScheme = Theme.of(context).colorScheme;
     return Tooltip(
       message: tooltip ?? '',
+      waitDuration: Duration(milliseconds: 1500),  // Delay before tooltip shows
+      showDuration: Duration(seconds: 2),         // How long the tooltip stays visible (not work on Android and Web using mouse and stylus)
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: InkWell(
