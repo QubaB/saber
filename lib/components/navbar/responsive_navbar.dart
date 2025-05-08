@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:saber/components/canvas/save_indicator.dart';
@@ -23,6 +24,21 @@ class ResponsiveNavbar extends StatefulWidget {
   State<ResponsiveNavbar> createState() => _ResponsiveNavbarState();
 
   static bool isLargeScreen = true;
+  static void setAndroidNavBarColor(ThemeData theme) async {
+    await null;
+
+    final brightness = theme.brightness;
+    final otherBrightness =
+        brightness == Brightness.dark ? Brightness.light : Brightness.dark;
+    final overlayStyle = brightness == Brightness.dark
+        ? SystemUiOverlayStyle.dark
+        : SystemUiOverlayStyle.light;
+
+    SystemChrome.setSystemUIOverlayStyle(overlayStyle.copyWith(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: otherBrightness,
+    ));
+  }
 }
 
 class _ResponsiveNavbarState extends State<ResponsiveNavbar> {
@@ -67,6 +83,8 @@ class _ResponsiveNavbarState extends State<ResponsiveNavbar> {
       LayoutSize.phone => false,
       LayoutSize.tablet => true,
     };
+
+    ResponsiveNavbar.setAndroidNavBarColor(Theme.of(context));
 
     if (ResponsiveNavbar.isLargeScreen) {
       return Scaffold(
