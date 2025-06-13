@@ -147,13 +147,10 @@ class SaberSyncInterface
 
   @override
   Future<SaberSyncFile> getSyncFileFromLocalFile(File localFile) async {
-    String relativePath =
-        localFile.path.substring(FileManager.documentsDirectory.length);
-    String separator=Platform.pathSeparator;
-    if (separator != "/") {
-      // I am on windows - replace \ with /
-      relativePath=relativePath.replaceAll("\\","/");
-    }
+    final relativePath = localFile.path
+        .substring(FileManager.documentsDirectory.length)
+        // Compensate for Windows using backslashes
+        .replaceAll(Platform.pathSeparator, '/');
 
     assert(relativePath.startsWith('/'));
     final encryptedName = await encryptPath(client, relativePath);
@@ -227,8 +224,9 @@ class SaberSyncInterface
   Future<void> writeLocalFile(
     SaberSyncFile file,
     // ignore: avoid_renaming_method_parameters
-    Uint8List encryptedBytes,
-  ) async {
+    Uint8List encryptedBytes, {
+    @visibleForTesting bool awaitWrite = false,
+  }) async {
     if (file.localFile.path == NextcloudClientExtension.configFileName) {
       // Config file changed, already handled in [downloadRemoteFile]
       return;

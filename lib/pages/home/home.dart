@@ -47,18 +47,16 @@ class _HomePageState extends State<HomePage> {
   void _setState() => setState(() {});
 
   Widget get body {
-    switch (widget.subpage) {
-      case HomePage.browseSubpage:
-        return BrowsePage(path: widget.path);
-      case HomePage.whiteboardSubpage:
-        return const Whiteboard();
-      case HomePage.settingsSubpage:
-        return const SettingsPage();
-      case HomePage.searchSubpage:
-        return const SearchPage();
-      default:
-        return const RecentPage();
-    }
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      child: switch (widget.subpage) {
+        HomePage.browseSubpage => BrowsePage(path: widget.path),
+        HomePage.whiteboardSubpage => const Whiteboard(),
+        HomePage.settingsSubpage => const SettingsPage(),
+        HomePage.searchSubpage => const SearchPage();
+        _ => const RecentPage(),
+      },
+    );
   }
 
   @override

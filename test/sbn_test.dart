@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:golden_screenshot/golden_screenshot.dart';
+import 'package:path/path.dart' as p;
 import 'package:saber/components/canvas/canvas.dart';
 import 'package:saber/components/canvas/image/editor_image.dart';
 import 'package:saber/components/canvas/pencil_shader.dart';
+import 'package:saber/components/theming/font_fallbacks.dart';
 import 'package:saber/data/editor/editor_core_info.dart';
 import 'package:saber/data/editor/editor_exporter.dart';
 import 'package:saber/data/editor/page.dart';
@@ -94,12 +96,12 @@ void main() {
           EditorImage.shouldLoadOutImmediately = false;
         });
 
-        testWidgets('(Light)', (tester) async {
+        testGoldens('(Light)', (tester) async {
           await tester.runAsync(() => _precacheImages(
                 context: tester.binding.rootElement!,
                 page: page,
               ));
-          await tester.loadFonts();
+          await tester.loadFonts(overriddenFonts: saberSansSerifFontFallbacks);
           await tester.pumpWidget(_buildCanvas(
             brightness: Brightness.light,
             path: path,
@@ -115,12 +117,12 @@ void main() {
           );
         });
 
-        testWidgets('(Dark)', (tester) async {
+        testGoldens('(Dark)', (tester) async {
           await tester.runAsync(() => _precacheImages(
                 context: tester.binding.rootElement!,
                 page: page,
               ));
-          await tester.loadFonts();
+          await tester.loadFonts(overriddenFonts: saberSansSerifFontFallbacks);
           await tester.pumpWidget(_buildCanvas(
             brightness: Brightness.dark,
             path: path,
@@ -136,12 +138,20 @@ void main() {
           );
         });
 
-        if (sbnName != laserSbn)
-          testWidgets('(PDF)', (tester) async {
+        if (sbnName != laserSbn) {
+          bool hasGhostscript = true;
+          final gsCheck =
+              Process.runSync('gs', ['--version'], runInShell: true);
+          if (gsCheck.exitCode != 0) {
+            debugPrint('Please install Ghostscript to test PDF exports.');
+            hasGhostscript = false;
+          }
+
+          testGoldens('(PDF)', (tester) async {
             final context = await _getBuildContext(tester, page.size);
 
-            final pdfFile = File('/tmp/$sbnName.pdf');
-            final pngFile = File('/tmp/$sbnName.pdf.png');
+            final pdfFile = File(p.join(tmpDir, '$sbnName.pdf'));
+            final pngFile = File(p.join(tmpDir, '$sbnName.pdf.png'));
 
             // Generate PDF file and write to disk
             await tester.runAsync(() async {
@@ -152,7 +162,8 @@ void main() {
 
             // Convert PDF to PNG with Ghostscript
             await tester.runAsync(() => Process.run(
-                'gs', ['-sDEVICE=pngalpha', '-o', pngFile.path, pdfFile.path]));
+                'gs', ['-sDEVICE=pngalpha', '-o', pngFile.path, pdfFile.path],
+                runInShell: true));
 
             // Load PNG from disk
             final pdfImage = await tester.runAsync(() => pngFile.readAsBytes());
@@ -172,11 +183,12 @@ void main() {
               find.byType(Image),
               matchesGoldenFile('sbn_examples/$sbnName.pdf.png'),
             );
-          });
+          }, skip: !hasGhostscript);
+        }
       });
     }
 
-    testWidgets('SBA export and import', (tester) async {
+    testGoldens('SBA export and import', (tester) async {
       const path = 'test/sbn_examples/v19_separate_assets.sbn2';
       final pathWithoutExtension = path.substring(0, path.lastIndexOf('.'));
 
@@ -229,7 +241,7 @@ void main() {
             context: tester.binding.rootElement!,
             page: importedCoreInfo.pages.first,
           ));
-      await tester.loadFonts();
+      await tester.loadFonts(overriddenFonts: saberSansSerifFontFallbacks);
       await tester.pumpWidget(_buildCanvas(
         brightness: Brightness.light,
         path: importedPath,

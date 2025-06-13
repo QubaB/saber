@@ -51,8 +51,8 @@ class Stroke {
 
     _lowQualityPolygon?.shift(offset);
     _highQualityPolygon?.shift(offset);
-    _lowQualityPath?.shift(offset);
-    _highQualityPath?.shift(offset);
+    _lowQualityPath = _lowQualityPath?.shift(offset);
+    _highQualityPath = _highQualityPath?.shift(offset);
   }
 
   void markPolygonNeedsUpdating() {
@@ -143,7 +143,7 @@ class Stroke {
       'i': pageIndex,
       'ty': penType,
       'pe': pressureEnabled,
-      'c': color.value,
+      'c': color.toARGB32(),
     }..addAll(options.toJson());
   }
 

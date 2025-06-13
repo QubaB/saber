@@ -173,12 +173,10 @@ void _screenshot({
 
   group(goldenFileName, () {
     for (final (localeCode, goldenDevice) in localeDeviceMatrix) {
-      testWidgets('for ${goldenDevice.name} in $localeCode', (tester) async {
+      testGoldens('for ${goldenDevice.name} in $localeCode', (tester) async {
         final device = goldenDevice.device;
         Prefs.platform.value = device.platform;
         await tester.runAsync(() => LocaleSettings.setLocaleRaw(localeCode));
-
-        debugDisableShadows = false;
 
         if (goldenFileName == '4_settings') {
           NextcloudProfile.forceLoginStep = LoginStep.done;
@@ -211,7 +209,7 @@ void _screenshot({
         await tester.pump();
         await tester.precacheImagesInWidgetTree();
         await tester.precacheTopbarImages();
-        await tester.loadFonts();
+        await tester.loadFonts(overriddenFonts: saberSansSerifFontFallbacks);
         await tester.pumpFrames(widget, const Duration(milliseconds: 100));
 
         await tester.expectScreenshot(
@@ -222,8 +220,6 @@ void _screenshot({
             _ => localeCode,
           },
         );
-
-        debugDisableShadows = true;
       });
     }
   });

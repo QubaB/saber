@@ -30,14 +30,7 @@ class FileManager {
   /// Realistically, this value never changes.
   static late String documentsDirectory;
 
-  /// A stream of [FileOperation]s. Note that file paths
-  /// include the file extension.
-  static final StreamController<FileOperation> fileWriteStream =
-      StreamController.broadcast(
-    onListen: () => _fileWriteStreamIsListening = true,
-    onCancel: () => _fileWriteStreamIsListening = false,
-  );
-  static bool _fileWriteStreamIsListening = false;
+  static final fileWriteStream = StreamController<FileOperation>.broadcast();
 
   // TODO(adil192): Implement or remove this
   static String _sanitisePath(String path) => File(path).path;
@@ -125,7 +118,14 @@ class FileManager {
 
   @visibleForTesting
   static void broadcastFileWrite(FileOperationType type, String path) async {
-    if (!_fileWriteStreamIsListening) return;
+    if (!fileWriteStream.hasListener) return;
+
+    // remove extension
+    if (path.endsWith(Editor.extension)) {
+      path = path.substring(0, path.length - Editor.extension.length);
+    } else if (path.endsWith(Editor.extensionOldJson)) {
+      path = path.substring(0, path.length - Editor.extensionOldJson.length);
+    }
 
     fileWriteStream.add(FileOperation(type, path));
   }
@@ -171,8 +171,18 @@ class FileManager {
   static Directory getRootDirectory() => Directory(documentsDirectory);
 
   /// Writes [toWrite] to [filePath].
-  static Future<void> writeFile(String filePath, List<int> toWrite,
-      {bool awaitWrite = false, bool alsoUpload = true, DateTime? lastModified}) async {
+  ///
+  /// The file at [toPath] will have its last modified timestamp set to
+  /// [lastModified], if specified.
+  /// This is useful when downloading remote files, to make sure that the
+  /// timestamp is the same locally and remotely.
+  static Future<void> writeFile(
+    String filePath,
+    List<int> toWrite, {
+    bool awaitWrite = false,
+    bool alsoUpload = true,
+    DateTime? lastModified,
+  }) async {
     filePath = _sanitisePath(filePath);
     log.fine('Writing to $filePath');
 
@@ -181,7 +191,9 @@ class FileManager {
     final File file = getFile(filePath);
     await _createFileDirectory(filePath);
     Future writeFuture = Future.wait([
-      file.writeAsBytes(toWrite),
+      file.writeAsBytes(toWrite).then((file) async {
+        if (lastModified != null) await file.setLastModified(lastModified);
+      }),
       // if we're using a new format, also delete the old file
       if (filePath.endsWith(Editor.extension))
         getFile(
@@ -249,16 +261,18 @@ class FileManager {
       } else {
         // share file
         tempFile = await getTempFile();
-        if (Platform.isIOS) {
+        if (Platform.isIOS || Platform.isMacOS) {
           if (!context.mounted) return;
           final box = context.findRenderObject() as RenderBox;
-          await Share.shareXFiles(
-            [XFile(tempFile.path)],
+          await SharePlus.instance.share(ShareParams(
+            files: [XFile(tempFile.path)],
             // iOS requires a sharePositionOrigin for the share sheet to appear
             sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
-          );
+          ));
         } else {
-          await Share.shareXFiles([XFile(tempFile.path)]);
+          await SharePlus.instance.share(ShareParams(
+            files: [XFile(tempFile.path)],
+          ));
         }
       }
     } else {
@@ -699,7 +713,7 @@ class FileManager {
 
     if (extension == '.sba') {
       final inputStream = InputFileStream(path);
-      final archive = ZipDecoder().decodeBuffer(inputStream);
+      final archive = ZipDecoder().decodeStream(inputStream);
 
       final mainFile = archive.files.cast<ArchiveFile?>().firstWhere(
             (file) => file!.name.endsWith('sbn') || file.name.endsWith('sbn2'),
@@ -715,7 +729,7 @@ class FileManager {
         intendedExtension: mainFileExtension,
       );
       final mainFileContents = () {
-        final output = OutputStream();
+        final output = OutputMemoryStream();
         mainFile.writeContent(output);
         return output.getBytes();
       }();
@@ -738,7 +752,7 @@ class FileManager {
         if (assetNumber < 0) continue;
 
         final assetBytes = () {
-          final output = OutputStream();
+          final output = OutputMemoryStream();
           file.writeContent(output);
           return output.getBytes();
         }();
