@@ -48,6 +48,14 @@ class SortNotes {
     }
   }
 
+  static void sortNotesFolders(List<String> filePaths, {bool forced = false}) {
+    // folders are always sorted by name ascending
+    if (_isNeeded || forced) {
+      _sortFunctions[0].call(filePaths, true);
+      _isNeeded = false;
+    }
+  }
+
   static void _sortNotesAlpha(List<String> filePaths, bool isIncreasing) {
     filePaths.sort((a, b) => a.split('/').last.compareTo(b.split('/').last));
     if (!isIncreasing) _reverse(filePaths);

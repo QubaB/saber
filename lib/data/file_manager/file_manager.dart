@@ -633,8 +633,7 @@ class FileManager {
     assert(parentPath.endsWith('/'));
 
     final DateTime now = DateTime.now();
-    final String filePath = '$parentPath${DateFormat("yy-MM-dd").format(now)} '
-        '${t.editor.untitled}';
+    final String filePath = '$parentPath${DateFormat("yy-MM-dd").format(now)}';
 
     return await suffixFilePathToMakeItUnique(filePath);
   }
