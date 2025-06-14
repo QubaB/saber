@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
         HomePage.browseSubpage => BrowsePage(path: widget.path),
         HomePage.whiteboardSubpage => const Whiteboard(),
         HomePage.settingsSubpage => const SettingsPage(),
-        HomePage.searchSubpage => const SearchPage();
+        HomePage.searchSubpage => const SearchPage(),
         _ => const RecentPage(),
       },
     );

@@ -1628,6 +1628,17 @@ class EditorState extends State<Editor> {
     );
   }
 
+  late MediaQueryData _mediaQuery = const MediaQueryData();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _mediaQuery = MediaQuery.of(context);
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;

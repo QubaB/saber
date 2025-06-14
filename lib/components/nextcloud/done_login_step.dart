@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logging/logging.dart';
 import 'package:saber/components/misc/faq.dart';
-import 'package:saber/components/nextcloud/log_messages.dart';
 import 'package:saber/data/extensions/string_extensions.dart';
 import 'package:saber/data/nextcloud/nextcloud_client_extension.dart';
 import 'package:saber/data/nextcloud/readable_bytes.dart';
@@ -28,21 +27,14 @@ class _DoneLoginStepState extends State<DoneLoginStep> {
 
   void _logout() {
     Prefs.url.value = '';
-    await Prefs.url.waitUntilSaved(); // wait for write value is finished
     Prefs.username.value = '';
-    await Prefs.username.waitUntilSaved(); // wait for write value is finished
     Prefs.ncPassword.value = '';
-    await Prefs.ncPassword.waitUntilSaved(); // wait for write value is finished
     Prefs.ncPasswordIsAnAppPassword.value = false;
-    await Prefs.ncPasswordIsAnAppPassword.waitUntilSaved(); // wait for write value is finished
     Prefs.encPassword.value = '';
-    await Prefs.encPassword.waitUntilSaved(); // wait for write value is finished
     Prefs.pfp.value = null;
     Prefs.lastStorageQuota.value = null;
     Prefs.key.value = '';
-    await Prefs.key.waitUntilSaved(); // wait for write value is finished
     Prefs.iv.value = '';
-    await Prefs.iv.waitUntilSaved(); // wait for write value is finished
     widget.recheckCurrentStep();
   }
 
@@ -138,11 +130,6 @@ class _DoneLoginStepState extends State<DoneLoginStep> {
               ),
             ),
           ],
-        ),
-        const SizedBox(height: 16),
-        //Text(t.profile.quickLinks.synchronizationLog),
-        Text(t.profile.nextcloudLog, style: textTheme.bodySmall),
-        NextcloudMessages( // nextcloud synchronization log
         ),
         const SizedBox(height: 32),
         Text(t.profile.faqTitle, style: textTheme.headlineSmall),
