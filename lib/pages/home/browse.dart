@@ -10,6 +10,7 @@ import 'package:saber/components/home/move_note_button.dart';
 import 'package:saber/components/home/new_note_button.dart';
 import 'package:saber/components/home/no_files.dart';
 import 'package:saber/components/home/rename_note_button.dart';
+import 'package:saber/components/home/select_all_button.dart';
 import 'package:saber/components/home/sort_button.dart';
 import 'package:saber/components/home/syncing_button.dart';
 import 'package:saber/data/file_manager/file_manager.dart';
@@ -86,6 +87,7 @@ class _BrowsePageState extends State<BrowsePage> {
       folders.add("${path ?? ""}/$directoryPath");
     }
     SortNotes.sortNotes(files, forced: true);
+    // SortNotes.sortNotes(folders, forced: true); //original
     SortNotes.sortNotesFolders(folders, forced: true);
 
     if (mounted) setState(() {});
@@ -156,6 +158,7 @@ class _BrowsePageState extends State<BrowsePage> {
                       if (SortNotes.isNeeded)
                         {
                           SortNotes.sortNotes(files, forced: true),
+                          // SortNotes.sortNotes(folders, forced: true), // original
                           SortNotes.sortNotesFolders(folders, forced: true),
                           setState(() {}),
                         }
@@ -251,6 +254,17 @@ class _BrowsePageState extends State<BrowsePage> {
                   selectedFiles.value = [];
                 },
                 icon: const Icon(Icons.delete_forever),
+              ),
+              SelectAllNotesButton(
+                selectedFiles: selectedFiles.value,
+                allFiles: files,
+                selectAll: () => {
+                  selectedFiles.value.clear(),
+                  for (String filePath in files)
+                    selectedFiles.value.add(filePath),
+                  setState(() {})
+                },
+                deselectAll: () => {selectedFiles.value = []},
               ),
               ExportNoteButton(
                 selectedFiles: selectedFiles.value,

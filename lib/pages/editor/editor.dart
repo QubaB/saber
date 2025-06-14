@@ -22,6 +22,7 @@ import 'package:saber/components/canvas/canvas_image.dart';
 import 'package:saber/components/canvas/canvas_preview.dart';
 import 'package:saber/components/canvas/image/editor_image.dart';
 import 'package:saber/components/canvas/save_indicator.dart';
+import 'package:saber/components/navbar/responsive_navbar.dart';
 import 'package:saber/components/theming/adaptive_alert_dialog.dart';
 import 'package:saber/components/theming/adaptive_icon.dart';
 import 'package:saber/components/theming/dynamic_material_app.dart';
@@ -1628,6 +1629,33 @@ class EditorState extends State<Editor> {
     );
   }
 
+  void setAndroidNavBarColor() async {
+    if (coreInfo.filePath.isEmpty) return; // not loaded yet
+
+    final theme = Theme.of(context);
+
+    // whiteboard on mobile should keep home screen navbar color
+    if (coreInfo.filePath == Whiteboard.filePath &&
+        !ResponsiveNavbar.isLargeScreen) {
+      return ResponsiveNavbar.setAndroidNavBarColor(theme);
+    }
+
+    await null;
+    if (!mounted) return;
+
+    final brightness = theme.brightness;
+    final otherBrightness =
+        brightness == Brightness.dark ? Brightness.light : Brightness.dark;
+    final overlayStyle = brightness == Brightness.dark
+        ? SystemUiOverlayStyle.dark
+        : SystemUiOverlayStyle.light;
+
+    SystemChrome.setSystemUIOverlayStyle(overlayStyle.copyWith(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarIconBrightness: otherBrightness,
+    ));
+  }
+
   late MediaQueryData _mediaQuery = const MediaQueryData();
 
   @override
@@ -1648,6 +1676,8 @@ class EditorState extends State<Editor> {
     final isToolbarVertical =
         Prefs.editorToolbarAlignment.value == AxisDirection.left ||
             Prefs.editorToolbarAlignment.value == AxisDirection.right;
+
+    setAndroidNavBarColor();
 
     final Widget canvas = CanvasGestureDetector(
       key: _canvasGestureDetectorKey,
