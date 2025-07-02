@@ -283,6 +283,15 @@ class Stroke {
     return points.isEmpty ? 0 : points.map((point) => point.y).reduce(min);
   }
 
+  Offset get firstPoint {
+    return(Offset(points[0].x,points[0].y));
+  }
+
+  Offset get lastPoint {
+    return(Offset(points.last.x,points.last.y));
+  }
+
+
   RecognizedUnistroke? detectShape() {
     if (points.length < 3) return null;
     return recognizeUnistroke(points);
