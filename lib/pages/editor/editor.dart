@@ -821,9 +821,9 @@ class EditorState extends State<Editor> {
         }
         else {
           // is insert pen, I must insert free space of the vertical length of stroke
-          double yFirst=newStroke.firstPoint.dy;
-          double yLast=newStroke.lastPoint.dy;
-          moveItemsOnPageUpDown(page,dragPageIndex!,yFirst,yLast); // move all items below up/down
+          Offset first=newStroke.firstPoint;
+          Offset last=newStroke.lastPoint;
+          moveItemsOnPageUpDown(page,dragPageIndex!,first,last); // move all items below up/down
         }
       } else if (currentTool is Eraser) {
         final erased = (currentTool as Eraser).onDragEnd();
@@ -885,16 +885,18 @@ class EditorState extends State<Editor> {
   }
 
   // move all items below maxY down by maxY-minY
-  void moveItemsOnPageUpDown(EditorPage page,int pageIndex, double yFirst,double yLast){
-    if ((yFirst-yLast).abs()<1.0){
+  void moveItemsOnPageUpDown(EditorPage page,int pageIndex, Offset first,Offset last){
+    if ((first-last).distanceSquared<2.0){
       return;  // too small move
     }
 
     final double maxY;
-    maxY=yFirst; // all items below first point
+    maxY=first.dy; // all items below first point
     List<Stroke> strokesBelow=[];
     double maxStrokesY;
+    double maxStrokesX;
     maxStrokesY=0.0;
+    maxStrokesX=0.0;  // the righmost stroke position
     for (int i = 0; i < page.strokes.length; i++) {
       final stroke = page.strokes[i];
       if (stroke.minY>=maxY) {
@@ -903,6 +905,9 @@ class EditorState extends State<Editor> {
         if (stroke.maxY>maxStrokesY) {
           maxStrokesY=stroke.maxY;   // the lowest possible point of strokes
         }
+      }
+      if (stroke.maxX>=maxStrokesX) {
+        maxStrokesX=stroke.maxX;   // the rightmost stoke position
       }
     }
 
@@ -916,19 +921,33 @@ class EditorState extends State<Editor> {
         if (image.dstRect.bottom>maxStrokesY) {
           maxStrokesY=image.dstRect.bottom;   // the lowest possible point of images
         }
+        if (image.dstRect.right>maxStrokesX) {
+          maxStrokesX=image.dstRect.right;
+        }
       }
     }
-    if (strokesBelow.length==0 && imagesBelow.length==0) {
+    double shiftX=last.dx-first.dx;
+    if (shiftX.abs()<10.0){
+      shiftX=0.0;
+    }
+    if (strokesBelow.length==0 && imagesBelow.length==0 && shiftX==0.0) {
       return;  // nothing to move
     }
-    final double shiftY=yLast-yFirst;
+    final double shiftY=last.dy-first.dy;
+    double pageWidth=page.size.width+shiftX;
+    if (pageWidth<maxStrokesX){
+      pageWidth=maxStrokesX+10.0;
+    }
+    if (pageWidth<EditorPage.defaultWidth){
+      pageWidth=EditorPage.defaultWidth;
+    }
     if (maxStrokesY+shiftY>page.size.height){
       // must enlarge page
-      page.size=Size(page.size.width,maxStrokesY+shiftY);
+      page.size=Size(pageWidth,maxStrokesY+shiftY);
     }
     if (maxStrokesY+shiftY<EditorPage.defaultHeight){
       // page will be smaller than default height set it to default height
-      page.size=Size(page.size.width,EditorPage.defaultHeight);
+      page.size=Size(pageWidth,EditorPage.defaultHeight);
     }
     // and now move items
     setState(() {

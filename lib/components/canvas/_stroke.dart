@@ -282,6 +282,12 @@ class Stroke {
   double get minY {
     return points.isEmpty ? 0 : points.map((point) => point.y).reduce(min);
   }
+  double get minX {
+    return points.isEmpty ? 0 : points.map((point) => point.x).reduce(min);
+  }
+  double get maxX {
+    return points.isEmpty ? 0 : points.map((point) => point.x).reduce(max);
+  }
 
   Offset get firstPoint {
     return(Offset(points[0].x,points[0].y));
@@ -372,14 +378,6 @@ class Stroke {
     } else {
       return (firstPoint, lastPoint);
     }
-  }
-
-  Offset get firstPoint {
-    return(Offset(points[0].x,points[0].y));
-  }
-
-  Offset get lastPoint {
-    return(Offset(points.last.x,points.last.y));
   }
 
   Stroke copy() => Stroke(
