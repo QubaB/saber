@@ -77,12 +77,18 @@ class Pen extends Tool {
   StrokeOptions options;
 
   static Pen _currentPen = Pen.fountainPen();
+  static Pen _previousPen = Pen.fountainPen();
   static Pen get currentPen => _currentPen;
+  static Pen get previousPen => _previousPen;
   static set currentPen(Pen currentPen) {
     assert(currentPen is! Highlighter,
         'Use Highlighter.currentHighlighter instead');
     assert(currentPen is! Pencil, 'Use Pencil.currentPencil instead');
+    _previousPen=_currentPen; // store previous pen
     _currentPen = currentPen;
+  }
+  static void nullPreviousPen() {
+    _previousPen=_currentPen; // set previous pen to current pen
   }
 
   void onDragStart(

@@ -142,6 +142,7 @@ class EditorState extends State<Editor> {
         return Pen.currentPen;
       case ToolId.insertPen:
         if (Pen.currentPen.toolId != Prefs.lastTool.value) {
+          tmpTool=Pen.currentPen;  // remember last tool
           Pen.currentPen = Pen.insertPen();
         }
         return Pen.currentPen;
@@ -824,6 +825,20 @@ class EditorState extends State<Editor> {
           Offset first=newStroke.firstPoint;
           Offset last=newStroke.lastPoint;
           moveItemsOnPageUpDown(page,dragPageIndex!,first,last); // move all items below up/down
+          if (Pen.previousPen != Pen.currentPen) {
+            // restore previous tool
+            setState(() {
+              currentTool = Pen.previousPen;
+              Pen.nullPreviousPen();
+              if (currentTool is Highlighter) {
+                Highlighter.currentHighlighter = currentTool as Highlighter;
+              } else if (currentTool is Pencil) {
+                Pencil.currentPencil = currentTool as Pencil;
+              } else if (currentTool is Pen) {
+                Pen.currentPen = currentTool as Pen;
+              }
+            });
+          }
         }
       } else if (currentTool is Eraser) {
         final erased = (currentTool as Eraser).onDragEnd();
