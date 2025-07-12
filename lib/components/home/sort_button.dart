@@ -5,9 +5,7 @@ import 'package:saber/data/file_manager/file_manager.dart';
 import 'package:saber/data/prefs.dart';
 import 'package:saber/i18n/strings.g.dart';
 import 'package:saber/pages/editor/editor.dart';
-import 'package:stow_codecs/stow_codecs.dart';
 import 'package:stow_plain/stow_plain.dart';
-import 'package:stow_secure/stow_secure.dart';
 
 class SortNotes {
   SortNotes._();
@@ -17,11 +15,11 @@ class SortNotes {
     _sortNotesLastModified,
     _sortNotesSize,
   ];
-//  static final _sortFunctionIdx = PlainStow<int>('sortFunctionIdx', 0, volatile: !_isOnMainIsolate);
-  static final _sortFunctionIdx = PlainStow<int>('sortFunctionIdx', 0, volatile: true);
+  static final _sortFunctionIdx = PlainStow<int>('sortFunctionIdx', 0, volatile: !Stows.isOnMainIsolate);
+//  static final _sortFunctionIdx = PlainStow<int>('sortFunctionIdx', false, volatile: true);
   //static final PlainPref<int> _sortFunctionIdx = Prefs.sortFunctionIdx;
-//  static final  _isIncreasingOrder  = PlainStow('isSortIncreasing', true, volatile: !_isOnMainIsolate);
-  static final  _isIncreasingOrder  = PlainStow('isSortIncreasing', true, volatile: true);
+  static final  _isIncreasingOrder  = PlainStow('isSortIncreasing', true, volatile: !Stows.isOnMainIsolate);
+//  static final  _isIncreasingOrder  = PlainStow('isSortIncreasing', true, volatile: true);
   //static final PlainPref<bool> _isIncreasingOrder = Prefs.isSortIncreasing;
 
   static bool _isNeeded = true;

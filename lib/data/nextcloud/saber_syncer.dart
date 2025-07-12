@@ -61,7 +61,7 @@ class SaberSyncInterface
         case BestFile.local:
           syncFiles.add(syncFile); //ADD local file for synchronization
           nextcloudSyncMessages.add(
-              NextcloudLogMessageType.queuedUpload,syncFile.relativeLocalPath,syncFile.remotePath,""
+              NextcloudLogMessageType.queuedUpload,syncFile.relativeLocalPath,syncFile.remotePath,''
           );
         case BestFile.remote:
           // Remote file is newer, do nothing
@@ -87,7 +87,7 @@ class SaberSyncInterface
       } catch (e) {
         log.warning('Failed to get sync file from remote file: $e', e);
         nextcloudSyncMessages.add(
-            NextcloudLogMessageType.info,"","",'Failed to get sync file from remote file: $e'
+            NextcloudLogMessageType.info,'','','Failed to get sync file from remote file: $e'
         );
         continue;
       }
@@ -111,7 +111,7 @@ class SaberSyncInterface
 
           changedFiles.add(syncFile);
           nextcloudSyncMessages.add(
-              NextcloudLogMessageType.queuedDownload,syncFile.relativeLocalPath,syncFile.remotePath,""
+              NextcloudLogMessageType.queuedDownload,syncFile.relativeLocalPath,syncFile.remotePath,''
           );
 
       }
@@ -207,11 +207,11 @@ class SaberSyncInterface
       throw Exception('Tried to download file without being logged in');
 
     final response=await client.webdav.get(PathUri.parse(file.remotePath));
-    if (response.length != 0){
-      nextcloudSyncMessages.add(NextcloudLogMessageType.successDownload,file.relativeLocalPath,"","");
+    if (response.isNotEmpty){
+      nextcloudSyncMessages.add(NextcloudLogMessageType.successDownload,file.relativeLocalPath,'','');
     }
     else {
-      nextcloudSyncMessages.add(NextcloudLogMessageType.errorDownload,file.relativeLocalPath,"","");
+      nextcloudSyncMessages.add(NextcloudLogMessageType.errorDownload,file.relativeLocalPath,'','');
     }
 
     return response;
@@ -340,10 +340,10 @@ class SaberSyncInterface
       lastModified: lastModified,
     );
     if (response.statusCode >= 200 && response.statusCode <=299){
-      nextcloudSyncMessages.add(NextcloudLogMessageType.successUpload,file.relativeLocalPath,"","");
+      nextcloudSyncMessages.add(NextcloudLogMessageType.successUpload,file.relativeLocalPath,'','');
     }
     else {
-      nextcloudSyncMessages.add(NextcloudLogMessageType.errorUpload,file.relativeLocalPath,"","");
+      nextcloudSyncMessages.add(NextcloudLogMessageType.errorUpload,file.relativeLocalPath,'','');
     }
 
   }
@@ -423,12 +423,12 @@ class SaberSyncInterface
   static String encodeFilePath(String filePath) {
     // Convert file path to a filename-safe format
     String separator=Platform.pathSeparator;
-    if (separator != "/") {
+    if (separator != '/') {
       // I am on windows - replace \ with /
-      filePath=filePath.replaceAll("\\","/");
+      filePath=filePath.replaceAll('\\','/');
     }
-    filePath=filePath.replaceAll("//","/");  // replace double // with only /
-    filePath=filePath.replaceAll("/\\","/");  // replace double /\ with only /
+    filePath=filePath.replaceAll('//','/');  // replace double // with only /
+    filePath=filePath.replaceAll('/\\','/');  // replace double /\ with only /
 
     return filePath.replaceAll('\\', '¦¦').replaceAll('/', '¦!');
   }
@@ -455,7 +455,7 @@ class SaberSyncInterface
     if (client == null)
       throw Exception('Tried to encrypt path without being logged in');
 
-    final encrypted;
+    final String encrypted;
     if (!stows.ncDoNotEncryptFiles.value) {
       // original code, encrypt files
       final encrypter = client.encrypter;
@@ -513,7 +513,7 @@ class SaberSyncInterface
     if (client == null)
       throw Exception('Tried to decrypt path without being logged in');
 
-    var decrypted;
+    String decrypted;
     if (!stows.ncDoNotEncryptFiles.value) {
       // original code, encrypt files
       final encrypter = client.encrypter;

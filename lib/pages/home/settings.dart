@@ -20,8 +20,8 @@ import 'package:saber/components/settings/settings_switch.dart';
 import 'package:saber/components/settings/update_manager.dart';
 import 'package:saber/components/theming/adaptive_alert_dialog.dart';
 import 'package:saber/components/theming/adaptive_toggle_buttons.dart';
-import 'package:saber/data/editor/pencil_sound.dart';
 import 'package:saber/components/toolbar/toolbar_button.dart';
+import 'package:saber/data/editor/pencil_sound.dart';
 import 'package:saber/data/file_manager/file_manager.dart';
 import 'package:saber/data/flavor_config.dart';
 import 'package:saber/data/locales.dart';
@@ -642,4 +642,3 @@ class _SettingsPageState extends State<SettingsPage> {
     super.dispose();
   }
 }
-

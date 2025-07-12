@@ -290,8 +290,7 @@ late Rect _dstRect =
     }
     Offset cs=srcRect.topLeft;  // offset of crop origin (topleft) from image origin (0,0)
     Offset srcOriginInDest=-Offset(cs.dx*scaleX,cs.dy*scaleY); // offset of image origin (0,0) with respect to cropped origin in canvas dst coordinates
-    dstFullRect=Rect.fromLTWH(srcOriginInDest.dx,srcOriginInDest.dy,naturalSize.width*scaleX,naturalSize.height*scaleY).shift(dstRect.topLeft); // this is Rect in dst coordinates of full size image
-    return(dstFullRect);
+    return(Rect.fromLTWH(srcOriginInDest.dx,srcOriginInDest.dy,naturalSize.width*scaleX,naturalSize.height*scaleY).shift(dstRect.topLeft)); // this is Rect in dst coordinates of full size image
   }
 
   /// recalculates rectangle from destination coordinates given by dstR to image source coordinates given by srcRect

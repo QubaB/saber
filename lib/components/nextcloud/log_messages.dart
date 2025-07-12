@@ -32,11 +32,11 @@ class _NextcloudMessagesState extends State<NextcloudMessages> {
   void messageListener() {
     /// called when there is an update of upload/download
     setState(() {
-      String text="";
+      final text=StringBuffer();
       for (var msg in stows.nextcloudLogMessages.value) {
-        text=text+msg.toString();
+        text.write(msg.toString());
       }
-      _txt.text=text;
+      _txt.text=text.toString();
     });
   }
   @override
@@ -74,30 +74,26 @@ class NextcloudLogMessages {
 
     switch (type) {
       case NextcloudLogMessageType.queuedDownload:
-        text = "↓: Q " + localFile;
+        text = '↓: Q $localFile';
       case NextcloudLogMessageType.successDownload:
-        text = "↓: ✓ " + localFile;
+        text = '↓: ✓ $localFile';
       case NextcloudLogMessageType.errorDownload:
-        text = "↓: ❌ " + localFile + " from " + remoteFile+" Error:"+textError;
+        text = '↓: ❌ $localFile from $remoteFile Error:$textError';
       case NextcloudLogMessageType.successUpload:
-        text = "↑: ✓ " + localFile;
+        text = '↑: ✓ $localFile';
       case NextcloudLogMessageType.queuedUpload:
-        text = "↑: Q " + localFile;
+        text = '↑: Q $localFile';
       case NextcloudLogMessageType.errorUpload:
-        text = "↑: ❌ " + localFile + " to " + remoteFile+" Error:"+textError;
+        text = '↑: ❌ $localFile to $remoteFile Error:$textError';
       case NextcloudLogMessageType.info:
         text = textError;
     }
     while (stows.nextcloudLogMessages.value.length>10) {
       // more than 10 messages, remove the first one
       stows.nextcloudLogMessages.value.remove(
-          stows.nextcloudLogMessages.value.add(
-              formattedDate + " " + text + "\n"));
-      stows.nextcloudLogMessages.notifyListeners();
+          stows.nextcloudLogMessages.value.elementAt(0));
     }
+    stows.nextcloudLogMessages.value.add('$formattedDate $text\n');
+    stows.nextcloudLogMessages.notifyListeners();
   }
 }
-
-///  for (var e in mySet) {
-//     print(e);
-//   }
