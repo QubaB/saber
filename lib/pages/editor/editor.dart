@@ -945,7 +945,7 @@ class EditorState extends State<Editor> {
     if (shiftX.abs()<10.0){
       shiftX=0.0;
     }
-    if (strokesBelow.length==0 && imagesBelow.length==0 && shiftX==0.0) {
+    if (strokesBelow.isEmpty && imagesBelow.isEmpty && shiftX==0.0) {
       return;  // nothing to move
     }
     final double shiftY=last.dy-first.dy;
@@ -966,7 +966,7 @@ class EditorState extends State<Editor> {
     }
     // and now move items
     setState(() {
-      Offset moveOffset = Offset(0.0, shiftY);
+      Offset moveOffset = Offset(0, shiftY);
       for (Stroke stroke in strokesBelow) {
         stroke.shift(moveOffset);
       }
@@ -1520,19 +1520,18 @@ class EditorState extends State<Editor> {
       final cameras = await availableCameras();
       // Get a specific camera from the list of available cameras.
       final CameraDescription camera= cameras.first;
+      if (!mounted) return;
 
       // show camera dialog and wait until it ends
-      await showDialog(
-          context: context,
-          builder: (context) { return AlertDialog(
-            title: Text(t.editor.camera.takePhoto),
-            content: takePhoto(context,
-              camera,
-              ),
-          );
-          }
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TakePictureScreen(
+            camera: camera,
+            onFileNameChanged: parsePhotoName,
+          ),
+        ),
       );
-      return;
     } catch (e) {
       // If an error occurs, log the error to the console.
       log.warning(e.toString());
