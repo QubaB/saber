@@ -33,7 +33,7 @@ class PenModal extends StatefulWidget {
 class _PenModalState extends State<PenModal> {
   @override
   Widget build(BuildContext context) {
-    final axis = Prefs.editorToolbarAlignment.value.axis.opposite;
+    final axis = stows.editorToolbarAlignment.value.axis.opposite;
     final Tool currentTool = widget.getTool();
     final Pen currentPen;
     if (currentTool is Pen) {

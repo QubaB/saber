@@ -105,7 +105,7 @@ class SaberSyncInterface
           // Remote file is newer or doesn't exist locally
 
           final remotelyDeleted = syncFile.remoteFile!.size! <= 0;
-          final locallyDeleted = Prefs.fileSyncAlreadyDeleted.value
+          final locallyDeleted = stows.fileSyncAlreadyDeleted.value
               .contains(syncFile.relativeLocalPath);
           if (remotelyDeleted && locallyDeleted) break;
 
@@ -192,12 +192,9 @@ class SaberSyncInterface
         _client!.loadEncryptionKey(generateKeyIfMissing: false);
       } on EncLoginFailure {
         // enc password has changed since the user last logged in, so log out
-        Prefs.encPassword.value = '';
-        await Prefs.encPassword.waitUntilSaved();
-        Prefs.key.value = '';
-        await Prefs.key.waitUntilSaved();
-        Prefs.iv.value = '';
-        await Prefs.iv.waitUntilSaved();
+        stows.encPassword.value = '';
+        stows.key.value = '';
+        stows.iv.value = '';
       }
       return Uint8List(0);
     } else if (file.remoteFile?.size == 0) {
@@ -235,8 +232,8 @@ class SaberSyncInterface
     if (encryptedBytes.isEmpty) {
       // Remote file was deleted
       await FileManager.deleteFile(file.relativeLocalPath, alsoUpload: false);
-      Prefs.fileSyncAlreadyDeleted.value.add(file.relativeLocalPath);
-      Prefs.fileSyncAlreadyDeleted.notifyListeners();
+      stows.fileSyncAlreadyDeleted.value.add(file.relativeLocalPath);
+      stows.fileSyncAlreadyDeleted.notifyListeners();
       return;
     }
 
@@ -244,9 +241,9 @@ class SaberSyncInterface
     if (client == null)
       throw Exception('Tried to decrypt file without being logged in');
 
-    if (!Prefs.ncDoNotEncryptFiles.value) {
+    if (!stows.ncDoNotEncryptFiles.value) {
       final encrypter = client.encrypter;
-      final iv = IV.fromBase64(Prefs.iv.value);
+      final iv = IV.fromBase64(stows.iv.value);
 
       final decryptedData = await workerManager.execute(
         file.localFile.path.endsWith(Editor.extensionOldJson)
@@ -289,10 +286,10 @@ class SaberSyncInterface
     if (client == null)
       throw Exception('Tried to encrypt file without being logged in');
 
-    if (!Prefs.ncDoNotEncryptFiles.value) {
+    if (!stows.ncDoNotEncryptFiles.value) {
       // encrypt nextcloud files
       final encrypter = client.encrypter;
-      final iv = IV.fromBase64(Prefs.iv.value);
+      final iv = IV.fromBase64(stows.iv.value);
 
       final encryptedData = await workerManager.execute(
         file.localFile.path.endsWith(Editor.extensionOldJson)
@@ -329,8 +326,8 @@ class SaberSyncInterface
     } on FileSystemException {
       lastModified = DateTime.now();
     }
-    if (lastModified.isBefore(Prefs.fileSyncResyncEverythingDate.value)) {
-      lastModified = Prefs.fileSyncResyncEverythingDate.value;
+    if (lastModified.isBefore(stows.fileSyncResyncEverythingDate.value)) {
+      lastModified = stows.fileSyncResyncEverythingDate.value;
     }
 
     final client = SaberSyncInterface.client;
@@ -459,10 +456,10 @@ class SaberSyncInterface
       throw Exception('Tried to encrypt path without being logged in');
 
     final encrypted;
-    if (!Prefs.ncDoNotEncryptFiles.value) {
+    if (!stows.ncDoNotEncryptFiles.value) {
       // original code, encrypt files
       final encrypter = client.encrypter;
-      final iv = IV.fromBase64(Prefs.iv.value);
+      final iv = IV.fromBase64(stows.iv.value);
 
       encrypted = await workerManager.execute(
             () =>
@@ -517,10 +514,10 @@ class SaberSyncInterface
       throw Exception('Tried to decrypt path without being logged in');
 
     var decrypted;
-    if (!Prefs.ncDoNotEncryptFiles.value) {
+    if (!stows.ncDoNotEncryptFiles.value) {
       // original code, encrypt files
       final encrypter = client.encrypter;
-      final iv = IV.fromBase64(Prefs.iv.value);
+      final iv = IV.fromBase64(stows.iv.value);
 
       decrypted = await workerManager.execute(
             () => encrypter.decrypt16(encryptedName, iv: iv),
@@ -571,7 +568,7 @@ class SaberSyncInterface
       // Remote file doesn't exist, keep local
       return BestFile.local;
     } else if (lastModifiedRemote
-        .isBefore(Prefs.fileSyncResyncEverythingDate.value)) {
+        .isBefore(stows.fileSyncResyncEverythingDate.value)) {
       // If we've prompted a full resync at [resyncEverythingDate],
       // keep the local file if it was modified before [resyncEverythingDate]
       return BestFile.local;
@@ -689,8 +686,7 @@ extension NullableIterable<T> on Iterable<T> {
 
 extension SaberSyncerComponent on SyncerComponent {
   Future<bool> enqueueRel(String relativeFilePath) async {
-    // Enqueue synchronization of local file relative path
-    if (!Prefs.loggedIn) return false;
+    if (!stows.loggedIn) return false;
 
     final syncFile = await SaberSyncFile.relative(relativeFilePath);
     //QB sync to queue syncFile.relativeLocalPath

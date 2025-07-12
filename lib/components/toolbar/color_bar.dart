@@ -28,7 +28,7 @@ class ColorBar extends StatefulWidget {
   final ToolbarSize toolbarSize; // size of toolbar button
 
   static List<NamedColor> get colorPresets =>
-      Prefs.preferGreyscale.value ? greyScaleColorOptions : normalColorOptions;
+      stows.preferGreyscale.value ? greyScaleColorOptions : normalColorOptions;
   static final List<NamedColor> normalColorOptions = [
     (name: t.editor.colors.black, color: Colors.black),
     (name: t.editor.colors.red, color: Colors.red),
@@ -138,29 +138,29 @@ class ColorBar extends StatefulWidget {
 
   /// Returns whether the color is now pinned.
   static bool toggleColorPinned(String colorString) {
-    if (Prefs.pinnedColors.value.contains(colorString)) {
-      Prefs.pinnedColors.value.remove(colorString);
-      Prefs.recentColorsChronological.value.remove(colorString);
-      Prefs.recentColorsPositioned.value.remove(colorString);
-      if (Prefs.recentColorsChronological.value.length >=
-          Prefs.recentColorsLength.value) {
+    if (stows.pinnedColors.value.contains(colorString)) {
+      stows.pinnedColors.value.remove(colorString);
+      stows.recentColorsChronological.value.remove(colorString);
+      stows.recentColorsPositioned.value.remove(colorString);
+      if (stows.recentColorsChronological.value.length >=
+          stows.recentColorsLength.value) {
         // if full, replace oldest
-        final oldestColor = Prefs.recentColorsChronological.value.removeAt(0);
-        Prefs.recentColorsChronological.value.add(colorString);
+        final oldestColor = stows.recentColorsChronological.value.removeAt(0);
+        stows.recentColorsChronological.value.add(colorString);
         final int oldestColorPosition =
-            Prefs.recentColorsPositioned.value.indexOf(oldestColor);
-        Prefs.recentColorsPositioned.value[oldestColorPosition] = colorString;
+            stows.recentColorsPositioned.value.indexOf(oldestColor);
+        stows.recentColorsPositioned.value[oldestColorPosition] = colorString;
       } else {
         // not full, add to end
-        Prefs.recentColorsChronological.value.add(colorString);
-        Prefs.recentColorsPositioned.value.insert(0, colorString);
+        stows.recentColorsChronological.value.add(colorString);
+        stows.recentColorsPositioned.value.insert(0, colorString);
       }
       return false;
     } else {
       // add to pinned and remove from recent colors
-      Prefs.pinnedColors.value.add(colorString);
-      Prefs.recentColorsChronological.value.remove(colorString);
-      Prefs.recentColorsPositioned.value.remove(colorString);
+      stows.pinnedColors.value.add(colorString);
+      stows.recentColorsChronological.value.remove(colorString);
+      stows.recentColorsPositioned.value.remove(colorString);
       return true;
     }
   }
@@ -178,12 +178,12 @@ class _ColorBarState extends State<ColorBar> {
 
     final children = <Widget>[
       // pinned colors
-      if (Prefs.pinnedColors.value.isNotEmpty) ...[
-        ColorOptionSeparatorIcon(
+      if (stows.pinnedColors.value.isNotEmpty) ...[
+        const ColorOptionSeparatorIcon(
           icon: Icons.pin_drop,
           size: widget.toolbarSize.buttonSize,
         ),
-        for (String colorString in Prefs.pinnedColors.value)
+        for (String colorString in stows.pinnedColors.value)
           ColorOption(
             isSelected: widget.currentColor?.withAlpha(255).toARGB32() ==
                 int.parse(colorString),
@@ -213,7 +213,7 @@ class _ColorBarState extends State<ColorBar> {
       ),
 
       // recent colors
-      for (String colorString in Prefs.recentColorsPositioned.value.reversed)
+      for (String colorString in stows.recentColorsPositioned.value.reversed)
         ColorOption(
           isSelected: widget.currentColor?.withAlpha(255).toARGB32() ==
               int.parse(colorString),
@@ -237,8 +237,8 @@ class _ColorBarState extends State<ColorBar> {
       // placeholders for `recentColorsLength` recent colors
       for (int i = 0;
           i <
-              Prefs.recentColorsLength.value -
-                  Prefs.recentColorsPositioned.value.length;
+              stows.recentColorsLength.value -
+                  stows.recentColorsPositioned.value.length;
           ++i)
         ColorOption(
           isSelected: false,

@@ -54,27 +54,20 @@ class _NcLoginStepState extends State<NcLoginStep> {
       );
       final username = await client.getUsername();
 
-      Prefs.url.value= credentials.server ==
-          NextcloudClientExtension.defaultNextcloudUri.toString()
+      stows.url.value = credentials.server ==
+              NextcloudClientExtension.defaultNextcloudUri.toString()
           ? ''
           : credentials.server;
-      await Prefs.url.waitUntilSaved(); // wait until properly saved
+      stows.username.value = username;
+      stows.ncPassword.value = credentials.appPassword;
+      stows.ncPasswordIsAnAppPassword.value = true;
+      stows.encPassword.value = '';
 
-      Prefs.username.value = username;
-      await Prefs.username.waitUntilSaved();
-
-      Prefs.ncPassword.value = credentials.appPassword;
-      await Prefs.ncPassword.waitUntilSaved();
-      Prefs.ncPasswordIsAnAppPassword.value = true;
-
-      Prefs.encPassword.value = '';
-      await Prefs.encPassword.waitUntilSaved();
-
-      Prefs.pfp.value = null;
+      stows.pfp.value = null;
       client.core.avatar
           .getAvatar(userId: username, size: AvatarGetAvatarSize.$512)
           .then((response) => response.body)
-          .then((pfp) => Prefs.pfp.value = pfp);
+          .then((pfp) => stows.pfp.value = pfp);
 
       widget.recheckCurrentStep();
     });
