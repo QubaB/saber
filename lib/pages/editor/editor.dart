@@ -1520,19 +1520,18 @@ class EditorState extends State<Editor> {
       final cameras = await availableCameras();
       // Get a specific camera from the list of available cameras.
       final CameraDescription camera= cameras.first;
+      if (!mounted) return;
 
       // show camera dialog and wait until it ends
-      await showDialog(
-          context: context,
-          builder: (context) { return AlertDialog(
-            title: Text(t.editor.camera.takePhoto),
-            content: takePhoto(context,
-              camera,
-              ),
-          );
-          }
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TakePictureScreen(
+            camera: camera,
+            onFileNameChanged: parsePhotoName,
+          ),
+        ),
       );
-      return;
     } catch (e) {
       // If an error occurs, log the error to the console.
       log.warning(e.toString());
