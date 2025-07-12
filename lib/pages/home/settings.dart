@@ -100,11 +100,12 @@ abstract class _SettingsStows {
     (int value) => PencilSoundSetting.values[value],
   );
 
-  static final editorToolbarSize = TransformedPref(
-    Prefs.editorToolbarSize,
+  static final editorToolbarSize = TransformedStow(
+    stows.editorToolbarSize,
         (ToolbarSize value) => value.index,
         (int value) => ToolbarSize.values[value],
   );
+
 }
 
 class _SettingsPageState extends State<SettingsPage> {
@@ -364,7 +365,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: t.settings.prefLabels.eraserOnStylusButtonPressAndRelease,
                 subtitle: t.settings.prefDescriptions.eraserOnStylusButtonPressAndRelease,
                 icon: FontAwesomeIcons.eraser,
-                pref: Prefs.eraserOnStylusButtonPressAndRelease,
+                pref: stows.eraserOnStylusButtonPressAndRelease,
               ),
               SettingsSwitch(
                 title: t.settings.prefLabels.hideFingerDrawingToggle,
@@ -415,7 +416,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
               SettingsSelection(
                 title: t.settings.prefLabels.editorToolbarSize,
-                subtitle: switch (Prefs.editorToolbarSize.value) {
+                subtitle: switch (stows.editorToolbarSize.value) {
                   ToolbarSize.small => t.settings.editorToolbarSizes.small,
                   ToolbarSize.normal => t.settings.editorToolbarSizes.normal,
                   ToolbarSize.big => t.settings.editorToolbarSizes.big,
@@ -426,7 +427,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ToolbarSize.normal => FontAwesomeIcons.pencil,
                   ToolbarSize.big => FontAwesomeIcons.pencil,
                 },
-                pref: _SettingsPrefs.editorToolbarSize,
+                pref: _SettingsStows.editorToolbarSize,
                 optionsWidth: 60,
                 options: [
                   ToggleButtonsOption(
@@ -613,7 +614,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: t.settings.prefLabels.ncDoNotEncryptFiles,
                 subtitle: t.settings.prefDescriptions.ncDoNotEncryptFiles,
                 icon: Icons.private_connectivity,
-                pref: Prefs.ncDoNotEncryptFiles,
+                pref: stows.ncDoNotEncryptFiles,
               ),
               SettingsSwitch(
                 title: t.settings.prefLabels.allowInsecureConnections,

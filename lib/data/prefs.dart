@@ -139,8 +139,10 @@ class Stows {
 
   final disableEraserAfterUse =
       PlainStow('disableEraserAfterUse', false, volatile: !_isOnMainIsolate);
+  final eraserOnStylusButtonPressAndRelease =
+      PlainStow('eraserOnStylusButtonPressAndRelease', false, volatile: !_isOnMainIsolate);
   final hideFingerDrawingToggle =
-      PlainStow('hideFingerDrawingToggle', false, volatile: !_isOnMainIsolate);
+  PlainStow('hideFingerDrawingToggle', false, volatile: !_isOnMainIsolate);
 
   final recentColorsChronological = PlainStow(
       'recentColorsChronological', <String>[],
@@ -230,7 +232,7 @@ class Stows {
   final lastStorageQuota = PlainStow<Quota?>('lastStorageQuota', null,
       codec: QuotaCodec(), volatile: !_isOnMainIsolate);
   
-  finals  ncDoNotEncryptFiles = PlainStow('ncDoNotEncryptFiles'), false, volatile: !_isOnMainIsolate);
+  final ncDoNotEncryptFiles = PlainStow('ncDoNotEncryptFiles', false, volatile: !_isOnMainIsolate);
 
   final shouldCheckForUpdates = PlainStow('shouldCheckForUpdates',
       FlavorConfig.shouldCheckForUpdatesByDefault && !Platform.isLinux,

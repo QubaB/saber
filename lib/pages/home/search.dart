@@ -37,7 +37,7 @@ class _SearchPageState extends State<SearchPage> {
   /// See https://github.com/saber-notes/saber/issues/996
   /// and https://github.com/saber-notes/saber/pull/977.
   void moveIncorrectlyImportedFiles() async {
-    for (final filePath in Prefs.recentFiles.value) {
+    for (final filePath in stows.recentFiles.value) {
       if (filePath.startsWith('/')) continue;
 
       final String newFilePath;

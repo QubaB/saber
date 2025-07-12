@@ -52,9 +52,9 @@ class Pen extends Tool {
         sizeMax = 25,
         sizeStep = 1,
         icon = insertPenIcon,
-        options = Prefs.lastBallpointPenOptions.value,
+        options = stows.lastBallpointPenOptions.value,
         pressureEnabled = false,
-        color = Color(Prefs.lastBallpointPenColor.value),
+        color = Color(stows.lastBallpointPenColor.value),
         toolId = ToolId.insertPen;
 
 

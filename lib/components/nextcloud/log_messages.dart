@@ -16,7 +16,7 @@ class NextcloudMessages extends StatefulWidget {
 class _NextcloudMessagesState extends State<NextcloudMessages> {
   @override
   void initState() {
-    Prefs.nextcloudLogMessages.addListener(messageListener);  // add listener to changes in nextcloud messages.
+    stows.nextcloudLogMessages.addListener(messageListener);  // add listener to changes in nextcloud messages.
     // if any new message, then messageListener will be called
     super.initState();
     messageListener(); // fill messages text
@@ -24,7 +24,7 @@ class _NextcloudMessagesState extends State<NextcloudMessages> {
 
   @override
   void dispose() {
-    Prefs.nextcloudLogMessages.removeListener(messageListener);  // remove listener
+    stows.nextcloudLogMessages.removeListener(messageListener);  // remove listener
     super.dispose();
   }
 
@@ -33,7 +33,7 @@ class _NextcloudMessagesState extends State<NextcloudMessages> {
     /// called when there is an update of upload/download
     setState(() {
       String text="";
-      for (var msg in Prefs.nextcloudLogMessages.value) {
+      for (var msg in stows.nextcloudLogMessages.value) {
         text=text+msg.toString();
       }
       _txt.text=text;
@@ -88,12 +88,13 @@ class NextcloudLogMessages {
       case NextcloudLogMessageType.info:
         text = textError;
     }
-    while (Prefs.nextcloudLogMessages.value.length>10) {
+    while (stows.nextcloudLogMessages.value.length>10) {
       // more than 10 messages, remove the first one
-      Prefs.nextcloudLogMessages.value.remove(Prefs.nextcloudLogMessages.value.elementAt(0));
+      stows.nextcloudLogMessages.value.remove(
+          stows.nextcloudLogMessages.value.add(
+              formattedDate + " " + text + "\n"));
+      stows.nextcloudLogMessages.notifyListeners();
     }
-    Prefs.nextcloudLogMessages.value.add(formattedDate+" "+text+"\n");
-    Prefs.nextcloudLogMessages.notifyListeners();
   }
 }
 

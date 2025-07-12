@@ -179,7 +179,7 @@ class _ColorBarState extends State<ColorBar> {
     final children = <Widget>[
       // pinned colors
       if (stows.pinnedColors.value.isNotEmpty) ...[
-        const ColorOptionSeparatorIcon(
+        ColorOptionSeparatorIcon(
           icon: Icons.pin_drop,
           size: widget.toolbarSize.buttonSize,
         ),

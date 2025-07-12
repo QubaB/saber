@@ -173,7 +173,7 @@ class EditorState extends State<Editor> {
 
   final savingState = ValueNotifier(SavingState.savedWithThumbnail);
   @visibleForTesting
-  Timer? delayedSaveTimer;
+  Timer? _delayedSaveTimer;
   Timer? _watchServerTimer;
 
   // used to prevent accidentally drawing when pinch zooming
@@ -1020,7 +1020,7 @@ class EditorState extends State<Editor> {
     // whether the stylus button is or was pressed
     stylusButtonPressed = stylusButtonPressed || buttonPressed;
 
-    if (!Prefs.eraserOnStylusButtonPressAndRelease.value) {
+    if (!stows.eraserOnStylusButtonPressAndRelease.value) {
       // standard behavior of stylus button, while holding is erasing
       if (isHovering) {
         if (buttonPressed) {
@@ -1214,7 +1214,7 @@ class EditorState extends State<Editor> {
         return;
       case SavingState.waitingToSave:
         // continue
-        delayedSaveTimer?.cancel();
+        _delayedSaveTimer?.cancel();
         savingState.value = SavingState.saving;
     }
 
@@ -2030,7 +2030,7 @@ class EditorState extends State<Editor> {
           exportAsSba: exportAsSba,
           exportAsPdf: exportAsPdf,
           exportAsPng: null,
-          toolbarSize: Prefs.editorToolbarSize.value,
+          toolbarSize: stows.editorToolbarSize.value,
         ),
       ),
     );
@@ -2497,7 +2497,7 @@ class EditorState extends State<Editor> {
 
   @override
   void dispose() async {
-    delayedSaveTimer?.cancel();
+    _delayedSaveTimer?.cancel();
     _lastSeenPointerCountTimer?.cancel();
 
     (() async {

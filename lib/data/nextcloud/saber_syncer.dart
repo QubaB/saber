@@ -155,7 +155,7 @@ class SaberSyncInterface
     assert(relativePath.startsWith('/'));
     final encryptedName = await encryptPath(client, relativePath);
     final String eExtension;
-    if (!Prefs.ncDoNotEncryptFiles.value) {
+    if (!stows.ncDoNotEncryptFiles.value) {
       eExtension = encExtension; // encrypted extensions
     }
     else {
@@ -488,7 +488,7 @@ class SaberSyncInterface
 
     final String encryptedName;
     final String eExtension;
-    if (!Prefs.ncDoNotEncryptFiles.value) {
+    if (!stows.ncDoNotEncryptFiles.value) {
       eExtension = encExtension; // encrypted extensions
     }
     else {
