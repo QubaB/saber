@@ -48,6 +48,7 @@ dependencies:
   path_provider: ^2.0.11
 
   shared_preferences: ^2.0.17
+
   flutter_secure_storage: ^10.0.0-beta.4
 
   url_launcher: ^6.1.8
@@ -146,10 +147,27 @@ dependencies:
   pdfrx: ^1.0.85
   path: ^1.9.1
 
-  stow: ^0.5.0
-  stow_plain: ^0.5.0
-  stow_secure: ^0.5.0
-  stow_codecs: ^1.2.0
+  stow:
+    git:
+      url: https://github.com/QubaB/stow.git
+      ref: fix__Serialization_of_writes_to_Windows_secure_storage
+      path: packages/stow
+  stow_plain:
+    git:
+      url: https://github.com/QubaB/stow.git
+      ref: fix__Serialization_of_writes_to_Windows_secure_storage
+      path: packages/stow_plain
+  stow_secure:
+    git:
+      url: https://github.com/QubaB/stow.git
+      ref: fix__Serialization_of_writes_to_Windows_secure_storage
+      path: packages/stow_secure
+  stow_codecs:
+    git:
+      url: https://github.com/QubaB/stow.git
+      ref: fix__Serialization_of_writes_to_Windows_secure_storage
+      path: packages/stow_codecs
+
 
 dev_dependencies:
   flutter_test:
@@ -185,6 +203,29 @@ dependency_overrides:
       url: https://github.com/m-berto/flutter_secure_storage.git
       ref: patch-2
       path: flutter_secure_storage_linux
+
+  stow:
+    git:
+      url: https://github.com/QubaB/stow.git
+      ref: fix__Serialization_of_writes_to_Windows_secure_storage
+      path: packages/stow
+  stow_plain:
+    git:
+      url: https://github.com/QubaB/stow.git
+      ref: fix__Serialization_of_writes_to_Windows_secure_storage
+      path: packages/stow_plain
+  stow_secure:
+    git:
+      url: https://github.com/QubaB/stow.git
+      ref: fix__Serialization_of_writes_to_Windows_secure_storage
+      path: packages/stow_secure
+  stow_codecs:
+    git:
+      url: https://github.com/QubaB/stow.git
+      ref: fix__Serialization_of_writes_to_Windows_secure_storage
+      path: packages/stow_codecs
+
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
