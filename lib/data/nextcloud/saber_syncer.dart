@@ -78,8 +78,7 @@ class SaberSyncInterface
 
     remoteFiles = await findRemoteFiles();
     if (remoteFiles.isEmpty) return const [];
-
-    final List<SaberSyncFile> changedFiles =
+    final List<SaberSyncFile> changedFiles = [];
         await Future.wait(remoteFiles.map((remoteFile) async {
       final SaberSyncFile syncFile;
       try {
@@ -89,7 +88,7 @@ class SaberSyncInterface
         nextcloudSyncMessages.add(
             NextcloudLogMessageType.info,'','','Failed to get sync file from remote file: $e'
         );
-        continue;
+        return null;
       }
 
       final bestFile = await getBestFile(
@@ -108,12 +107,11 @@ class SaberSyncInterface
           final locallyDeleted = stows.fileSyncAlreadyDeleted.value
               .contains(syncFile.relativeLocalPath);
           if (remotelyDeleted && locallyDeleted) break;
-
           changedFiles.add(syncFile);
           nextcloudSyncMessages.add(
               NextcloudLogMessageType.queuedDownload,syncFile.relativeLocalPath,syncFile.remotePath,''
           );
-
+          return syncFile;
       }
     })).then((list) => list.nonNulls.toList());
 
