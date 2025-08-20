@@ -154,7 +154,7 @@ class _BrowsePageState extends State<BrowsePage> {
                 scrolledUnderElevation: 1,
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(
-                    title,
+                    "title",
                     style: TextStyle(color: colorScheme.onSurface),
                   ),
                   centerTitle: cupertino,
