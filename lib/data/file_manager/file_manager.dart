@@ -85,7 +85,8 @@ class FileManager {
   }) async {
     await newDir.create(recursive: true);
     await for (final entity in oldDir.list()) {
-      final entityPath = '${newDir.path}/${entity.path.split('/').last}';
+      final entityPath =
+          '${newDir.path}/${entity.path.split(RegExp(r'[\\/]')).last}';
       switch (entity) {
         case File _:
           await entity.rename(entityPath);
@@ -702,33 +703,26 @@ class FileManager {
       assert(extension.startsWith('.')); // extension must start with a dot
     }
 
-    String fileName;
-
     /// The file name without its extension
-    if (Platform.isWindows) {
-      fileName = path.split('\\').last;
-    }
-    else {
-      fileName = path.split('/').last;
-    }
+    String fileName = path.split(RegExp(r'[\\/]')).last;
     fileName = fileName.substring(0, fileName.lastIndexOf('.'));
     final String importedPath;
 
     final writeFutures = <Future>[];
 
-    if (extension == '.sba') {
+    if (extension.toLowerCase() == '.sba') {
       final inputStream = InputFileStream(path);
       final archive = ZipDecoder().decodeStream(inputStream);
 
       final mainFile = archive.files.cast<ArchiveFile?>().firstWhere(
-            (file) => file!.name.endsWith('sbn') || file.name.endsWith('sbn2'),
+            (file) => file!.name.toLowerCase().endsWith('sbn') || file.name.toLowerCase().endsWith('sbn2'),
             orElse: () => null,
           );
       if (mainFile == null) {
         log.severe('Failed to find main note in sba: $path');
         return null;
       }
-      final mainFileExtension = '.${mainFile.name.split('.').last}';
+      final mainFileExtension = '.${mainFile.name.split('.').last}'.toLowerCase();
       importedPath = await suffixFilePathToMakeItUnique(
         '${parentDir ?? '/'}$fileName',
         intendedExtension: mainFileExtension,
@@ -775,11 +769,11 @@ class FileManager {
       final fileContents = await file.readAsBytes();
       importedPath = await suffixFilePathToMakeItUnique(
         '${parentDir ?? '/'}$fileName',
-        intendedExtension: extension,
+        intendedExtension: extension.toLowerCase(),
       );
       writeFutures.add(
         writeFile(
-          importedPath + extension,
+          importedPath + extension.toLowerCase(),
           fileContents,
           awaitWrite: awaitWrite,
         ),

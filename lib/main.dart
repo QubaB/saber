@@ -100,7 +100,7 @@ Future<void> appRunner(List<String> args) async {
 
   LicenseRegistry.addLicense(() async* {
     for (final licenseFile in const [
-      'assets/google_fonts/Atkinson_Hyperlegible/OFL.txt',
+      'assets/google_fonts/Atkinson_Hyperlegible_Next/OFL.txt',
       'assets/google_fonts/Dekko/OFL.txt',
       'assets/google_fonts/Fira_Mono/OFL.txt',
       'assets/google_fonts/Neucha/OFL.txt',
@@ -261,7 +261,7 @@ class App extends StatefulWidget {
 
     final String extension;
     if (file.path.contains('.')) {
-      extension = file.path.split('.').last;
+      extension = file.path.split('.').last.toLowerCase();
     } else {
       extension = 'sbn2';
     }
@@ -280,9 +280,7 @@ class App extends StatefulWidget {
       _router.push(RoutePaths.editFilePath(path));
     } else if (extension == 'pdf' && Editor.canRasterPdf) {
       final fileNameWithoutExtension = file.path
-          .split('/')
-          .last
-          .split('\\')
+          .split(RegExp(r'[\\/]'))
           .last
           .substring(0, file.path.length - '.pdf'.length);
       final sbnFilePath = await FileManager.suffixFilePathToMakeItUnique(

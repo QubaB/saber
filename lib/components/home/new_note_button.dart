@@ -106,20 +106,20 @@ class _NewNoteButtonState extends State<NewNoteButton> {
               final fileName = result.files.single.name;
               if (filePath == null) return;
 
-              if (filePath.endsWith('.sbn') ||
-                  filePath.endsWith('.sbn2') ||
-                  filePath.endsWith('.sba')) {
-                final path = await FileManager.importFile(
-                  filePath,
-                  '${widget.path ?? ''}/',
-                );
-                if (path == null) return;
-                if (!context.mounted) return;
+            if (filePath.toLowerCase().endsWith('.sbn') ||
+                filePath.toLowerCase().endsWith('.sbn2') ||
+                filePath.toLowerCase().endsWith('.sba')) {
+              final path = await FileManager.importFile(
+                filePath,
+                '${widget.path ?? ''}/',
+              );
+              if (path == null) return;
+              if (!context.mounted) return;
 
-                context.push(RoutePaths.editFilePath(path));
-              } else if (filePath.endsWith('.pdf')) {
-                if (!Editor.canRasterPdf) return;
-                if (!mounted) return;
+              context.push(RoutePaths.editFilePath(path));
+            } else if (filePath.toLowerCase().endsWith('.pdf')) {
+              if (!Editor.canRasterPdf) return;
+              if (!mounted) return;
 
                 final fileNameWithoutExtension =
                     fileName.substring(0, fileName.length - '.pdf'.length);
