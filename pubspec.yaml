@@ -152,27 +152,11 @@ dependencies:
   pdfrx: ^2.1.3
   path: ^1.9.1
 
-  stow:
-    git:
-      url: https://github.com/QubaB/stow.git
-      ref: fix__Serialization_of_writes_to_Windows_secure_storage
-      path: packages/stow
-  stow_plain:
-    git:
-      url: https://github.com/QubaB/stow.git
-      ref: fix__Serialization_of_writes_to_Windows_secure_storage
-      path: packages/stow_plain
-  stow_secure:
-    git:
-      url: https://github.com/QubaB/stow.git
-      ref: fix__Serialization_of_writes_to_Windows_secure_storage
-      path: packages/stow_secure
-  stow_codecs:
-    git:
-      url: https://github.com/QubaB/stow.git
-      ref: fix__Serialization_of_writes_to_Windows_secure_storage
-      path: packages/stow_codecs
-   
+  stow: ^0.5.1
+  stow_plain: ^0.5.0
+  stow_secure: ^0.5.1
+  stow_codecs: ^1.2.0
+
   sentry_flutter: ^9.5.0
   sentry_logging: ^9.5.0
 
@@ -218,27 +202,6 @@ dependency_overrides:
       url: https://github.com/m-berto/flutter_secure_storage.git
       ref: patch-2
       path: flutter_secure_storage_linux
-
-  stow:
-    git:
-      url: https://github.com/QubaB/stow.git
-      ref: fix__Serialization_of_writes_to_Windows_secure_storage
-      path: packages/stow
-  stow_plain:
-    git:
-      url: https://github.com/QubaB/stow.git
-      ref: fix__Serialization_of_writes_to_Windows_secure_storage
-      path: packages/stow_plain
-  stow_secure:
-    git:
-      url: https://github.com/QubaB/stow.git
-      ref: fix__Serialization_of_writes_to_Windows_secure_storage
-      path: packages/stow_secure
-  stow_codecs:
-    git:
-      url: https://github.com/QubaB/stow.git
-      ref: fix__Serialization_of_writes_to_Windows_secure_storage
-      path: packages/stow_codecs
 
 
 
