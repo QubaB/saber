@@ -10,7 +10,6 @@ import 'package:saber/components/navbar/responsive_navbar.dart';
 import 'package:saber/components/settings/nextcloud_profile.dart';
 import 'package:saber/components/toolbar/toolbar_button.dart';
 import 'package:saber/data/codecs/base64_codec.dart';
-import 'package:saber/data/codecs/date_time_codec.dart';
 import 'package:saber/data/codecs/quota_codec.dart';
 import 'package:saber/data/editor/pencil_sound.dart';
 import 'package:saber/data/flavor_config.dart';
@@ -81,17 +80,17 @@ class Stows {
       PlainStow('syncInBackground', true, volatile: !_isOnMainIsolate);
 
   final appTheme = PlainStow('appTheme', ThemeMode.system,
-      codec: EnumCodec(ThemeMode.values), volatile: !_isOnMainIsolate);
+      codec: const EnumCodec(ThemeMode.values), volatile: !_isOnMainIsolate);
 
   /// The type of platform to theme. Default value is [defaultTargetPlatform].
   final platform = PlainStow('platform', defaultTargetPlatform,
-      codec: EnumCodec(TargetPlatform.values), volatile: !_isOnMainIsolate);
+      codec: const EnumCodec(TargetPlatform.values), volatile: !_isOnMainIsolate);
   final layoutSize = PlainStow('layoutSize', LayoutSize.auto,
       codec: LayoutSize.codec, volatile: !_isOnMainIsolate);
 
   /// The accent color of the app. If 0, the system accent color will be used.
   final accentColor = PlainStow<Color?>('accentColor', null,
-      codec: ColorCodec(), volatile: !_isOnMainIsolate);
+      codec: const ColorCodec(), volatile: !_isOnMainIsolate);
   final hyperlegibleFont =
       PlainStow('hyperlegibleFont', false, volatile: !_isOnMainIsolate);
 
@@ -225,7 +224,7 @@ class Stows {
   /// By default, we resync everything uploaded before v0.18.4, since uploads before then resulted in 0B files.
   final fileSyncResyncEverythingDate = PlainStow('fileSyncResyncEverythingDate',
       DateTime.parse('2023-12-10T10:06:31.000Z'),
-      codec: DateTimeCodec(), volatile: !_isOnMainIsolate);
+      codec: const DateTimeCodec(), volatile: !_isOnMainIsolate);
 
   /// The last storage quota that was fetched from Nextcloud
   final lastStorageQuota = PlainStow<Quota?>('lastStorageQuota', null,

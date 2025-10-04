@@ -549,8 +549,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 icon: FontAwesomeIcons.shapes,
                 pref: stows.shapeRecognitionDelay,
                 options: [
-                  ToggleButtonsOption(500, Text('0.5s')),
-                  ToggleButtonsOption(1000, Text('1s')),
+                  const ToggleButtonsOption(500, Text('0.5s')),
+                  const ToggleButtonsOption(1000, Text('1s')),
                   ToggleButtonsOption(
                       -1, Text(t.settings.shapeRecognitionDisabled)),
                 ],

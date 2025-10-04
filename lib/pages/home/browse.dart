@@ -177,7 +177,7 @@ class _BrowsePageState extends State<BrowsePage> {
                 ],
               ),
             ),
-            SliverPadding(padding: const EdgeInsets.only(bottom: 16)),
+            const SliverPadding(padding: EdgeInsets.only(bottom: 16)),
             GridFolders(
               isAtRoot: path?.isEmpty ?? true,
               crossAxisCount: crossAxisCount,
