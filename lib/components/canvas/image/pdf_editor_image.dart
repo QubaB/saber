@@ -150,12 +150,6 @@ class PdfEditorImage extends EditorImage {
     assert(srcRect.isEmpty);
     assert(!naturalSize.isEmpty);
 
-    if (dstRect.isEmpty) {
-      final dstSize = pageSize != null
-          ? EditorImage.resize(naturalSize, pageSize!)
-          : naturalSize;
-      dstRect = dstRect.topLeft & dstSize;
-    }
 //    _pdfDocument.value ??= await assetCacheAll.getPdfDocument(assetId);
 //    _pdfDocument.value ??= pdfFile != null
 //        ? await PdfDocument.openFile(pdfFile!.path)
