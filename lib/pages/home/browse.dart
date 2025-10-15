@@ -143,38 +143,39 @@ class _BrowsePageState extends State<BrowsePage> {
         ]),
         child: CustomScrollView(
           slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.only(
-                bottom: 8,
-              ),
-              sliver: SliverAppBar(
-                collapsedHeight: kToolbarHeight,
-                expandedHeight: 200,
-                pinned: true,
-                scrolledUnderElevation: 1,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: Text(
-                    "title",
-                    style: TextStyle(color: colorScheme.onSurface),
-                  ),
-                  centerTitle: cupertino,
-                  titlePadding: EdgeInsetsDirectional.only(
-                      start: cupertino ? 0 : 16, bottom: 16),
+            SliverAppBar(
+              collapsedHeight: kToolbarHeight,
+              expandedHeight: 200 - 8,
+              pinned: true,
+              scrolledUnderElevation: 1,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(
+                  t.home.titles.browse,
+                  style: TextStyle(color: colorScheme.onSurface),
                 ),
-                actions: [
-                  const SyncingButton(),
-                  SortButton(
-                    callback: () => {
-                      if (SortNotes.isNeeded)
-                        {
-                          SortNotes.sortNotes(files, forced: true),
-                          // SortNotes.sortNotes(folders, forced: true), // original
-                          SortNotes.sortNotesFolders(folders, forced: true),
-                          setState(() {}),
-                        }
-                    },
-                  ),
-                ],
+                centerTitle: cupertino,
+                titlePadding: EdgeInsetsDirectional.only(
+                    start: cupertino ? 0 : 16, bottom: 8),
+              ),
+              actions: [
+                SyncingButton(),
+                SortButton(
+                  callback: () => {
+                    if (SortNotes.isNeeded)
+                      {
+                        SortNotes.sortNotes(files, forced: true),
+                        // SortNotes.sortNotes(folders, forced: true), // original
+                        SortNotes.sortNotesFolders(folders, forced: true),
+                        setState(() {}),
+                      }
+                  },
+                ),
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: PathComponents(
+                path,
+                onPathComponentTap: onPathComponentTap,
               ),
             ),
             const SliverPadding(padding: EdgeInsets.only(bottom: 16)),
