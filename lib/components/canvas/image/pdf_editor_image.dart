@@ -149,15 +149,18 @@ class PdfEditorImage extends EditorImage {
   Future<void> firstLoad() async {
     assert(srcRect.isEmpty);
     assert(!naturalSize.isEmpty);
+    if (dstRect.isEmpty) {
+      final dstSize = pageSize != null
+          ? EditorImage.resize(naturalSize, pageSize!)
+          : naturalSize;
+      dstRect = dstRect.topLeft & dstSize;
+    }
 
 //    _pdfDocument.value ??= await assetCacheAll.getPdfDocument(assetId);
 //    _pdfDocument.value ??= pdfFile != null
 //        ? await PdfDocument.openFile(pdfFile!.path)
 //        : await PdfDocument.openData(pdfBytes!);
 
-    // QB check if it works
-    // each image should have set dstFullRect.
-    dstFullRect=getDstFullRect(); // calculate full image rect
   }
 
   @override
