@@ -88,6 +88,7 @@ class TakePictureScreenState extends State<TakePictureScreen> {
                     ],
                   ),
                   const SizedBox(height: 16),
+                  const SizedBox(height: 40), // added space on bottom
                 ],
               );
             }
