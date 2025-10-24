@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:saber/components/theming/row_col.dart';
 import 'package:saber/components/toolbar/size_picker.dart';
 import 'package:saber/components/toolbar/toolbar_button.dart';
 import 'package:saber/data/extensions/axis_extensions.dart';
@@ -42,8 +41,8 @@ class _PenModalState extends State<PenModal> {
       return const SizedBox();
     }
 
-    return RowCol(
-      axis: axis,
+    return Flex(
+      direction: axis,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizePicker(
@@ -59,13 +58,12 @@ class _PenModalState extends State<PenModal> {
             }),
             style: TextButton.styleFrom(
               foregroundColor: Pen.currentPen.icon == Pen.fountainPenIcon
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).colorScheme.onSurface,
+                  ? ColorScheme.of(context).secondary
+                  : ColorScheme.of(context).onSurface,
               backgroundColor: Pen.currentPen.icon == Pen.fountainPenIcon
-                  ? Theme.of(context)
-                      .colorScheme
-                      .secondary
-                      .withValues(alpha: 0.1)
+                  ? Theme.of(
+                      context,
+                    ).colorScheme.secondary.withValues(alpha: 0.1)
                   : Colors.transparent,
               shape: const CircleBorder(),
             ),
@@ -76,8 +74,8 @@ class _PenModalState extends State<PenModal> {
               height: widget.toolbarSize.penModalSize / 508 * 374,
               theme: SvgTheme(
                 currentColor: Pen.currentPen.icon == Pen.fountainPenIcon
-                    ? Theme.of(context).colorScheme.secondary
-                    : Theme.of(context).colorScheme.onSurface,
+                    ? ColorScheme.of(context).secondary
+                    : ColorScheme.of(context).onSurface,
               ),
             ),
           ),
@@ -88,13 +86,12 @@ class _PenModalState extends State<PenModal> {
             }),
             style: TextButton.styleFrom(
               foregroundColor: Pen.currentPen.icon == Pen.ballpointPenIcon
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).colorScheme.onSurface,
+                  ? ColorScheme.of(context).secondary
+                  : ColorScheme.of(context).onSurface,
               backgroundColor: Pen.currentPen.icon == Pen.ballpointPenIcon
-                  ? Theme.of(context)
-                      .colorScheme
-                      .secondary
-                      .withValues(alpha: 0.1)
+                  ? Theme.of(
+                      context,
+                    ).colorScheme.secondary.withValues(alpha: 0.1)
                   : Colors.transparent,
               shape: const CircleBorder(),
             ),
@@ -105,8 +102,8 @@ class _PenModalState extends State<PenModal> {
               height: widget.toolbarSize.penModalSize / 508 * 374,
               theme: SvgTheme(
                 currentColor: Pen.currentPen.icon == Pen.ballpointPenIcon
-                    ? Theme.of(context).colorScheme.secondary
-                    : Theme.of(context).colorScheme.onSurface,
+                    ? ColorScheme.of(context).secondary
+                    : ColorScheme.of(context).onSurface,
               ),
             ),
           ),
@@ -118,13 +115,12 @@ class _PenModalState extends State<PenModal> {
             iconSize: widget.toolbarSize.penModalSize,
             style: TextButton.styleFrom(
               foregroundColor: Pen.currentPen.icon == ShapePen.shapePenIcon
-                  ? Theme.of(context).colorScheme.secondary
-                  : Theme.of(context).colorScheme.onSurface,
+                  ? ColorScheme.of(context).secondary
+                  : ColorScheme.of(context).onSurface,
               backgroundColor: Pen.currentPen.icon == ShapePen.shapePenIcon
-                  ? Theme.of(context)
-                      .colorScheme
-                      .secondary
-                      .withValues(alpha: 0.1)
+                  ? Theme.of(
+                      context,
+                    ).colorScheme.secondary.withValues(alpha: 0.1)
                   : Colors.transparent,
               shape: const CircleBorder(),
             ),

@@ -7,7 +7,6 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:logging/logging.dart';
 import 'package:saber/components/canvas/_asset_cache.dart';
 import 'package:saber/components/canvas/_canvas_background_painter.dart';
@@ -47,10 +46,10 @@ class EditorCoreInfo {
   /// - 3: Store page sizes for each page
   /// - 2: Store width and height in sbn
   /// - 1: Store version in sbn
-  static const int sbnVersion = 19;
-  bool readOnly = false;
-  bool readOnlyBecauseOfVersion = false;
-  bool readOnlyBecauseWatchingServer = false;
+  static const sbnVersion = 19;
+  var readOnly = false;
+  var readOnlyBecauseOfVersion = false;
+  var readOnlyBecauseWatchingServer = false;
 
   String filePath;
 
@@ -126,35 +125,40 @@ class EditorCoreInfo {
     required bool onlyFirstPage,
   }) {
     final fileVersion = json['v'] as int? ?? 0;
-    bool readOnlyBecauseOfVersion = fileVersion > sbnVersion;
+    final readOnlyBecauseOfVersion = fileVersion > sbnVersion;
     readOnly = readOnly || readOnlyBecauseOfVersion;
 
     /// Note that inline assets aren't used anymore
     /// since sbnVersion 19.
     final List<Uint8List>? inlineAssets = (json['a'] as List?)
-        ?.map((asset) => switch (asset) {
-              (String base64) => base64Decode(base64),
-              (Uint8List bytes) => bytes,
-              (List<dynamic> bytes) => Uint8List.fromList(bytes.cast<int>()),
-              (BsonBinary bsonBinary) => bsonBinary.byteList,
-              _ => () {
-                  log.severe('Invalid asset type: ${asset.runtimeType}');
-                  return Uint8List(0);
-                }(),
-            })
+        ?.map(
+          (asset) => switch (asset) {
+            (final String base64) => base64Decode(base64),
+            (final Uint8List bytes) => bytes,
+            (final List<dynamic> bytes) => Uint8List.fromList(
+              bytes.cast<int>(),
+            ),
+            (final BsonBinary bsonBinary) => bsonBinary.byteList,
+            _ => () {
+              log.severe('Invalid asset type: ${asset.runtimeType}');
+              return Uint8List(0);
+            }(),
+          },
+        )
         .toList();
 
     final Color? backgroundColor;
     switch (json['b']) {
-      case (int value):
+      case (final int value):
         backgroundColor = Color(value);
-      case (Int64 value):
+      case (final Int64 value):
         backgroundColor = Color(value.toInt());
       case null:
         backgroundColor = null;
       default:
         throw Exception(
-            'Invalid color value: (${json['b'].runtimeType}) ${json['b']}');
+          'Invalid color value: (${json['b'].runtimeType}) ${json['b']}',
+        );
     }
 
     final assetCacheAll = AssetCacheAll();
@@ -235,10 +239,12 @@ class EditorCoreInfo {
       // old format (list of [width, height])
       return pages
           .take(onlyFirstPage ? 1 : pages.length)
-          .map((dynamic page) => EditorPage(
-                width: page[0] as double?,
-                height: page[1] as double?,
-              ))
+          .map(
+            (dynamic page) => EditorPage(
+              width: page[0] as double?,
+              height: page[1] as double?,
+            ),
+          )
           .toList();
     } else {
       return pages
@@ -256,8 +262,8 @@ class EditorCoreInfo {
   }
 
   void _handleEmptyImageIds() {
-    for (EditorPage page in pages) {
-      for (EditorImage image in page.images) {
+    for (final page in pages) {
+      for (final image in page.images) {
         if (image.id == -1) image.id = nextImageId++;
       }
     }
@@ -288,12 +294,10 @@ class EditorCoreInfo {
         onlyFirstPage: onlyFirstPage,
         fileVersion: fileVersion,
       );
-      for (Stroke stroke in strokes) {
+      for (final stroke in strokes) {
         if (onlyFirstPage) assert(stroke.pageIndex == 0);
         while (stroke.pageIndex >= pages.length) {
-          pages.add(EditorPage(
-            size: fallbackPageSize,
-          ));
+          pages.add(EditorPage(size: fallbackPageSize));
         }
         pages[stroke.pageIndex].insertStroke(stroke);
       }
@@ -308,7 +312,7 @@ class EditorCoreInfo {
         sbnPath: filePath,
         assetCacheAll: assetCacheAll,
       );
-      for (EditorImage image in images) {
+      for (final image in images) {
         if (onlyFirstPage) assert(image.pageIndex == 0);
         while (image.pageIndex >= pages.length) {
           pages.add(EditorPage(size: fallbackPageSize));
@@ -325,8 +329,8 @@ class EditorCoreInfo {
 
     // delete points that are too close to each other
     if (fileVersion < 12) {
-      for (EditorPage page in pages) {
-        for (Stroke stroke in page.strokes) {
+      for (final page in pages) {
+        for (final stroke in page.strokes) {
           stroke.optimisePoints();
         }
       }
@@ -334,7 +338,7 @@ class EditorCoreInfo {
   }
 
   void _sortStrokes() {
-    for (EditorPage page in pages) {
+    for (final page in pages) {
       page.sortStrokes();
     }
   }
@@ -350,8 +354,9 @@ class EditorCoreInfo {
     if (bsonBytes != null) {
       jsonString = null;
     } else {
-      final jsonBytes =
-          await FileManager.readFile(path + Editor.extensionOldJson);
+      final jsonBytes = await FileManager.readFile(
+        path + Editor.extensionOldJson,
+      );
       jsonString = jsonBytes != null ? utf8.decode(jsonBytes) : null;
     }
 
@@ -380,12 +385,12 @@ class EditorCoreInfo {
     EditorCoreInfo coreInfo;
     try {
       EditorCoreInfo isolate() => _loadFromFileIsolate(
-            jsonString,
-            bsonBytes,
-            path,
-            readOnly,
-            onlyFirstPage,
-          );
+        jsonString,
+        bsonBytes,
+        path,
+        readOnly,
+        onlyFirstPage,
+      );
 
       final length = jsonString?.length ?? bsonBytes!.length;
       if (alwaysUseIsolate || length > 2 * 1024 * 1024) {
@@ -500,11 +505,7 @@ class EditorCoreInfo {
     const filePath = 'main${Editor.extension}';
 
     final archive = Archive();
-    archive.addFile(ArchiveFile(
-      filePath,
-      bson.length,
-      bson,
-    ));
+    archive.addFile(ArchiveFile(filePath, bson.length, bson));
 
     await Future.wait([
       for (int i = 0; i < assetCacheAll.length; ++i)
@@ -544,7 +545,6 @@ class EditorCoreInfo {
     CanvasBackgroundPattern? backgroundPattern,
     int? lineHeight,
     int? lineThickness,
-    QuillController? quillController,
     List<EditorPage>? pages,
   }) {
     return EditorCoreInfo._(

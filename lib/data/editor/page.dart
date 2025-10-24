@@ -23,7 +23,7 @@ class HasSize {
 class EditorPage extends ChangeNotifier implements HasSize {
   static const double defaultWidth = 1000;
   static const double defaultHeight = defaultWidth * 1.4;
-  static const Size defaultSize = Size(defaultWidth, defaultHeight);
+  static const defaultSize = Size(defaultWidth, defaultHeight);
 
   @override
   Size size;
@@ -35,7 +35,7 @@ class EditorPage extends ChangeNotifier implements HasSize {
         innerCanvasKey.currentState?.context.findRenderObject() as RenderBox?;
   }
 
-  bool _isRendered = false;
+  var _isRendered = false;
   bool get isRendered => _isRendered;
   set isRendered(bool isRendered) {
     if (isRendered == _isRendered) return;
@@ -63,9 +63,7 @@ class EditorPage extends ChangeNotifier implements HasSize {
   bool get isNotEmpty => !isEmpty;
 
   /// The height of the canvas cropped to the content.
-  double previewHeight({
-    required int lineHeight,
-  }) {
+  double previewHeight({required int lineHeight}) {
     // avoid dividing by zero (this should never happen)
     assert(size.height != 0);
     assert(size.width != 0);
@@ -88,8 +86,10 @@ class EditorPage extends ChangeNotifier implements HasSize {
     }
     if (!quill.controller.document.isEmpty()) {
       // this does not account for text that wraps to the next line
-      int linesOfText =
-          quill.controller.document.toPlainText().split('\n').length;
+      final int linesOfText = quill.controller.document
+          .toPlainText()
+          .split('\n')
+          .length;
       maxY = max(maxY, linesOfText * lineHeight * 1.5); // ×1.5 fudge factor
     }
 
@@ -112,17 +112,20 @@ class EditorPage extends ChangeNotifier implements HasSize {
     List<EditorImage>? images,
     QuillStruct? quill,
     this.backgroundImage,
-  })  : assert((size == null) || (width == null && height == null),
-            "size and width/height shouldn't both be specified"),
-        size = size ?? Size(width ?? defaultWidth, height ?? defaultHeight),
-        strokes = strokes ?? [],
-        laserStrokes = [],
-        images = images ?? [],
-        quill = quill ??
-            QuillStruct(
-              controller: QuillController.basic(),
-              focusNode: FocusNode(debugLabel: 'Quill Focus Node'),
-            );
+  }) : assert(
+         (size == null) || (width == null && height == null),
+         "size and width/height shouldn't both be specified",
+       ),
+       size = size ?? Size(width ?? defaultWidth, height ?? defaultHeight),
+       strokes = strokes ?? [],
+       laserStrokes = [],
+       images = images ?? [],
+       quill =
+           quill ??
+           QuillStruct(
+             controller: QuillController.basic(),
+             focusNode: FocusNode(debugLabel: 'Quill Focus Node'),
+           );
 
   factory EditorPage.fromJson(
     Map<String, dynamic> json, {
@@ -185,12 +188,12 @@ class EditorPage extends ChangeNotifier implements HasSize {
   /// Inserts a stroke, while keeping the strokes sorted by
   /// pen type and color.
   void insertStroke(Stroke newStroke) {
-    int newStrokeColor = newStroke.color.toARGB32();
+    final int newStrokeColor = newStroke.color.toARGB32();
 
     int index = 0;
-    for (final Stroke stroke in strokes) {
-      int penTypeComparison = stroke.penType.compareTo(newStroke.penType);
-      int color = stroke.color.toARGB32();
+    for (final stroke in strokes) {
+      final penTypeComparison = stroke.penType.compareTo(newStroke.penType);
+      final color = stroke.color.toARGB32();
       if (penTypeComparison > 0) {
         break; // this stroke's pen type comes after the new stroke's pen type
       } else if (stroke.penType == (Highlighter).toString() &&
@@ -207,7 +210,7 @@ class EditorPage extends ChangeNotifier implements HasSize {
   /// Sorts the strokes by pen type and color.
   void sortStrokes() {
     strokes.sort((Stroke a, Stroke b) {
-      int penTypeComparison = a.penType.compareTo(b.penType);
+      final penTypeComparison = a.penType.compareTo(b.penType);
       if (penTypeComparison != 0) return penTypeComparison;
       if (a.penType != (Highlighter).toString()) return 0;
       return a.color.toARGB32().compareTo(b.color.toARGB32());
@@ -219,22 +222,21 @@ class EditorPage extends ChangeNotifier implements HasSize {
     required HasSize page,
     required bool onlyFirstPage,
     required int fileVersion,
-  }) =>
-      (strokes ?? [])
-          .map((dynamic stroke) {
-            final map = stroke as Map<String, dynamic>;
-            final pageIndex = map['i'] ?? 0;
-            if (onlyFirstPage && pageIndex > 0) return null;
-            return Stroke.fromJson(
-              map,
-              fileVersion: fileVersion,
-              pageIndex: pageIndex,
-              page: page,
-            );
-          })
-          .where((element) => element != null)
-          .cast<Stroke>()
-          .toList();
+  }) => (strokes ?? [])
+      .map((dynamic stroke) {
+        final map = stroke as Map<String, dynamic>;
+        final pageIndex = map['i'] ?? 0;
+        if (onlyFirstPage && pageIndex > 0) return null;
+        return Stroke.fromJson(
+          map,
+          fileVersion: fileVersion,
+          pageIndex: pageIndex,
+          page: page,
+        );
+      })
+      .where((element) => element != null)
+      .cast<Stroke>()
+      .toList();
 
   static List<EditorImage> parseImagesJson(
     List<dynamic>? images, {
@@ -297,14 +299,13 @@ class EditorPage extends ChangeNotifier implements HasSize {
     List<EditorImage>? images,
     QuillStruct? quill,
     EditorImage? backgroundImage,
-  }) =>
-      EditorPage(
-        size: size ?? this.size,
-        strokes: strokes ?? this.strokes,
-        images: images ?? this.images,
-        quill: quill ?? this.quill,
-        backgroundImage: backgroundImage ?? this.backgroundImage,
-      );
+  }) => EditorPage(
+    size: size ?? this.size,
+    strokes: strokes ?? this.strokes,
+    images: images ?? this.images,
+    quill: quill ?? this.quill,
+    backgroundImage: backgroundImage ?? this.backgroundImage,
+  );
 }
 
 class QuillStruct {
@@ -312,10 +313,7 @@ class QuillStruct {
   late final FocusNode focusNode;
   StreamSubscription? changeSubscription;
 
-  QuillStruct({
-    required this.controller,
-    required this.focusNode,
-  });
+  QuillStruct({required this.controller, required this.focusNode});
 
   void dispose() {
     changeSubscription?.cancel();

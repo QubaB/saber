@@ -11,11 +11,7 @@ import 'package:saber/pages/home/settings.dart';
 import 'package:saber/pages/home/whiteboard.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({
-    super.key,
-    required this.subpage,
-    required this.path,
-  });
+  const HomePage({super.key, required this.subpage, required this.path});
 
   final String subpage;
   final String? path;
@@ -33,7 +29,7 @@ class HomePage extends StatefulWidget {
     searchSubpage,
     browseSubpage,
     whiteboardSubpage,
-    settingsSubpage
+    settingsSubpage,
   ];
 }
 

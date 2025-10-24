@@ -48,7 +48,7 @@ class PdfEditorImage extends EditorImage {
     required String sbnPath,
     required AssetCacheAll assetCacheAll,
   }) {
-    String? extension = json['e'] as String?;
+    final extension = json['e'] as String?;
     assert(extension == null || extension == '.pdf');
 
     final assetIndexJson = json['a'] as int?;
@@ -94,7 +94,8 @@ class PdfEditorImage extends EditorImage {
     }
 
     return PdfEditorImage(
-      id: json['id'] ??
+      id:
+          json['id'] ??
           -1, // -1 will be replaced by EditorCoreInfo._handleEmptyImageIds()
       assetCacheAll: assetCacheAll,
       assetId: assetIndex,
@@ -103,8 +104,9 @@ class PdfEditorImage extends EditorImage {
       pageIndex: json['i'] ?? 0,
       pageSize: Size.infinite,
       invertible: json['v'] ?? true,
-      backgroundFit:
-          json['f'] != null ? BoxFit.values[json['f']] : BoxFit.contain,
+      backgroundFit: json['f'] != null
+          ? BoxFit.values[json['f']]
+          : BoxFit.contain,
       onMoveImage: null,
       onDeleteImage: null,
       onMiscChange: null,
@@ -116,10 +118,7 @@ class PdfEditorImage extends EditorImage {
         json['w'] ?? 0,
         json['h'] ?? 0,
       ),
-      naturalSize: Size(
-        json['nw'] ?? 0,
-        json['nh'] ?? 0,
-      ),
+      naturalSize: Size(json['nw'] ?? 0, json['nh'] ?? 0),
       isThumbnail: isThumbnail,
     );
   }

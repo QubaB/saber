@@ -24,22 +24,7 @@ class ResponsiveNavbar extends StatefulWidget {
   @override
   State<ResponsiveNavbar> createState() => _ResponsiveNavbarState();
 
-  static bool isLargeScreen = true;
-  static void setAndroidNavBarColor(ThemeData theme) async {
-    await null;
-
-    final brightness = theme.brightness;
-    final otherBrightness =
-        brightness == Brightness.dark ? Brightness.light : Brightness.dark;
-    final overlayStyle = brightness == Brightness.dark
-        ? SystemUiOverlayStyle.dark
-        : SystemUiOverlayStyle.light;
-
-    SystemChrome.setSystemUIOverlayStyle(overlayStyle.copyWith(
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: otherBrightness,
-    ));
-  }
+  static var isLargeScreen = true;
 }
 
 class _ResponsiveNavbarState extends State<ResponsiveNavbar> {
@@ -58,8 +43,9 @@ class _ResponsiveNavbarState extends State<ResponsiveNavbar> {
     if (index == widget.selectedIndex) return;
 
     // if on whiteboard, check if saved
-    final whiteboardPath = pathToFunction(RoutePaths.home)(
-        {'subpage': HomePage.whiteboardSubpage});
+    final whiteboardPath = pathToFunction(RoutePaths.home)({
+      'subpage': HomePage.whiteboardSubpage,
+    });
     if (HomeRoutes.getRoute(widget.selectedIndex) == whiteboardPath) {
       final savingState = Whiteboard.savingState;
       switch (savingState) {
@@ -90,19 +76,21 @@ class _ResponsiveNavbarState extends State<ResponsiveNavbar> {
 
     if (ResponsiveNavbar.isLargeScreen) {
       return Scaffold(
-        body: Row(children: [
-          IntrinsicWidth(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 300),
-              child: VerticalNavbar(
-                destinations: HomeRoutes.navigationRailDestinations,
-                selectedIndex: widget.selectedIndex,
-                onDestinationSelected: onDestinationSelected,
+        body: Row(
+          children: [
+            IntrinsicWidth(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 300),
+                child: VerticalNavbar(
+                  destinations: HomeRoutes.navigationRailDestinations,
+                  selectedIndex: widget.selectedIndex,
+                  onDestinationSelected: onDestinationSelected,
+                ),
               ),
             ),
-          ),
-          Expanded(child: widget.body),
-        ]),
+            Expanded(child: widget.body),
+          ],
+        ),
       );
     } // else mobile
 

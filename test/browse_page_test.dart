@@ -36,8 +36,10 @@ void main() {
         });
 
         testGoldens('Non-empty', (tester) async {
-          final children = DirectoryChildren(const ['subfolder1', 'subfolder2'],
-              const ['file1', 'file2', 'file3']);
+          final children = DirectoryChildren(
+            const ['subfolder1', 'subfolder2'],
+            const ['file1', 'file2', 'file3'],
+          );
 
           await tester.pumpWidget(_BrowseApp(path: path, children: children));
           await tester.loadFonts();
@@ -55,10 +57,7 @@ void main() {
 }
 
 class _BrowseApp extends StatelessWidget {
-  const _BrowseApp({
-    required this.path,
-    required this.children,
-  });
+  const _BrowseApp({required this.path, required this.children});
 
   final String? path;
   final DirectoryChildren? children;
@@ -66,11 +65,8 @@ class _BrowseApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenshotApp(
-      device: GoldenScreenshotDevices.android.device,
-      home: BrowsePage(
-        path: path,
-        overrideChildren: children,
-      ),
+      device: GoldenSmallDevices.android.device,
+      home: BrowsePage(path: path, overrideChildren: children),
     );
   }
 }

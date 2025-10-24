@@ -149,12 +149,12 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = ColorScheme.of(context);
     final platform = Theme.of(context).platform;
     final cupertino =
         platform == TargetPlatform.iOS || platform == TargetPlatform.macOS;
 
-    final bool requiresManualUpdates = FlavorConfig.appStore.isEmpty;
+    final requiresManualUpdates = FlavorConfig.appStore.isEmpty;
 
     final IconData materialIcon = switch (defaultTargetPlatform) {
       TargetPlatform.windows => FontAwesomeIcons.windows,
@@ -165,9 +165,7 @@ class _SettingsPageState extends State<SettingsPage> {
       body: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.only(
-              bottom: 8,
-            ),
+            padding: const EdgeInsets.only(bottom: 8),
             sliver: SliverAppBar(
               collapsedHeight: kToolbarHeight,
               expandedHeight: 200,
@@ -190,87 +188,92 @@ class _SettingsPageState extends State<SettingsPage> {
                     tooltip: t.home.tooltips.showUpdateDialog,
                     icon: const Icon(Icons.system_update),
                     onPressed: () {
-                      UpdateManager.showUpdateDialog(context,
-                          userTriggered: true);
+                      UpdateManager.showUpdateDialog(
+                        context,
+                        userTriggered: true,
+                      );
                     },
                   ),
               ],
             ),
           ),
           SliverSafeArea(
-              sliver: SliverList.list(
-            children: [
-              const NextcloudProfile(),
-              const Padding(
-                padding: EdgeInsets.all(8),
-                child: AppInfo(),
-              ),
-              SettingsSubtitle(
-                subtitle: t.settings.prefCategories.general,
-              ),
-              SettingsDropdown(
-                title: t.settings.prefLabels.locale,
-                icon: cupertino ? CupertinoIcons.globe : Icons.language,
-                pref: stows.locale,
-                options: [
-                  ToggleButtonsOption('', Text(t.settings.systemLanguage)),
-                  ...AppLocaleUtils.supportedLocales.map((locale) {
-                    final String localeCode = locale.toLanguageTag();
-                    String? localeName = localeNames[localeCode];
-                    assert(localeName != null,
-                        'Missing locale name for $localeCode');
-                    return ToggleButtonsOption(
-                      localeCode,
-                      Text(localeName ?? localeCode),
-                    );
-                  }),
-                ],
-              ),
-              SettingsSelection(
-                title: t.settings.prefLabels.appTheme,
-                iconBuilder: (i) {
-                  if (i == ThemeMode.system.index) return Icons.brightness_auto;
-                  if (i == ThemeMode.light.index) return Icons.light_mode;
-                  if (i == ThemeMode.dark.index) return Icons.dark_mode;
-                  return null;
-                },
-                pref: _SettingsStows.appTheme,
-                optionsWidth: 60,
-                options: [
-                  ToggleButtonsOption(
+            sliver: SliverList.list(
+              children: [
+                const NextcloudProfile(),
+                const Padding(padding: EdgeInsets.all(8), child: AppInfo()),
+                SettingsSubtitle(subtitle: t.settings.prefCategories.general),
+                SettingsDropdown(
+                  title: t.settings.prefLabels.locale,
+                  icon: cupertino ? CupertinoIcons.globe : Icons.language,
+                  pref: stows.locale,
+                  options: [
+                    ToggleButtonsOption('', Text(t.settings.systemLanguage)),
+                    ...AppLocaleUtils.supportedLocales.map((locale) {
+                      final localeCode = locale.toLanguageTag();
+                      final localeName = localeNames[localeCode];
+                      assert(
+                        localeName != null,
+                        'Missing locale name for $localeCode',
+                      );
+                      return ToggleButtonsOption(
+                        localeCode,
+                        Text(localeName ?? localeCode),
+                      );
+                    }),
+                  ],
+                ),
+                SettingsSelection(
+                  title: t.settings.prefLabels.appTheme,
+                  iconBuilder: (i) {
+                    if (i == ThemeMode.system.index)
+                      return Icons.brightness_auto;
+                    if (i == ThemeMode.light.index) return Icons.light_mode;
+                    if (i == ThemeMode.dark.index) return Icons.dark_mode;
+                    return null;
+                  },
+                  pref: _SettingsStows.appTheme,
+                  optionsWidth: 60,
+                  options: [
+                    ToggleButtonsOption(
                       ThemeMode.system.index,
-                      Icon(Icons.brightness_auto,
-                          semanticLabel: t.settings.themeModes.system)),
-                  ToggleButtonsOption(
+                      Icon(
+                        Icons.brightness_auto,
+                        semanticLabel: t.settings.themeModes.system,
+                      ),
+                    ),
+                    ToggleButtonsOption(
                       ThemeMode.light.index,
-                      Icon(Icons.light_mode,
-                          semanticLabel: t.settings.themeModes.light)),
-                  ToggleButtonsOption(
+                      Icon(
+                        Icons.light_mode,
+                        semanticLabel: t.settings.themeModes.light,
+                      ),
+                    ),
+                    ToggleButtonsOption(
                       ThemeMode.dark.index,
-                      Icon(Icons.dark_mode,
-                          semanticLabel: t.settings.themeModes.dark)),
-                ],
-              ),
-              SettingsSelection(
-                title: t.settings.prefLabels.platform,
-                iconBuilder: (i) => switch (stows.platform.value) {
-                  TargetPlatform.iOS || TargetPlatform.macOS => Icons.apple,
-                  TargetPlatform.linux => FontAwesomeIcons.ubuntu,
-                  _ => materialIcon,
-                },
-                pref: _SettingsStows.platform,
-                optionsWidth: 60,
-                options: [
-                  ToggleButtonsOption(
-                    () {
+                      Icon(
+                        Icons.dark_mode,
+                        semanticLabel: t.settings.themeModes.dark,
+                      ),
+                    ),
+                  ],
+                ),
+                SettingsSelection(
+                  title: t.settings.prefLabels.platform,
+                  iconBuilder: (i) => switch (stows.platform.value) {
+                    TargetPlatform.iOS || TargetPlatform.macOS => Icons.apple,
+                    TargetPlatform.linux => FontAwesomeIcons.ubuntu,
+                    _ => materialIcon,
+                  },
+                  pref: _SettingsStows.platform,
+                  optionsWidth: 60,
+                  options: [
+                    ToggleButtonsOption(() {
                       if (usesMaterialByDefault)
                         return defaultTargetPlatform.index;
                       return TargetPlatform.android.index;
-                    }(),
-                    Icon(materialIcon, semanticLabel: 'Material'),
-                  ),
-                  ToggleButtonsOption(
-                    () {
+                    }(), Icon(materialIcon, semanticLabel: 'Material')),
+                    ToggleButtonsOption(() {
                       // Hack to allow screenshot golden tests
                       if (kDebugMode &&
                           (stows.platform.value == TargetPlatform.iOS ||
@@ -279,43 +282,51 @@ class _SettingsPageState extends State<SettingsPage> {
                       if (usesCupertinoByDefault)
                         return defaultTargetPlatform.index;
                       return TargetPlatform.iOS.index;
-                    }(),
-                    const Icon(Icons.apple, semanticLabel: 'Cupertino'),
-                  ),
-                  ToggleButtonsOption(
-                    () {
-                      if (usesYaruByDefault) return defaultTargetPlatform.index;
-                      return TargetPlatform.linux.index;
-                    }(),
-                    const Icon(FontAwesomeIcons.ubuntu, semanticLabel: 'Yaru'),
-                  ),
-                ],
-              ),
-              SettingsSelection(
-                title: t.settings.prefLabels.layoutSize,
-                subtitle: switch (stows.layoutSize.value) {
-                  LayoutSize.auto => t.settings.layoutSizes.auto,
-                  LayoutSize.phone => t.settings.layoutSizes.phone,
-                  LayoutSize.tablet => t.settings.layoutSizes.tablet,
-                },
-                afterChange: (_) => setState(() {}),
-                iconBuilder: (i) => switch (LayoutSize.values[i]) {
-                  LayoutSize.auto => Icons.aspect_ratio,
-                  LayoutSize.phone => Icons.smartphone,
-                  LayoutSize.tablet => Icons.tablet,
-                },
-                pref: _SettingsStows.layoutSize,
-                optionsWidth: 60,
-                options: [
-                  ToggleButtonsOption(
+                    }(), const Icon(Icons.apple, semanticLabel: 'Cupertino')),
+                    ToggleButtonsOption(
+                      () {
+                        if (usesYaruByDefault)
+                          return defaultTargetPlatform.index;
+                        return TargetPlatform.linux.index;
+                      }(),
+                      const Icon(
+                        FontAwesomeIcons.ubuntu,
+                        semanticLabel: 'Yaru',
+                      ),
+                    ),
+                  ],
+                ),
+                SettingsSelection(
+                  title: t.settings.prefLabels.layoutSize,
+                  subtitle: switch (stows.layoutSize.value) {
+                    LayoutSize.auto => t.settings.layoutSizes.auto,
+                    LayoutSize.phone => t.settings.layoutSizes.phone,
+                    LayoutSize.tablet => t.settings.layoutSizes.tablet,
+                  },
+                  afterChange: (_) => setState(() {}),
+                  iconBuilder: (i) => switch (LayoutSize.values[i]) {
+                    LayoutSize.auto => Icons.aspect_ratio,
+                    LayoutSize.phone => Icons.smartphone,
+                    LayoutSize.tablet => Icons.tablet,
+                  },
+                  pref: _SettingsStows.layoutSize,
+                  optionsWidth: 60,
+                  options: [
+                    ToggleButtonsOption(
                       LayoutSize.auto.index,
-                      Icon(Icons.aspect_ratio,
-                          semanticLabel: t.settings.layoutSizes.auto)),
-                  ToggleButtonsOption(
+                      Icon(
+                        Icons.aspect_ratio,
+                        semanticLabel: t.settings.layoutSizes.auto,
+                      ),
+                    ),
+                    ToggleButtonsOption(
                       LayoutSize.phone.index,
-                      Icon(Icons.smartphone,
-                          semanticLabel: t.settings.layoutSizes.phone)),
-                  ToggleButtonsOption(
+                      Icon(
+                        Icons.smartphone,
+                        semanticLabel: t.settings.layoutSizes.phone,
+                      ),
+                    ),
+                    ToggleButtonsOption(
                       LayoutSize.tablet.index,
                       Icon(Icons.tablet,
                           semanticLabel: t.settings.layoutSizes.tablet)),

@@ -112,18 +112,28 @@ class _ToolbarState extends State<Toolbar> {
   Keybinding? _f11;
   Keybinding? _ctrlV;
   void _assignKeybindings() {
-    _ctrlF = Keybinding([KeyCode.ctrl, KeyCode.from(LogicalKeyboardKey.keyF)],
-        inclusive: true);
-    _ctrlE = Keybinding([KeyCode.ctrl, KeyCode.from(LogicalKeyboardKey.keyE)],
-        inclusive: true);
-    _ctrlC = Keybinding([KeyCode.ctrl, KeyCode.from(LogicalKeyboardKey.keyC)],
-        inclusive: true);
-    _ctrlShiftS = Keybinding(
-        [KeyCode.ctrl, KeyCode.shift, KeyCode.from(LogicalKeyboardKey.keyS)],
-        inclusive: true);
+    _ctrlF = Keybinding([
+      KeyCode.ctrl,
+      KeyCode.from(LogicalKeyboardKey.keyF),
+    ], inclusive: true);
+    _ctrlE = Keybinding([
+      KeyCode.ctrl,
+      KeyCode.from(LogicalKeyboardKey.keyE),
+    ], inclusive: true);
+    _ctrlC = Keybinding([
+      KeyCode.ctrl,
+      KeyCode.from(LogicalKeyboardKey.keyC),
+    ], inclusive: true);
+    _ctrlShiftS = Keybinding([
+      KeyCode.ctrl,
+      KeyCode.shift,
+      KeyCode.from(LogicalKeyboardKey.keyS),
+    ], inclusive: true);
     _f11 = Keybinding([KeyCode.from(LogicalKeyboardKey.f11)], inclusive: true);
-    _ctrlV = Keybinding([KeyCode.ctrl, KeyCode.from(LogicalKeyboardKey.keyV)],
-        inclusive: true);
+    _ctrlV = Keybinding([
+      KeyCode.ctrl,
+      KeyCode.from(LogicalKeyboardKey.keyV),
+    ], inclusive: true);
 
     Keybinder.bind(_ctrlF!, widget.toggleFingerDrawing);
     Keybinder.bind(_ctrlE!, toggleEraser);
@@ -156,28 +166,31 @@ class _ToolbarState extends State<Toolbar> {
   }
 
   void toggleFullscreen() async {
-    DynamicMaterialApp.setFullscreen(!DynamicMaterialApp.isFullscreen,
-        updateSystem: true);
+    DynamicMaterialApp.setFullscreen(
+      !DynamicMaterialApp.isFullscreen,
+      updateSystem: true,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = ColorScheme.of(context);
 
-    Brightness brightness = Theme.of(context).brightness;
-    bool invert = stows.editorAutoInvert.value && brightness == Brightness.dark;
+    final brightness = Theme.brightnessOf(context);
+    final invert =
+        stows.editorAutoInvert.value && brightness == Brightness.dark;
 
     final isToolbarVertical =
         stows.editorToolbarAlignment.value == AxisDirection.left ||
-            stows.editorToolbarAlignment.value == AxisDirection.right;
+        stows.editorToolbarAlignment.value == AxisDirection.right;
 
     final buttonPadding = isToolbarVertical
         ? EdgeInsets.symmetric(vertical:  widget.toolbarSize.padding)
         : EdgeInsets.symmetric(horizontal: widget.toolbarSize.padding);
 
     final currentColor = switch (widget.currentTool) {
-      Pen pen => pen.color,
-      Select select => select.getDominantStrokeColor(),
+      final Pen pen => pen.color,
+      final Select select => select.getDominantStrokeColor(),
       _ => null,
     };
 
@@ -219,8 +232,9 @@ class _ToolbarState extends State<Toolbar> {
             maintainState: true,
             collapsed: toolOptionsType == ToolOptions.hide,
             child: switch (toolOptionsType) {
-              ToolOptions.hide =>
-                const SizedBox.square(dimension: SizePicker.smallLength),
+              ToolOptions.hide => const SizedBox.square(
+                dimension: SizePicker.smallLength,
+              ),
               ToolOptions.pen => PenModal(
                   getTool: () => Pen.currentPen,
                   setTool: widget.setTool,
@@ -237,9 +251,9 @@ class _ToolbarState extends State<Toolbar> {
                   toolbarSize: widget.toolbarSize,
                 ),
               ToolOptions.select => SelectionBar(
-                  duplicateSelection: widget.duplicateSelection,
-                  deleteSelection: widget.deleteSelection,
-                ),
+                duplicateSelection: widget.duplicateSelection,
+                deleteSelection: widget.deleteSelection,
+              ),
             },
           );
         },
@@ -265,10 +279,10 @@ class _ToolbarState extends State<Toolbar> {
         ),
       ),
       ValueListenableBuilder(
-          valueListenable: widget.quillFocus,
-          builder: (context, quill, _) {
-            final baseButtonStyle =
-                Theme.of(context).iconButtonTheme.style ?? const ButtonStyle();
+        valueListenable: widget.quillFocus,
+        builder: (context, quill, _) {
+          final baseButtonStyle =
+              IconButtonTheme.of(context).style ?? const ButtonStyle();
 
             final iconTheme = QuillIconTheme(
               iconButtonUnselectedData: IconButtonData(
@@ -419,17 +433,19 @@ class _ToolbarState extends State<Toolbar> {
                   widget.setTool(Select.currentSelect);
                 },
                 padding: buttonPadding,
-                child: Icon(CupertinoIcons.lasso,
-                    shadows: !widget.readOnly
-                        ? [
-                            BoxShadow(
-                              color: colorScheme.primary,
-                              blurRadius: 0.1,
-                              spreadRadius: 10,
-                              blurStyle: BlurStyle.solid,
-                            ),
-                          ]
-                        : null),
+                child: Icon(
+                  CupertinoIcons.lasso,
+                  shadows: !widget.readOnly
+                      ? [
+                          BoxShadow(
+                            color: colorScheme.primary,
+                            blurRadius: 0.1,
+                            spreadRadius: 10,
+                            blurStyle: BlurStyle.solid,
+                          ),
+                        ]
+                      : null,
+                ),
               ),
               ToolbarIconButton(
                 tooltip: t.editor.pens.laserPointer,
@@ -560,15 +576,15 @@ class _ToolbarState extends State<Toolbar> {
           ? Row(
               textDirection:
                   stows.editorToolbarAlignment.value == AxisDirection.left
-                      ? TextDirection.rtl
-                      : TextDirection.ltr,
+                  ? TextDirection.rtl
+                  : TextDirection.ltr,
               children: children,
             )
           : Column(
               verticalDirection:
                   stows.editorToolbarAlignment.value == AxisDirection.down
-                      ? VerticalDirection.down
-                      : VerticalDirection.up,
+                  ? VerticalDirection.down
+                  : VerticalDirection.up,
               children: children,
             ),
     );
@@ -584,10 +600,4 @@ class _ToolbarState extends State<Toolbar> {
   }
 }
 
-enum ToolOptions {
-  hide,
-  pen,
-  highlighter,
-  pencil,
-  select,
-}
+enum ToolOptions { hide, pen, highlighter, pencil, select }

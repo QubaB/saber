@@ -23,7 +23,7 @@ class ColorOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = ColorScheme.of(context);
     return Tooltip(
       message: tooltip ?? '',
       waitDuration: Duration(milliseconds: 1500),  // Delay before tooltip shows
@@ -61,23 +61,16 @@ class ColorOption extends StatelessWidget {
 }
 
 class ColorOptionSeparatorIcon extends StatelessWidget {
-  const ColorOptionSeparatorIcon({
-    super.key,
-    required this.icon,
-    required this.size,
-  });
+  const ColorOptionSeparatorIcon({super.key, required this.icon});
 
   final IconData icon;
   final double size;
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = ColorScheme.of(context);
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Icon(
         icon,
         size: size,
@@ -85,8 +78,7 @@ class ColorOptionSeparatorIcon extends StatelessWidget {
           colorScheme.onSurface,
           colorScheme.primary,
           0.2,
-        )!
-            .withValues(alpha: 0.7),
+        )!.withValues(alpha: 0.7),
       ),
     );
   }

@@ -120,8 +120,9 @@ class PngEditorImage extends EditorImage {
       pageIndex: json['i'] ?? 0,
       pageSize: Size.infinite,
       invertible: json['v'] ?? true,
-      backgroundFit:
-          json['f'] != null ? BoxFit.values[json['f']] : BoxFit.contain,
+      backgroundFit: json['f'] != null
+          ? BoxFit.values[json['f']]
+          : BoxFit.contain,
       onMoveImage: null,
       onDeleteImage: null,
       onMiscChange: null,
@@ -139,10 +140,7 @@ class PngEditorImage extends EditorImage {
         json['sw'] ?? 0,
         json['sh'] ?? 0,
       ),
-      naturalSize: Size(
-        json['nw'] ?? 0,
-        json['nh'] ?? 0,
-      ),
+      naturalSize: Size(json['nw'] ?? 0, json['nh'] ?? 0),
       thumbnailBytes: json['t'] != null
           ? Uint8List.fromList((json['t'] as List<dynamic>).cast<int>())
           : null,
@@ -175,13 +173,16 @@ class PngEditorImage extends EditorImage {
         bytes = await (imageProvider as FileImage).file.readAsBytes();
       } else {
         throw Exception(
-            'EditorImage.getImage: imageProvider is ${imageProvider.runtimeType}');
+          'EditorImage.getImage: imageProvider is ${imageProvider.runtimeType}',
+        );
       }
 
       naturalSize = await ui.ImmutableBuffer.fromUint8List(bytes)
           .then((buffer) => ui.ImageDescriptor.encoded(buffer))
-          .then((descriptor) =>
-              Size(descriptor.width.toDouble(), descriptor.height.toDouble()));
+          .then(
+            (descriptor) =>
+                Size(descriptor.width.toDouble(), descriptor.height.toDouble()),
+          );
 
       if (maxSize == null) {
         await stows.maxImageSize.waitUntilRead();

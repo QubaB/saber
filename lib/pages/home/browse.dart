@@ -48,9 +48,9 @@ class _BrowsePageState extends State<BrowsePage> {
     path = widget.initialPath;
 
     findChildrenOfPath();
-
-    fileWriteSubscription =
-        FileManager.fileWriteStream.stream.listen(fileWriteListener);
+    fileWriteSubscription = FileManager.fileWriteStream.stream.listen(
+      fileWriteListener,
+    );
     selectedFiles.addListener(_setState);
 
     super.initState();
@@ -128,7 +128,7 @@ class _BrowsePageState extends State<BrowsePage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = ColorScheme.of(context);
     final platform = Theme.of(context).platform;
     final cupertino =
         platform == TargetPlatform.iOS || platform == TargetPlatform.macOS;
@@ -155,7 +155,9 @@ class _BrowsePageState extends State<BrowsePage> {
                 ),
                 centerTitle: cupertino,
                 titlePadding: EdgeInsetsDirectional.only(
-                    start: cupertino ? 0 : 16, bottom: 8),
+                  start: cupertino ? 0 : 16,
+                  bottom: 8,
+                ),
               ),
               actions: [
                 SyncingButton(),
@@ -194,8 +196,9 @@ class _BrowsePageState extends State<BrowsePage> {
               },
               isFolderEmpty: (String folderName) async {
                 final folderPath = '${path ?? ''}/$folderName';
-                final children =
-                    await FileManager.getChildrenOfDirectory(folderPath);
+                final children = await FileManager.getChildrenOfDirectory(
+                  folderPath,
+                );
                 return children?.isEmpty ?? true;
               },
               deleteFolder: (String folderName) async {
@@ -209,9 +212,7 @@ class _BrowsePageState extends State<BrowsePage> {
               // loading
             ] else if (children!.isEmpty) ...[
               const SliverSafeArea(
-                sliver: SliverToBoxAdapter(
-                  child: NoFiles(),
-                ),
+                sliver: SliverToBoxAdapter(child: NoFiles()),
               ),
             ] else ...[
               SliverSafeArea(
@@ -231,22 +232,20 @@ class _BrowsePageState extends State<BrowsePage> {
           ],
         ),
       ),
-      floatingActionButton: NewNoteButton(
-        cupertino: cupertino,
-        path: path,
-      ),
+      floatingActionButton: NewNoteButton(cupertino: cupertino, path: path),
       persistentFooterButtons: selectedFiles.value.isEmpty
           ? null
           : [
               Collapsible(
-                  axis: CollapsibleAxis.vertical,
-                  collapsed: selectedFiles.value.length != 1,
-                  child: RenameNoteButton(
-                    existingPath: selectedFiles.value.isEmpty
-                        ? ''
-                        : selectedFiles.value.first,
-                    unselectNotes: () => selectedFiles.value = [],
-                  )),
+                axis: CollapsibleAxis.vertical,
+                collapsed: selectedFiles.value.length != 1,
+                child: RenameNoteButton(
+                  existingPath: selectedFiles.value.isEmpty
+                      ? ''
+                      : selectedFiles.value.first,
+                  unselectNotes: () => selectedFiles.value = [],
+                ),
+              ),
               MoveNoteButton(
                 filesToMove: selectedFiles.value,
                 unselectNotes: () => selectedFiles.value = [],
@@ -256,14 +255,19 @@ class _BrowsePageState extends State<BrowsePage> {
                 tooltip: t.home.deleteNote,
                 onPressed: () async {
                   await Future.wait([
-                    for (String filePath in selectedFiles.value)
-                      Future.value(FileManager.doesFileExist(
-                              filePath + Editor.extensionOldJson))
-                          .then((oldExtension) => FileManager.deleteFile(
-                              filePath +
-                                  (oldExtension
-                                      ? Editor.extensionOldJson
-                                      : Editor.extension))),
+                    for (final filePath in selectedFiles.value)
+                      Future.value(
+                        FileManager.doesFileExist(
+                          filePath + Editor.extensionOldJson,
+                        ),
+                      ).then(
+                        (oldExtension) => FileManager.deleteFile(
+                          filePath +
+                              (oldExtension
+                                  ? Editor.extensionOldJson
+                                  : Editor.extension),
+                        ),
+                      ),
                   ]);
                   selectedFiles.value = [];
                 },

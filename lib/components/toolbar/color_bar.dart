@@ -45,35 +45,35 @@ class ColorBar extends StatefulWidget {
   static final List<NamedColor> _pastelColorOptions = [
     (
       name: t.editor.colors.pastelRed,
-      color: const Color.fromRGBO(255, 173, 173, 1)
+      color: const Color.fromRGBO(255, 173, 173, 1),
     ),
     (
       name: t.editor.colors.pastelOrange,
-      color: const Color.fromRGBO(255, 214, 165, 1)
+      color: const Color.fromRGBO(255, 214, 165, 1),
     ),
     (
       name: t.editor.colors.pastelYellow,
-      color: const Color.fromRGBO(253, 255, 182, 1)
+      color: const Color.fromRGBO(253, 255, 182, 1),
     ),
     (
       name: t.editor.colors.pastelGreen,
-      color: const Color.fromRGBO(202, 255, 191, 1)
+      color: const Color.fromRGBO(202, 255, 191, 1),
     ),
     (
       name: t.editor.colors.pastelCyan,
-      color: const Color.fromRGBO(155, 246, 255, 1)
+      color: const Color.fromRGBO(155, 246, 255, 1),
     ),
     (
       name: t.editor.colors.pastelBlue,
-      color: const Color.fromRGBO(160, 196, 255, 1)
+      color: const Color.fromRGBO(160, 196, 255, 1),
     ),
     (
       name: t.editor.colors.pastelPurple,
-      color: const Color.fromRGBO(189, 178, 255, 1)
+      color: const Color.fromRGBO(189, 178, 255, 1),
     ),
     (
       name: t.editor.colors.pastelPink,
-      color: const Color.fromRGBO(255, 198, 255, 1)
+      color: const Color.fromRGBO(255, 198, 255, 1),
     ),
   ];
   static final List<NamedColor> greyScaleColorOptions = [
@@ -82,7 +82,7 @@ class ColorBar extends StatefulWidget {
     (name: t.editor.colors.grey, color: Colors.grey),
     (
       name: t.editor.colors.lightGrey,
-      color: Colors.grey[200] ?? Colors.black12
+      color: Colors.grey[200] ?? Colors.black12,
     ),
     (name: t.editor.colors.white, color: Colors.white),
   ];
@@ -91,7 +91,7 @@ class ColorBar extends StatefulWidget {
     ...greyScaleColorOptions,
   ];
   static String findColorName(Color searchColor) {
-    for (NamedColor namedColor in _allColors) {
+    for (final namedColor in _allColors) {
       if (namedColor.color == searchColor) {
         return namedColor.name;
       }
@@ -120,7 +120,7 @@ class ColorBar extends StatefulWidget {
       };
     }
 
-    final String? lightnessName = switch (hsl.lightness) {
+    final lightnessName = switch (hsl.lightness) {
       < 0.35 => t.editor.colors.dark,
       < 0.65 => null,
       _ => t.editor.colors.light,
@@ -129,10 +129,7 @@ class ColorBar extends StatefulWidget {
     if (lightnessName == null) {
       return t.editor.colors.customHue(h: hueName);
     } else {
-      return t.editor.colors.customBrightnessHue(
-        b: lightnessName,
-        h: hueName,
-      );
+      return t.editor.colors.customBrightnessHue(b: lightnessName, h: hueName);
     }
   }
 
@@ -147,8 +144,8 @@ class ColorBar extends StatefulWidget {
         // if full, replace oldest
         final oldestColor = stows.recentColorsChronological.value.removeAt(0);
         stows.recentColorsChronological.value.add(colorString);
-        final int oldestColorPosition =
-            stows.recentColorsPositioned.value.indexOf(oldestColor);
+        final int oldestColorPosition = stows.recentColorsPositioned.value
+            .indexOf(oldestColor);
         stows.recentColorsPositioned.value[oldestColorPosition] = colorString;
       } else {
         // not full, add to end
@@ -170,22 +167,20 @@ class ColorBar extends StatefulWidget {
 }
 
 class _ColorBarState extends State<ColorBar> {
-  static Color pickedColor = const Color.fromRGBO(255, 0, 0, 1);
+  static var pickedColor = const Color.fromRGBO(255, 0, 0, 1);
 
   @override
   Widget build(BuildContext context) {
-    var colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = ColorScheme.of(context);
 
     final children = <Widget>[
       // pinned colors
       if (stows.pinnedColors.value.isNotEmpty) ...[
-        ColorOptionSeparatorIcon(
-          icon: Icons.pin_drop,
-          size: widget.toolbarSize.buttonSize,
-        ),
-        for (String colorString in stows.pinnedColors.value)
+        const ColorOptionSeparatorIcon(icon: Icons.pin_drop),
+        for (final colorString in stows.pinnedColors.value)
           ColorOption(
-            isSelected: widget.currentColor?.withAlpha(255).toARGB32() ==
+            isSelected:
+                widget.currentColor?.withAlpha(255).toARGB32() ==
                 int.parse(colorString),
             enabled: widget.currentColor != null,
             diameter: widget.toolbarSize.colorOptionDiameter,
@@ -195,8 +190,9 @@ class _ColorBarState extends State<ColorBar> {
             tooltip: ColorBar.findColorName(Color(int.parse(colorString))),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color:
-                    Color(int.parse(colorString)).withInversion(widget.invert),
+                color: Color(
+                  int.parse(colorString),
+                ).withInversion(widget.invert),
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: colorScheme.onSurface.withValues(alpha: 0.2),
@@ -207,15 +203,13 @@ class _ColorBarState extends State<ColorBar> {
           ),
       ],
 
-      ColorOptionSeparatorIcon(
-        icon: Icons.history,
-        size: widget.toolbarSize.buttonSize,
-      ),
+      const ColorOptionSeparatorIcon(icon: Icons.history),
 
       // recent colors
-      for (String colorString in stows.recentColorsPositioned.value.reversed)
+      for (final colorString in stows.recentColorsPositioned.value.reversed)
         ColorOption(
-          isSelected: widget.currentColor?.withAlpha(255).toARGB32() ==
+          isSelected:
+              widget.currentColor?.withAlpha(255).toARGB32() ==
               int.parse(colorString),
           enabled: widget.currentColor != null,
           diameter: widget.toolbarSize.colorOptionDiameter,
@@ -235,11 +229,13 @@ class _ColorBarState extends State<ColorBar> {
           ),
         ),
       // placeholders for `recentColorsLength` recent colors
-      for (int i = 0;
-          i <
-              stows.recentColorsLength.value -
-                  stows.recentColorsPositioned.value.length;
-          ++i)
+      for (
+        int i = 0;
+        i <
+            stows.recentColorsLength.value -
+                stows.recentColorsPositioned.value.length;
+        ++i
+      )
         ColorOption(
           isSelected: false,
           enabled: widget.currentColor != null,
@@ -258,14 +254,12 @@ class _ColorBarState extends State<ColorBar> {
           ),
         ),
 
-      ColorOptionSeparatorIcon(
-        icon: Icons.palette,
-        size: widget.toolbarSize.buttonSize,
-      ),
+      const ColorOptionSeparatorIcon(icon: Icons.palette),
 
       // custom color
       ColorOption(
-        isSelected: widget.currentColor?.withAlpha(255).toARGB32() ==
+        isSelected:
+            widget.currentColor?.withAlpha(255).toARGB32() ==
             pickedColor.toARGB32(),
         enabled: true,
         diameter: widget.toolbarSize.colorOptionDiameter,
@@ -284,9 +278,10 @@ class _ColorBarState extends State<ColorBar> {
         ),
 
       // color presets
-      for (NamedColor namedColor in ColorBar.colorPresets)
+      for (final namedColor in ColorBar.colorPresets)
         ColorOption(
-          isSelected: widget.currentColor?.withAlpha(255).toARGB32() ==
+          isSelected:
+              widget.currentColor?.withAlpha(255).toARGB32() ==
               namedColor.color.toARGB32(),
           enabled: widget.currentColor != null,
           diameter: widget.toolbarSize.colorOptionDiameter,
@@ -319,7 +314,7 @@ class _ColorBarState extends State<ColorBar> {
   }
 
   void openColorPicker(BuildContext context) async {
-    bool? confirmChange = await showDialog(
+    final bool? confirmChange = await showDialog(
       context: context,
       builder: (BuildContext context) => _colorPickerDialog(context),
     );
@@ -329,23 +324,23 @@ class _ColorBarState extends State<ColorBar> {
   }
 
   Widget _colorPickerDialog(BuildContext context) => AdaptiveAlertDialog(
-        title: Text(t.settings.accentColorPicker.pickAColor),
-        content: SingleChildScrollView(
-          child: ColorPicker(
-            color: pickedColor,
-            pickersEnabled: const {ColorPickerType.wheel: true},
-            onColorChanged: (Color color) {
-              pickedColor = color;
-            },
-          ),
-        ),
-        actions: [
-          CupertinoDialogAction(
-            child: Text(MaterialLocalizations.of(context).saveButtonLabel),
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-          ),
-        ],
-      );
+    title: Text(t.settings.accentColorPicker.pickAColor),
+    content: SingleChildScrollView(
+      child: ColorPicker(
+        color: pickedColor,
+        pickersEnabled: const {ColorPickerType.wheel: true},
+        onColorChanged: (Color color) {
+          pickedColor = color;
+        },
+      ),
+    ),
+    actions: [
+      CupertinoDialogAction(
+        child: Text(MaterialLocalizations.of(context).saveButtonLabel),
+        onPressed: () {
+          Navigator.of(context).pop(true);
+        },
+      ),
+    ],
+  );
 }

@@ -55,7 +55,7 @@ class InnerCanvas extends StatefulWidget {
 
   final double currentScale;
 
-  static const Color defaultBackgroundColor = Color(0xFFFCFCFC);
+  static const defaultBackgroundColor = Color(0xFFFCFCFC);
 
   @override
   State<InnerCanvas> createState() => _InnerCanvasState();
@@ -64,23 +64,20 @@ class InnerCanvas extends StatefulWidget {
 class _InnerCanvasState extends State<InnerCanvas> {
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final Brightness brightness = Theme.of(context).brightness;
-    final bool invert =
+    final colorScheme = ColorScheme.of(context);
+    final Brightness brightness = Theme.brightnessOf(context);
+    final invert =
         stows.editorAutoInvert.value && brightness == Brightness.dark;
     final Color backgroundColor =
         widget.coreInfo.backgroundColor ?? InnerCanvas.defaultBackgroundColor;
 
     if (widget.coreInfo.pages.isEmpty) {
-      return SizedBox(
-        width: widget.width,
-        height: widget.height,
-      );
+      return SizedBox(width: widget.width, height: widget.height);
     }
 
     final page = widget.coreInfo.pages[widget.pageIndex];
 
-    Widget? quillEditor = widget.coreInfo.pages.isNotEmpty
+    final quillEditor = widget.coreInfo.pages.isNotEmpty
         ? QuillEditor(
             controller:
                 widget.coreInfo.pages[widget.pageIndex].quill.controller,
@@ -89,8 +86,9 @@ class _InnerCanvasState extends State<InnerCanvas> {
               scrollable: false,
               autoFocus: false,
               expands: true,
-              placeholder:
-                  widget.textEditing ? t.editor.quill.typeSomething : null,
+              placeholder: widget.textEditing
+                  ? t.editor.quill.typeSomething
+                  : null,
               showCursor: true,
               keyboardAppearance: invert ? Brightness.dark : Brightness.light,
               padding: EdgeInsets.only(
@@ -141,7 +139,8 @@ class _InnerCanvasState extends State<InnerCanvas> {
           currentSelection: widget.currentSelection,
           primaryColor: colorScheme.primary,
           page: page,
-          showPageIndicator: !widget.isPreview &&
+          showPageIndicator:
+              !widget.isPreview &&
               (!widget.isPrint || stows.printPageIndicators.value),
           pageIndex: widget.pageIndex,
           totalPages: widget.coreInfo.pages.length,
@@ -182,8 +181,10 @@ class _InnerCanvasState extends State<InnerCanvas> {
                     setAsBackground: widget.setAsBackground,
                     readOnly:
                         widget.coreInfo.readOnly || !widget.currentToolIsSelect,
-                    selected: widget.currentSelection?.images
-                            .contains(page.images[i]) ??
+                    selected:
+                        widget.currentSelection?.images.contains(
+                          page.images[i],
+                        ) ??
                         false,
                   ),
               ],
@@ -196,7 +197,7 @@ class _InnerCanvasState extends State<InnerCanvas> {
 
   /// Adapted from https://github.com/singerdmx/flutter-quill/blob/master/lib/src/editor/widgets/default_styles.dart
   DefaultStyles _getQuillStyles({required bool invert}) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = ColorScheme.of(context);
     final backgroundColor = invert ? Colors.black : Colors.white;
     final lineHeight = widget.coreInfo.lineHeight;
 
@@ -264,10 +265,7 @@ class _InnerCanvasState extends State<InnerCanvas> {
         VerticalSpacing.zero,
         null,
       ),
-      small: TextStyle(
-        fontSize: lineHeight * 0.4,
-        height: 1 / 0.4,
-      ),
+      small: TextStyle(fontSize: lineHeight * 0.4, height: 1 / 0.4),
       inlineCode: InlineCodeStyle(
         // [InlineCodeStyle.backgroundColor] is broken right now,
         // so inline code always has a white-ish background.
@@ -366,15 +364,9 @@ class _InnerCanvasState extends State<InnerCanvas> {
         VerticalSpacing.zero,
         null,
       ),
-      sizeSmall: TextStyle(
-        fontSize: textTheme.bodyLarge!.fontSize!,
-      ),
-      sizeLarge: TextStyle(
-        fontSize: textTheme.bodyLarge!.fontSize!,
-      ),
-      sizeHuge: TextStyle(
-        fontSize: textTheme.bodyLarge!.fontSize!,
-      ),
+      sizeSmall: TextStyle(fontSize: textTheme.bodyLarge!.fontSize!),
+      sizeLarge: TextStyle(fontSize: textTheme.bodyLarge!.fontSize!),
+      sizeHuge: TextStyle(fontSize: textTheme.bodyLarge!.fontSize!),
     );
   }
 }

@@ -9,11 +9,7 @@ import 'package:saber/pages/editor/editor.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class NewNoteButton extends StatefulWidget {
-  const NewNoteButton({
-    super.key,
-    required this.cupertino,
-    this.path,
-  });
+  const NewNoteButton({super.key, required this.cupertino, this.path});
 
   final bool cupertino;
   final String? path;
@@ -36,10 +32,11 @@ class _NewNoteButtonState extends State<NewNoteButton> {
       switchLabelPosition: Directionality.of(context) == TextDirection.rtl,
       dialRoot: (ctx, open, toggleChildren) {
         return FloatingActionButton(
-            shape: widget.cupertino ? const CircleBorder() : null,
-            onPressed: toggleChildren,
-            tooltip: t.home.tooltips.newNote,
-            child: const Icon(Icons.add));
+          shape: widget.cupertino ? const CircleBorder() : null,
+          onPressed: toggleChildren,
+          tooltip: t.home.tooltips.newNote,
+          child: const Icon(Icons.add),
+        );
       },
       children: [
         SpeedDialChild(
@@ -49,8 +46,9 @@ class _NewNoteButtonState extends State<NewNoteButton> {
             if (widget.path == null) {
               context.push(RoutePaths.edit);
             } else {
-              final newFilePath =
-                  await FileManager.newFilePath('${widget.path}/');
+              final newFilePath = await FileManager.newFilePath(
+                '${widget.path}/',
+              );
               if (!context.mounted) return;
               context.push(RoutePaths.editFilePath(newFilePath));
             }
@@ -121,23 +119,24 @@ class _NewNoteButtonState extends State<NewNoteButton> {
               if (!Editor.canRasterPdf) return;
               if (!mounted) return;
 
-                final fileNameWithoutExtension =
-                    fileName.substring(0, fileName.length - '.pdf'.length);
-                final sbnFilePath =
-                    await FileManager.suffixFilePathToMakeItUnique(
-                  '${widget.path ?? ''}/$fileNameWithoutExtension',
-                );
-                if (!context.mounted) return;
+              final fileNameWithoutExtension = fileName.substring(
+                0,
+                fileName.length - '.pdf'.length,
+              );
+              final sbnFilePath =
+                  await FileManager.suffixFilePathToMakeItUnique(
+                    '${widget.path ?? ''}/$fileNameWithoutExtension',
+                  );
+              if (!context.mounted) return;
 
-                context.push(RoutePaths.editImportPdf(sbnFilePath, filePath));
-              } else {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(t.home.invalidFormat),
-                  ));
-                }
-                throw 'Invalid file type';
+              context.push(RoutePaths.editImportPdf(sbnFilePath, filePath));
+            } else {
+              if (context.mounted) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text(t.home.invalidFormat)));
               }
+              throw 'Invalid file type';
             }
           },
         ),

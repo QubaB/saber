@@ -62,7 +62,7 @@ class CanvasImage extends StatefulWidget {
 
 
   /// When notified, all [CanvasImages] will have their [active] property set to false.
-  static ChangeNotifier activeListener = ChangeNotifier();
+  static var activeListener = ChangeNotifier();
 
   /// The minimum size of the interactive area for the image.
   static double minInteractiveSize = 50;
@@ -192,16 +192,17 @@ class _CanvasImageState extends State<CanvasImage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = ColorScheme.of(context);
 
-    Brightness currentBrightness = Theme.of(context).brightness;
-    if (!widget.image.invertible) currentBrightness = Brightness.light;
+    final currentBrightness = widget.image.invertible
+        ? Theme.brightnessOf(context)
+        : Brightness.light;
 
     if (stows.editorAutoInvert.value && currentBrightness != imageBrightness) {
       imageBrightness = currentBrightness;
     }
 
-    Widget unpositioned = IgnorePointer(
+    final Widget unpositioned = IgnorePointer(
       ignoring: widget.readOnly,
       child: Stack(
         fit: StackFit.expand,
@@ -224,8 +225,10 @@ class _CanvasImageState extends State<CanvasImage> {
               onPanUpdate: isActive()
                   ? (details) {
                       setState(() {
-                        double fivePercent = min(widget.pageSize.width * 0.05,
-                            widget.pageSize.height * 0.05);
+                        final fivePercent = min(
+                          widget.pageSize.width * 0.05,
+                          widget.pageSize.height * 0.05,
+                        );
                         widget.image.dstRect = Rect.fromLTWH(
                           (widget.image.dstRect.left + details.delta.dx)
                               .clamp(
@@ -250,13 +253,14 @@ class _CanvasImageState extends State<CanvasImage> {
                   ? (details) {
                       if (panStartRect == widget.image.dstRect) return;
                       widget.image.onMoveImage?.call(
-                          widget.image,
-                          Rect.fromLTRB(
-                            widget.image.dstRect.left - panStartRect.left,
-                            widget.image.dstRect.top - panStartRect.top,
-                            widget.image.dstRect.right - panStartRect.right,
-                            widget.image.dstRect.bottom - panStartRect.bottom,
-                          ));
+                        widget.image,
+                        Rect.fromLTRB(
+                          widget.image.dstRect.left - panStartRect.left,
+                          widget.image.dstRect.top - panStartRect.top,
+                          widget.image.dstRect.right - panStartRect.right,
+                          widget.image.dstRect.bottom - panStartRect.bottom,
+                        ),
+                      );
                       panStartRect = Rect.zero;
                     }
                   : null,
@@ -297,9 +301,7 @@ class _CanvasImageState extends State<CanvasImage> {
             ),
           ),
           if (widget.selected) // tint image if selected
-            ColoredBox(
-              color: colorScheme.primary.withValues(alpha: 0.5),
-            ),
+            ColoredBox(color: colorScheme.primary.withValues(alpha: 0.5)),
           if (!widget.readOnly)
             ...buildResizeHandles(_activeType),  // add set of handles manipulating image to Stack using spread separator ...
         ],
@@ -447,7 +449,7 @@ class _CanvasImageResizeHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = ColorScheme.of(context);
     return Positioned(
       left: (image.dstRect.topLeft-image.dstFullRect.topLeft).dx+ (position.dx.sign + 1) / 2 * image.dstRect.width - 20,// calculate position of handle according to current dstRect
       top: (image.dstRect.topLeft-image.dstFullRect.topLeft).dy+ (position.dy.sign + 1) / 2 * image.dstRect.height - 20,// dstRect is recalculated when moving handles
@@ -513,7 +515,7 @@ class _CanvasImageResizeHandle extends StatelessWidget {
                     // preserve aspect ratio if diagonal
                     if (position.dx != 0 && position.dy != 0) {
                       // if diagonal
-                      final double aspectRatio =
+                      final aspectRatio =
                           image.dstRect.width / image.dstRect.height;
                       if (newWidth / newHeight > aspectRatio) {
                         newHeight = newWidth / aspectRatio;
@@ -545,13 +547,14 @@ class _CanvasImageResizeHandle extends StatelessWidget {
                 ? (details) {
                     if (parent.panStartRect == image.dstRect) return;
                     image.onMoveImage?.call(
-                        image,
-                        Rect.fromLTRB(
-                          image.dstRect.left - parent.panStartRect.left,
-                          image.dstRect.top - parent.panStartRect.top,
-                          image.dstRect.right - parent.panStartRect.right,
-                          image.dstRect.bottom - parent.panStartRect.bottom,
-                        ));
+                      image,
+                      Rect.fromLTRB(
+                        image.dstRect.left - parent.panStartRect.left,
+                        image.dstRect.top - parent.panStartRect.top,
+                        image.dstRect.right - parent.panStartRect.right,
+                        image.dstRect.bottom - parent.panStartRect.bottom,
+                      ),
+                    );
                     parent.panStartRect = Rect.zero;
                   }
                 : null,

@@ -36,9 +36,9 @@ String _prettyNum(double num) {
 class _SizePickerState extends State<SizePicker> {
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return RowCol(
-      axis: widget.axis,
+    final colorScheme = ColorScheme.of(context);
+    return Flex(
+      direction: widget.axis,
       mainAxisSize: MainAxisSize.min,
       children: [
         Column(
@@ -103,23 +103,23 @@ class _SizeSlider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme = ColorScheme.of(context);
     return GestureDetector(
       onHorizontalDragStart: axis == Axis.horizontal
           ? (details) =>
-              onDrag(details.localPosition.dx / SizePicker.largeLength)
+                onDrag(details.localPosition.dx / SizePicker.largeLength)
           : null,
       onHorizontalDragUpdate: axis == Axis.horizontal
           ? (details) =>
-              onDrag(details.localPosition.dx / SizePicker.largeLength)
+                onDrag(details.localPosition.dx / SizePicker.largeLength)
           : null,
       onVerticalDragStart: axis == Axis.vertical
           ? (details) =>
-              onDrag(details.localPosition.dy / SizePicker.largeLength)
+                onDrag(details.localPosition.dy / SizePicker.largeLength)
           : null,
       onVerticalDragUpdate: axis == Axis.vertical
           ? (details) =>
-              onDrag(details.localPosition.dy / SizePicker.largeLength)
+                onDrag(details.localPosition.dy / SizePicker.largeLength)
           : null,
       child: RotatedBox(
         quarterTurns: axis == Axis.horizontal ? 0 : 1,

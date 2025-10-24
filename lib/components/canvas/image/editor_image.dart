@@ -34,7 +34,7 @@ sealed class EditorImage extends ChangeNotifier {
 
   final AssetCacheAll assetCacheAll;
 
-  bool _isThumbnail = false;
+  var _isThumbnail = false;
   bool get isThumbnail => _isThumbnail;
   @mustCallSuper
   set isThumbnail(bool isThumbnail) {
@@ -57,8 +57,10 @@ late Rect _dstRect =
     _dstRect = dstRect;
     if (_dstRect.width < CanvasImage.minImageSize ||
         _dstRect.height < CanvasImage.minImageSize) {
-      final scale = max(CanvasImage.minImageSize / _dstRect.width,
-          CanvasImage.minImageSize / _dstRect.height);
+      final scale = max(
+        CanvasImage.minImageSize / _dstRect.width,
+        CanvasImage.minImageSize / _dstRect.height,
+      );
       _dstRect = Rect.fromLTWH(
         _dstRect.left,
         _dstRect.top,
@@ -88,7 +90,7 @@ late Rect _dstRect =
   Size? pageSize;
 
   /// If the image is new, it will be [active] (draggable) when loaded
-  bool newImage = false;
+  var newImage = false;
 
   /// Whether this image is inverted if Prefs.editorAutoInvert.value
   bool invertible;
@@ -114,9 +116,9 @@ late Rect _dstRect =
     Rect dstRect = Rect.zero,
     this.srcRect = Rect.zero,
     bool isThumbnail = false,
-  })  : assert(extension.startsWith('.')),
-        _dstRect = dstRect,
-        _isThumbnail = isThumbnail;
+  }) : assert(extension.startsWith('.')),
+       _dstRect = dstRect,
+       _isThumbnail = isThumbnail;
 
   factory EditorImage.fromJson(
     Map<String, dynamic> json, {
@@ -125,7 +127,7 @@ late Rect _dstRect =
     required String sbnPath,
     required AssetCacheAll assetCacheAll,
   }) {
-    String? extension = json['e'];
+    final extension = json['e'] as String?;
     if (extension == '.svg') {
       return SvgEditorImage.fromJson(
         json,
@@ -179,11 +181,11 @@ late Rect _dstRect =
   ///
   /// This is useful for tests that can't have pending timers.
   @visibleForTesting
-  static bool shouldLoadOutImmediately = false;
+  static var shouldLoadOutImmediately = false;
 
   Completer? _firstLoadStatus;
   Completer<bool>? _shouldLoadOut;
-  bool _loadedIn = false;
+  var _loadedIn = false;
   bool get loadedIn => _loadedIn;
 
   Future<void> firstLoad();
@@ -254,7 +256,7 @@ late Rect _dstRect =
 
   /// Resizes [before] to fit inside [max] while maintaining aspect ratio
   @visibleForTesting
-  static Size resize(final Size before, final Size max) {
+  static Size resize(Size before, Size max) {
     double width = before.width,
         height = before.height,
         aspectRatio = width / height;

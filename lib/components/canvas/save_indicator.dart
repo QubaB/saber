@@ -64,12 +64,4 @@ class SaveIndicator extends StatelessWidget {
   }
 }
 
-enum SavingState {
-  waitingToSave,
-  saving,
-  /// Saved, but the thumbnail still needs updating.
-  /// (Thumbnails aren't created when auto-saving to avoid lag.)
-  savedWithoutThumbnail,
-  /// Saved, and the thumbnail is up-to-date.
-  savedWithThumbnail,
-}
+enum SavingState { waitingToSave, saving, saved }
