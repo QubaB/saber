@@ -104,39 +104,40 @@ class _NewNoteButtonState extends State<NewNoteButton> {
               final fileName = result.files.single.name;
               if (filePath == null) return;
 
-            if (filePath.toLowerCase().endsWith('.sbn') ||
-                filePath.toLowerCase().endsWith('.sbn2') ||
-                filePath.toLowerCase().endsWith('.sba')) {
-              final path = await FileManager.importFile(
-                filePath,
-                '${widget.path ?? ''}/',
-              );
-              if (path == null) return;
-              if (!context.mounted) return;
+              if (filePath.toLowerCase().endsWith('.sbn') ||
+                  filePath.toLowerCase().endsWith('.sbn2') ||
+                  filePath.toLowerCase().endsWith('.sba')) {
+                final path = await FileManager.importFile(
+                  filePath,
+                  '${widget.path ?? ''}/',
+                );
+                if (path == null) return;
+                if (!context.mounted) return;
 
-              context.push(RoutePaths.editFilePath(path));
-            } else if (filePath.toLowerCase().endsWith('.pdf')) {
-              if (!Editor.canRasterPdf) return;
-              if (!mounted) return;
+                context.push(RoutePaths.editFilePath(path));
+              } else if (filePath.toLowerCase().endsWith('.pdf')) {
+                if (!Editor.canRasterPdf) return;
+                if (!mounted) return;
 
-              final fileNameWithoutExtension = fileName.substring(
-                0,
-                fileName.length - '.pdf'.length,
-              );
-              final sbnFilePath =
-                  await FileManager.suffixFilePathToMakeItUnique(
-                    '${widget.path ?? ''}/$fileNameWithoutExtension',
-                  );
-              if (!context.mounted) return;
+                final fileNameWithoutExtension = fileName.substring(
+                  0,
+                  fileName.length - '.pdf'.length,
+                );
+                final sbnFilePath =
+                await FileManager.suffixFilePathToMakeItUnique(
+                  '${widget.path ?? ''}/$fileNameWithoutExtension',
+                );
+                if (!context.mounted) return;
 
-              context.push(RoutePaths.editImportPdf(sbnFilePath, filePath));
-            } else {
-              if (context.mounted) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(t.home.invalidFormat)));
+                context.push(RoutePaths.editImportPdf(sbnFilePath, filePath));
+              } else {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(t.home.invalidFormat)));
+                }
+                throw 'Invalid file type';
               }
-              throw 'Invalid file type';
             }
           },
         ),
