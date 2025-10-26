@@ -208,14 +208,6 @@ class _PreviewCardState extends State<PreviewCard> {
           onClosed: (_) async {
             thumbnail.image?.evict();
             thumbnail.markAsChanged();
-
-            await Future.delayed(transitionDuration);
-            if (!context.mounted) return;
-            if (!GoRouterState.of(context)
-                .uri
-                .toString()
-                .startsWith(RoutePaths.prefixOfHome)) return;
-            ResponsiveNavbar.setAndroidNavBarColor(theme);
           },
         );
       },
