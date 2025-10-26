@@ -176,7 +176,7 @@ class _ColorBarState extends State<ColorBar> {
     final children = <Widget>[
       // pinned colors
       if (stows.pinnedColors.value.isNotEmpty) ...[
-        const ColorOptionSeparatorIcon(icon: Icons.pin_drop),
+        ColorOptionSeparatorIcon(icon: Icons.pin_drop, size: widget.toolbarSize.buttonSize,),
         for (final colorString in stows.pinnedColors.value)
           ColorOption(
             isSelected:
@@ -203,7 +203,7 @@ class _ColorBarState extends State<ColorBar> {
           ),
       ],
 
-      const ColorOptionSeparatorIcon(icon: Icons.history),
+      ColorOptionSeparatorIcon(icon: Icons.history, size: widget.toolbarSize.buttonSize),
 
       // recent colors
       for (final colorString in stows.recentColorsPositioned.value.reversed)
@@ -254,7 +254,7 @@ class _ColorBarState extends State<ColorBar> {
           ),
         ),
 
-      const ColorOptionSeparatorIcon(icon: Icons.palette),
+      ColorOptionSeparatorIcon(icon: Icons.palette, size: widget.toolbarSize.buttonSize),
 
       // custom color
       ColorOption(

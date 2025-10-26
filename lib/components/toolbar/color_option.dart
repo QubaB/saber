@@ -61,7 +61,7 @@ class ColorOption extends StatelessWidget {
 }
 
 class ColorOptionSeparatorIcon extends StatelessWidget {
-  const ColorOptionSeparatorIcon({super.key, required this.icon});
+  const ColorOptionSeparatorIcon({super.key, required this.icon, required this.size,});
 
   final IconData icon;
   final double size;

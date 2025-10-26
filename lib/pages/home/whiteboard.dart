@@ -22,7 +22,7 @@ class Whiteboard extends StatelessWidget {
     final editorState = _whiteboardKey.currentState;
     if (editorState == null) return;
     assert(editorState.savingState.value == SavingState.waitingToSave);
-    editorState.saveToFile(createThumbnail: false);
+    editorState.saveToFile();
     editorState.snackBarNeedsToSaveBeforeExiting();
   }
 
