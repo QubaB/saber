@@ -10,10 +10,12 @@ class SaveIndicator extends StatelessWidget {
     super.key,
     required this.savingState,
     required this.triggerSave,
+    required this.triggerSaveThumbnailAndExit,
   });
 
   final ValueNotifier<SavingState> savingState;
   final VoidCallback triggerSave;
+  final VoidCallback triggerSaveThumbnailAndExit;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +30,7 @@ class SaveIndicator extends StatelessWidget {
             icon: switch (savingState.value) {
               SavingState.waitingToSave => const Icon(Icons.save),
               SavingState.saving => const CircularProgressIndicator.adaptive(),
-              SavingState.savedWithoutThumbnail => const Icon(Icons.arrow_back),
-              SavingState.savedWithThumbnail => const Icon(Icons.arrow_back),
+              SavingState.saved => const Icon(Icons.arrow_back),
             },
           ),
         );
@@ -44,11 +45,9 @@ class SaveIndicator extends StatelessWidget {
         triggerSave();
       case SavingState.saving:
         break;
-      case SavingState.savedWithoutThumbnail:
-        triggerSave(); // triggering save will be created thumbnail and then is finished editing
-        _back(context);
-      case SavingState.savedWithThumbnail:
-        _back(context);
+      case SavingState.saved:
+        triggerSaveThumbnailAndExit();  // create thumbnail and exit
+        break;
     }
   }
 
@@ -64,4 +63,4 @@ class SaveIndicator extends StatelessWidget {
   }
 }
 
-enum SavingState { waitingToSave, saving, saved }
+enum SavingState { waitingToSave, saving, saved}

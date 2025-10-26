@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:saber/components/canvas/save_indicator.dart';
@@ -50,8 +49,7 @@ class _ResponsiveNavbarState extends State<ResponsiveNavbar> {
       final savingState = Whiteboard.savingState;
       switch (savingState) {
         case null:
-        case SavingState.savedWithoutThumbnail:
-        case SavingState.savedWithThumbnail:
+        case SavingState.saved:
           break;
         case SavingState.waitingToSave:
           Whiteboard.triggerSave();
@@ -71,8 +69,6 @@ class _ResponsiveNavbarState extends State<ResponsiveNavbar> {
       LayoutSize.phone => false,
       LayoutSize.tablet => true,
     };
-
-    ResponsiveNavbar.setAndroidNavBarColor(Theme.of(context));
 
     if (ResponsiveNavbar.isLargeScreen) {
       return Scaffold(
