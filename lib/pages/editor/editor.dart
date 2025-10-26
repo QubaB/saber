@@ -106,6 +106,7 @@ class EditorState extends State<Editor> {
 
   final _canvasGestureDetectorKey = GlobalKey<CanvasGestureDetectorState>();
   final _transformationController = TransformationController();
+
   double get scrollY {
     final transformation = _transformationController.value;
     final scale = transformation.approxScale;
@@ -168,7 +169,7 @@ class EditorState extends State<Editor> {
     stows.lastTool.value = tool.toolId;
   }
 
-  final savingState = ValueNotifier(SavingState.savedWithThumbnail);
+  final savingState = ValueNotifier(SavingState.saved);
   @visibleForTesting
   Timer? _delayedSaveTimer;
   Timer? _watchServerTimer;
@@ -259,7 +260,7 @@ class EditorState extends State<Editor> {
 
       // save cleared whiteboard
       // without thumbnail as whiteboard thumbnail is never used
-      await saveToFile(createThumbnail: false);
+      await saveToFile();
       Whiteboard.needsToAutoClearWhiteboard = false;
     } else {
       setState(() {});
@@ -1244,32 +1245,27 @@ class EditorState extends State<Editor> {
         startTimer();
         return;
       }
-      saveToFile(createThumbnail: false);
+      saveToFile();
     };
 
     savingState.value = SavingState.waitingToSave;
     startTimer();
   }
 
-  Future<void> saveToFile({required bool createThumbnail}) async {
+  Future<void> saveToFile() async {
     // createThumbnail=false is used when called from autosave - to avoid lagging during thumbnail creation
     if (coreInfo.readOnly) return;
 
     switch (savingState.value) {
-      case SavingState.savedWithThumbnail:
-        // avoid saving if nothing has changed
-        return;
-      case SavingState.savedWithoutThumbnail:
-        // note is saved, but thumbnail need to be created
-        createThumbnailPreview();
-        savingState.value = SavingState.savedWithThumbnail;
+      case SavingState.saved:
+      // avoid saving if nothing has changed
         return;
       case SavingState.saving:
-        // avoid saving if already saving
+      // avoid saving if already saving
         log.warning('saveToFile() called while already saving');
         return;
       case SavingState.waitingToSave:
-        // continue
+      // continue
         _delayedSaveTimer?.cancel();
         savingState.value = SavingState.saving;
     }
@@ -1309,61 +1305,52 @@ class EditorState extends State<Editor> {
           filePath,
           numAssets: numAssetUsed,
       );
-      if (createThumbnail) {
-        savingState.value = SavingState.savedWithThumbnail;
-      } else {
-        savingState.value = SavingState.savedWithoutThumbnail;
-      }
+      savingState.value = SavingState.saved;
     } catch (e) {
       log.severe('Failed to save file: $e', e);
       savingState.value = SavingState.waitingToSave;
       if (kDebugMode) rethrow;
       return;
     }
-
-    if (createThumbnail) await createThumbnailPreview();
+    if (!mounted) return;
   }
 
-  /// create thumbnail of note
-  Future<void> createThumbnailPreview() async {
-    if (coreInfo.readOnly) return;
+  Future<void> createThumbnailAndExit(BuildContext context) async {
+    // create thumbnail
+    if (!mounted){
+      return;
+    }
     final filePath = coreInfo.filePath + Editor.extension;
-
-    if (!mounted) return;
     final screenshotter = ScreenshotController();
     final page = coreInfo.pages.first;
     final previewHeight = page.previewHeight(lineHeight: coreInfo.lineHeight);
     final thumbnailSize = Size(720, 720 * previewHeight / page.size.width);
     final thumbnail = await screenshotter.captureFromWidget(
-      MediaQuery(
-        data: MediaQueryData(
-          size: thumbnailSize,
-          devicePixelRatio: 1,
-        ),
-        child: MaterialApp(
-          theme: ThemeData(
-            brightness: Brightness.light,
-            colorScheme: const ColorScheme.light(
-              primary: EditorExporter.primaryColor,
-              secondary: EditorExporter.secondaryColor,
-            ),
+      Theme(
+        data: ThemeData(
+          brightness: Brightness.light,
+          colorScheme: const ColorScheme.light(
+            primary: EditorExporter.primaryColor,
+            secondary: EditorExporter.secondaryColor,
           ),
-          home: SizedBox(
+        ),
+        child: Localizations.override(
+          context: context,
+          child: SizedBox(
             width: thumbnailSize.width,
             height: thumbnailSize.height,
             child: FittedBox(
-              child: Builder(
-                builder: (context) => pagePreviewBuilder(
-                  context,
-                  pageIndex: 0,
-                  previewHeight: previewHeight,
-                ),
+              child: pagePreviewBuilder(
+                context,
+                pageIndex: 0,
+                previewHeight: previewHeight,
               ),
             ),
           ),
         ),
       ),
       pixelRatio: 1,
+      context: context,
       targetSize: thumbnailSize,
     );
     await FileManager.writeFile(
@@ -1372,7 +1359,11 @@ class EditorState extends State<Editor> {
       thumbnail,
       awaitWrite: true,
     );
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
   }
+
 
   late final _filenameFormKey = GlobalKey<FormState>();
   late final filenameTextEditingController = TextEditingController();
@@ -1848,44 +1839,6 @@ class EditorState extends State<Editor> {
     );
   }
 
-  void setAndroidNavBarColor() async {
-    if (coreInfo.filePath.isEmpty) return; // not loaded yet
-
-    final theme = Theme.of(context);
-
-    // whiteboard on mobile should keep home screen navbar color
-    if (coreInfo.filePath == Whiteboard.filePath &&
-        !ResponsiveNavbar.isLargeScreen) {
-      return ResponsiveNavbar.setAndroidNavBarColor(theme);
-    }
-
-    await null;
-    if (!mounted) return;
-
-    final brightness = theme.brightness;
-    final otherBrightness =
-        brightness == Brightness.dark ? Brightness.light : Brightness.dark;
-    final overlayStyle = brightness == Brightness.dark
-        ? SystemUiOverlayStyle.dark
-        : SystemUiOverlayStyle.light;
-
-    SystemChrome.setSystemUIOverlayStyle(overlayStyle.copyWith(
-      systemNavigationBarColor: Colors.transparent,
-      systemNavigationBarIconBrightness: otherBrightness,
-    ));
-  }
-
-  late MediaQueryData _mediaQuery = const MediaQueryData();
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _mediaQuery = MediaQuery.of(context);
-  }
-
-
-
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = ColorScheme.of(context);
@@ -2172,22 +2125,25 @@ class EditorState extends State<Editor> {
 
     return ValueListenableBuilder(
       valueListenable: savingState,
-      builder: (context, savingState, child) {
+      builder: (context, savingStateValue, child) {
         // don't allow user to go back until saving is done
         return PopScope(
-          canPop: savingState == SavingState.savedWithThumbnail,
-          onPopInvokedWithResult: (didPop, _) {
-            switch (savingState) {
+          canPop: savingStateValue == SavingState.saved,
+          onPopInvokedWithResult: (didPop, _) async {
+            switch (savingStateValue) {
               case SavingState.waitingToSave:
                 assert(!didPop);
-                saveToFile(createThumbnail: true); // trigger save now
+                await saveToFile(); // trigger immediate save
                 snackBarNeedsToSaveBeforeExiting();
+                return; // void
+
               case SavingState.saving:
                 assert(!didPop);
                 snackBarNeedsToSaveBeforeExiting();
-              case SavingState.savedWithoutThumbnail:
-              case SavingState.savedWithThumbnail:
-                break;
+                return; // void
+
+              case SavingState.saved:
+                return; // void
             }
           },
           child: child!,
@@ -2215,7 +2171,8 @@ class EditorState extends State<Editor> {
                       ),
                 leading: SaveIndicator(
                   savingState: savingState,
-                  triggerSave: () => saveToFile(createThumbnail: true),
+                  triggerSave: () => saveToFile(),
+                  triggerSaveThumbnailAndExit: () => createThumbnailAndExit(context),
                 ),
                 actions: [
                   IconButton(
@@ -2230,7 +2187,7 @@ class EditorState extends State<Editor> {
                       CanvasGestureDetector.scrollToPage(
                         pageIndex: currentPageIndex + 1,
                         pages: coreInfo.pages,
-                        screenWidth: _mediaQuery.size.width,
+                        screenWidth: MediaQuery.sizeOf(context).width,
                         transformationController: _transformationController,
                       );
                     }),
@@ -2582,9 +2539,11 @@ class EditorState extends State<Editor> {
   int get currentPageIndex {
     if (!mounted) return _lastCurrentPageIndex;
 
+    final screenWidth = MediaQuery.sizeOf(context).width;
+
     return _lastCurrentPageIndex = getPageIndexFromScrollPosition(
       scrollY: -scrollY,
-      screenWidth: _mediaQuery.size.width,
+      screenWidth: screenWidth,
       pages: coreInfo.pages,
     );
   }
@@ -2621,7 +2580,7 @@ class EditorState extends State<Editor> {
         await _renameFileNow();
         filenameTextEditingController.dispose();
       }
-      await saveToFile(createThumbnail: true);
+      await saveToFile();
     })();
 
     DynamicMaterialApp.removeFullscreenListener(_setState);
