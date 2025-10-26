@@ -127,6 +127,9 @@ class TranslationsHomeEn {
   late final TranslationsHomeMoveNoteEn moveNote =
       TranslationsHomeMoveNoteEn.internal(_root);
 
+  String get selectAllNotes => 'Select all';
+  String get deselectAllNotes => 'Deselect all';
+
 	/// en: 'Delete note'
 	String get deleteNote => 'Delete note';
 	late final TranslationsHomeSortNamesEn sortNames = TranslationsHomeSortNamesEn.internal(_root);
@@ -165,6 +168,8 @@ class TranslationsSettingsEn {
       TranslationsSettingsThemeModesEn.internal(_root);
   late final TranslationsSettingsLayoutSizesEn layoutSizes =
       TranslationsSettingsLayoutSizesEn.internal(_root);
+  late final TranslationsSettingsEditorToolbarSizesEn editorToolbarSizes =
+      TranslationsSettingsEditorToolbarSizesEn.internal(_root);
   late final TranslationsSettingsAccentColorPickerEn accentColorPicker =
       TranslationsSettingsAccentColorPickerEn.internal(_root);
 
@@ -538,19 +543,6 @@ class TranslationsHomeMoveNoteEn {
   /// en: '$n notes will be renamed to avoid conflicts'
   String numberRenamedTo({required Object n}) =>
       '${n} notes will be renamed to avoid conflicts';
-}
-
-// Path: home.sortNames
-class TranslationsHomeSortNamesEn {
-	TranslationsHomeSortNamesEn.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-	String get alphabetical => 'Alphabetical';
-	String get lastModified => 'Last Modified';
-	String get sizeOnDisk => 'Size';
-	String get increasing => 'Increasing';
 }
 
 // Path: home.sortNames
