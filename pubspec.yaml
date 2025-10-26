@@ -206,12 +206,6 @@ dependency_overrides:
       ref: patch-2
       path: flutter_secure_storage_linux
 
-  # https://github.com/ubuntu/yaru.dart/pull/1038
-  yaru:
-    git:
-      url: https://github.com/ubuntu/yaru.dart.git
-      ref: 1036a53bd70ea6ee09407c3afd5782f77c82fd47
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
