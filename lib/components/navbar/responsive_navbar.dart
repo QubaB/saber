@@ -56,6 +56,8 @@ class _ResponsiveNavbarState extends State<ResponsiveNavbar> {
           return;
         case SavingState.saving:
           return;
+        case SavingState.exitWithThumbnail:
+          return;
       }
     }
 

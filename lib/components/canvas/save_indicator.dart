@@ -31,6 +31,7 @@ class SaveIndicator extends StatelessWidget {
               SavingState.waitingToSave => const Icon(Icons.save),
               SavingState.saving => const CircularProgressIndicator.adaptive(),
               SavingState.saved => const Icon(Icons.arrow_back),
+              SavingState.exitWithThumbnail => const CircularProgressIndicator.adaptive(),  // exit note but wait for thumbnail creation
             },
           ),
         );
@@ -46,7 +47,9 @@ class SaveIndicator extends StatelessWidget {
       case SavingState.saving:
         break;
       case SavingState.saved:
-        triggerSaveThumbnailAndExit();  // create thumbnail and exit
+        triggerSaveThumbnailAndExit();  // create thumbnail, change state to exitWithThumbnail and exit
+        break;
+      case SavingState.exitWithThumbnail:
         break;
     }
   }
@@ -63,4 +66,4 @@ class SaveIndicator extends StatelessWidget {
   }
 }
 
-enum SavingState { waitingToSave, saving, saved}
+enum SavingState { waitingToSave, saving, saved, exitWithThumbnail}

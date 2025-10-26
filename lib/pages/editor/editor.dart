@@ -1268,6 +1268,9 @@ class EditorState extends State<Editor> {
       // continue
         _delayedSaveTimer?.cancel();
         savingState.value = SavingState.saving;
+      case SavingState.exitWithThumbnail:
+        // saving thumbnail and exiting
+        return;
     }
 
     await _renameFileNow();
@@ -1320,6 +1323,7 @@ class EditorState extends State<Editor> {
     if (!mounted){
       return;
     }
+    savingState.value=SavingState.exitWithThumbnail;  // indicate creation of thumbnail
     final filePath = coreInfo.filePath + Editor.extension;
     final screenshotter = ScreenshotController();
     final page = coreInfo.pages.first;
@@ -2128,7 +2132,7 @@ class EditorState extends State<Editor> {
       builder: (context, savingStateValue, child) {
         // don't allow user to go back until saving is done
         return PopScope(
-          canPop: savingStateValue == SavingState.saved,
+          canPop: savingStateValue == SavingState.exitWithThumbnail,
           onPopInvokedWithResult: (didPop, _) async {
             switch (savingStateValue) {
               case SavingState.waitingToSave:
@@ -2143,6 +2147,8 @@ class EditorState extends State<Editor> {
                 return; // void
 
               case SavingState.saved:
+                return; // void
+              case SavingState.exitWithThumbnail:
                 return; // void
             }
           },
