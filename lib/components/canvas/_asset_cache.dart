@@ -579,6 +579,8 @@ class AssetCacheAll {
   /// set to false during file save.
   bool allowRemovingAssets = true;
 
+  String? filePath;   // note file path
+
   final log = Logger('OrderedAssetCache');
 
 
@@ -906,7 +908,18 @@ class AssetCacheAll {
         // file should be added to assets
         if (copyFromSource){
           // copy original file
-          await newItem.copyAssetToTemporaryFile();
+//          _items.length
+//          item.value = await item.safeMoveFile((item.value as File), newPath); // rename asset file
+          if (this.filePath != '') {
+            // note file path is known, copy file to expected asset file name
+            final assetFilePath='$filePath.${_items.length}';
+            newItem.value= await newItem.safeMoveFile(value, assetFilePath);
+            newItem.filePath=assetFilePath;
+          }
+          else {
+            // note file path is unknown, copy asset to temporary file
+            await newItem.copyAssetToTemporaryFile();
+          }
         }
         _items.add(newItem);
         final index = _items.length - 1;
@@ -1192,6 +1205,11 @@ class AssetCacheAll {
       log.info('Error deleting assetCacheAll temp files: $e');
     }
 
+  }
+
+  // set path of note file
+  void setFilePath(String noteFilePath){
+    filePath=noteFilePath;
   }
 
   @override

@@ -198,6 +198,8 @@ class EditorState extends State<Editor> {
 
   void _initAsync() async {
     coreInfo.filePath = await widget.initialPath;
+    final fullPath = FileManager.fixFileNameDelimiters(FileManager.getFilePath('${coreInfo.filePath}${Editor.extension}'));  // add full path of note and fix \ or / according to OS
+    coreInfo.assetCacheAll.setFilePath(fullPath); // inform asset cache about note file name
     filenameTextEditingController.text = coreInfo.fileName;
 
     if (needsNaming) {
@@ -219,6 +221,9 @@ class EditorState extends State<Editor> {
     if (coreInfo.readOnly) {
       log.info('Loaded file as read-only');
     }
+    final fullPath = FileManager.fixFileNameDelimiters(FileManager.getFilePath('${coreInfo.filePath}${Editor.extension}'));  // add full path of note and fix \ or / according to OS
+    coreInfo.assetCacheAll.setFilePath(fullPath); // inform asset cache about note file name
+
 
     for (int pageIndex = 0; pageIndex < coreInfo.pages.length; pageIndex++) {
       listenToQuillChanges(coreInfo.pages[pageIndex].quill, pageIndex);
@@ -1679,10 +1684,7 @@ class EditorState extends State<Editor> {
 
     // Add pdf to cache → returns assetId
     int? assetIndex = await coreInfo.assetCacheAll.add(pdfFile);
-    if (assetIndex == null) {
-      log.severe('Failed to add PDF to cache');
-      return false;
-    }
+
 
     // Wait for PdfDocument to be ready to know page size and number of pages
     final pdfNotifier = coreInfo.assetCacheAll.getPdfNotifier(assetIndex);
