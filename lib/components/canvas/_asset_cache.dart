@@ -604,7 +604,7 @@ class AssetCacheAll {
         }).catchError((e, st) {
           log.severe('Error opening PDF $assetId: $e\n$st');
           _openingDocs.remove(assetId);
-          throw e; // ❌ místo `return null`
+          throw e; // return null
         });
       }
     } else if (item._pdfDocument != null) {
