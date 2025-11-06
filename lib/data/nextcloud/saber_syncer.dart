@@ -539,7 +539,6 @@ class SaberSyncInterface
       // not encrypting file names, only decode it back
       decrypted=restoreFilePath(encryptedName);
     }
-
     _encryptMap[decrypted] = encryptedName;
     _decryptMap[encryptedName] = decrypted;
     return decrypted;
@@ -653,9 +652,9 @@ class SaberSyncInterface
 }
 
 class SaberSyncFile extends AbstractSyncFile<File, WebDavFile> {
-  late final relativeLocalPath = localFile.path.substring(
+  late final relativeLocalPath = (localFile.path.substring(
     FileManager.documentsDirectory.length,
-  );
+  )).replaceAll('\\', '/'); // localFile.path can contain \ but Saber expects /
 
   late String remotePath;
 
