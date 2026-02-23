@@ -692,10 +692,12 @@ extension NullableIterable<T> on Iterable<T> {
 
 extension SaberSyncerComponent on SyncerComponent {
   Future<bool> enqueueRel(String relativeFilePath) async {
+    log.info('enqueueRel $relativeFilePath');
     if (!stows.loggedIn) return false;
 
     final syncFile = await SaberSyncFile.relative(relativeFilePath);
     //QB sync to queue syncFile.relativeLocalPath
+    log.info('enqueueRel calling for local ${syncFile.localFile.path} relative: ${syncFile.relativeLocalPath}');
     return enqueue(syncFile: syncFile);
   }
 }
